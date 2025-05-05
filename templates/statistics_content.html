@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}統計學內容一覽{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4 text-center">統計學內容一覽</h1>
+    
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h2 class="h5 mb-0">快速連結</h2>
+        </div>
+        <div class="card-body">
+            <div class="row g-2">
+                <div class="col-md-4">
+                    <a href="{{ url_for('show_lecture', lecture_file='統計學完整講義.html') }}" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-journal-bookmark me-2"></i>完整講義
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{{ url_for('display_all_chapters') }}" class="btn btn-outline-success w-100">
+                        <i class="bi bi-list-ul me-2"></i>所有章節
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{{ url_for('chapter', chapter_number=1) }}" class="btn btn-outline-secondary w-100">
+                        <i class="bi bi-play-fill me-2"></i>開始學習
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 章節內容 -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h5 mb-0">統計學章節</h2>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="chaptersAccordion">
+                        {% for chapter in chapters %}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading{{ chapter.chapter }}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapse{{ chapter.chapter }}" aria-expanded="false"
+                                        aria-controls="collapse{{ chapter.chapter }}">
+                                    <span class="badge bg-primary rounded-pill me-2">{{ chapter.chapter }}</span>
+                                    {{ chapter.title }}
+                                </button>
+                            </h2>
+                            <div id="collapse{{ chapter.chapter }}" class="accordion-collapse collapse"
+                                 aria-labelledby="heading{{ chapter.chapter }}" data-bs-parent="#chaptersAccordion">
+                                <div class="accordion-body">
+                                    <ul class="list-group list-group-flush mb-3">
+                                        {% for section in chapter.sections %}
+                                        <li class="list-group-item">
+                                            <a href="{{ url_for('section', chapter_number=chapter.chapter, section_number=loop.index) }}" 
+                                               class="text-decoration-none d-flex justify-content-between align-items-center">
+                                                <span>{{ loop.index }}. {{ section.title }}</span>
+                                                <i class="bi bi-arrow-right-circle text-muted"></i>
+                                            </a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                    <div class="d-flex gap-2">
+                                        <a href="{{ url_for('chapter', chapter_number=chapter.chapter) }}" 
+                                           class="btn btn-sm btn-primary">
+                                            <i class="bi bi-book"></i> 進入章節
+                                        </a>
+                                        <a href="{{ url_for('show_lecture', lecture_file='第' + chapter.chapter|string + '章_完整.html') }}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-file-text"></i> 查看講義
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 講義資料 -->
+        <div class="col-lg-4 mt-4 mt-lg-0">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h5 mb-0">講義資料</h2>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for lecture in lectures %}
+                        <a href="{{ url_for('show_lecture', lecture_file=lecture.filename) }}" 
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            {{ lecture.title }}
+                            <i class="bi bi-arrow-right-circle"></i>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

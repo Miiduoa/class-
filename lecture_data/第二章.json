@@ -1,0 +1,181 @@
+{
+  "courseTitle": "大學統計學",
+  "version": "1.0",
+  "chapters": [
+    {
+      "chapterNumber": 2,
+      "chapterTitle": "資料的蒐集與衡量",
+      "sections": [
+        {
+          "sectionNumber": "2.1",
+          "sectionTitle": "資料的種類",
+          "overview": "區分質性資料（分類變數）與量化資料（數值變數），並進一步區分順序尺度、間隔尺度與比例尺度。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "舉例說明：血型為質性資料（A/B/O/AB），溫度為間隔尺度（℃），身高為比例尺度（cm）。"
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch2_2.1_data_types.png",
+              "caption": "資料尺度分類示意圖"
+            }
+          ],
+          "mnemonics": [
+            "「質分順間比」：質性→分類；量化→順序→間隔→比例。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "將以下變數標記為分類／順序／間隔／比例：教育程度、體溫、身高、血壓等級。",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "2.2",
+          "sectionTitle": "資料的蒐集",
+          "overview": "說明問卷調查、實驗、觀察、二手資料庫等常見蒐集方法，及其各自優缺點與偏誤來源。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "以線上問卷為例，探討抽樣方式與非回應偏誤 (non-response bias)。"
+            }
+          ],
+          "visuals": [
+            {
+              "type": "flowchart",
+              "src": "images/ch2_2.2_collection_flow.png",
+              "caption": "資料蒐集流程圖"
+            }
+          ],
+          "mnemonics": [
+            "「問實觀庫」：問卷、實驗、觀察、資料庫。"
+          ],
+          "exercises": [
+            {
+              "type": "short-answer",
+              "question": "試分析使用臉書貼文做意見調查時可能遇到的偏誤。",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "2.3",
+          "sectionTitle": "資料的型態與資料的衡量",
+          "overview": "介紹測量儀器或問卷題項如何轉化為統計上可度量的資料，以及標度化 (scaling) 方法。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "Likert 五點量表示例：非常不同意(1)～非常同意(5)。"
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch2_2.3_likert_scale.png",
+              "caption": "Likert 量表範例"
+            }
+          ],
+          "mnemonics": [
+            "「李刻特量表」：Likert→李刻特。"
+          ],
+          "exercises": [
+            {
+              "type": "design",
+              "prompt": "為「顧客滿意度」設計一份至少 4 題 Likert 量表問卷。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "2.4",
+          "sectionTitle": "有效量度與無效量度",
+          "overview": "定義信度 (reliability) 與效度 (validity)：信度代表重複測量的一致性，效度代表是否測到真實概念。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "心率計重複測量值的一致性可評估為高信度；但若儀器本身偏低，則效度不佳。"
+            }
+          ],
+          "visuals": [
+            {
+              "type": "animation",
+              "src": "animations/ch2_2.4_reliability_validity.gif",
+              "caption": "信度 vs. 效度 動畫示意"
+            }
+          ],
+          "mnemonics": [
+            "「信效如鏡」：信度像鏡子清晰穩定，效度像鏡子能否真實反映。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "試說明：為何一支壞掉的磅秤可能有高信度卻低效度？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "2.5",
+          "sectionTitle": "準確量度與不準確量度",
+          "overview": "區分準確度 (accuracy) 與精密度 (precision)：準確度指測量平均值與真值接近，精密度指測量值之間的分散程度。",
+          "formulas": [
+            "精密度（標準差）：σ = √{ Σ(xᵢ − μ)² / n }"
+          ],
+          "examples": [
+            {
+              "description": "射箭靶示例：箭矢集中但離靶心遠 → 高精密低準確；箭矢分散但平均在靶心 → 高準確低精密。"
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch2_2.5_accuracy_precision.png",
+              "caption": "準確 vs. 精密 示意圖"
+            }
+          ],
+          "mnemonics": [
+            "「準精靶」：準確看靶心，精密看箭矢集中。"
+          ],
+          "exercises": [
+            {
+              "type": "true-false",
+              "question": "「高精密度一定代表高準確度。」— 正確或錯誤？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "2.6",
+          "sectionTitle": "數據合不合理",
+          "overview": "檢查蒐集到的資料是否存在超出合理範圍、重複、缺漏或異常值，並介紹基本的資料清理方法。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "以身高資料為例，若出現 2.5 公尺，可判定為異常值並加以處理。"
+            }
+          ],
+          "visuals": [
+            {
+              "type": "flowchart",
+              "src": "images/ch2_2.6_data_cleaning_flow.png",
+              "caption": "資料清理流程"
+            }
+          ],
+          "mnemonics": [
+            "「刪重補漏」：刪除異常、去除重複、補足缺漏。"
+          ],
+          "exercises": [
+            {
+              "type": "coding",
+              "language": "Python",
+              "prompt": "撰寫一段程式檢查並移除清單中小於 0 或大於 200 的身高值。"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+/* 課程頁面樣式 */
+body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background-color: #f8f9fa;
+}
+
+.course-header {
+    background-color: #343a40;
+    color: white;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+    border-radius: 0.5rem;
+}
+
+.course-title {
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.course-description {
+    font-size: 1.1rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.course-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.chapter-card {
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.chapter-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.chapter-header {
+    background-color: #007bff;
+    color: white;
+    padding: 1rem;
+    font-weight: 600;
+}
+
+.chapter-content {
+    padding: 1.5rem;
+}
+
+.section-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.section-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.section-list li:last-child {
+    border-bottom: none;
+}
+
+.section-link {
+    display: block;
+    color: #495057;
+    text-decoration: none;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s ease;
+}
+
+.section-link:hover {
+    background-color: #e9ecef;
+    color: #007bff;
+}
+
+.chapter-actions {
+    padding-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* 章節頁面樣式 */
+.breadcrumb-item a {
+    color: #6c757d;
+    text-decoration: none;
+}
+
+.breadcrumb-item.active {
+    color: #343a40;
+}
+
+.section-card {
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1.5rem;
+}
+
+.section-header {
+    background-color: #6c757d;
+    color: white;
+    padding: 1rem;
+    font-weight: 600;
+}
+
+.nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.visualization-container {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.visualization-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.example-card, .exercise-card {
+    background-color: #f8f9fa;
+    border-left: 5px solid #28a745;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 0.25rem;
+}
+
+.exercise-card {
+    border-left-color: #fd7e14;
+}
+
+.learning-objectives {
+    background-color: #e9ecef;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.learning-objectives ul {
+    padding-left: 1.5rem;
+    margin-bottom: 0;
+}
+
+.learning-objectives li {
+    margin-bottom: 0.5rem;
+}
+
+.no-content-alert {
+    margin: 2rem 0;
+} 

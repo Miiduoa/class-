@@ -1,0 +1,157 @@
+{
+  "courseTitle": "大學統計學",
+  "version": "1.0",
+  "chapters": [
+    {
+      "chapterNumber": "1",
+      "chapterTitle": "統計學與統計學家",
+      "overview": "本章節將介紹統計學的基本概念、目標和應用範圍。了解統計學在現代社會、科學和商業中的重要角色。",
+      "sections": [
+        {
+          "sectionNumber": "1.1",
+          "sectionTitle": "統計學簡介",
+          "content": "統計學是一門收集、分析、解釋和呈現數據的科學。它為各個領域的決策提供依據，包括商業、社會科學、自然科學等。\n\n現代統計學分為兩大分支：描述統計學（用於組織與摘要數據特點）和推論統計學（通過樣本數據對總體進行預測）。",
+          "examples": [
+            "商業分析：零售商分析銷售數據，預測未來銷售趨勢並制定庫存策略。",
+            "醫學研究：研究人員收集臨床試驗數據，評估新藥的有效性。",
+            "社會調查：機構進行民意調查，了解公眾對某議題的態度。"
+          ],
+          "visuals": [
+            {
+              "path": "/static/images/ch1/process_flow.png",
+              "description": "統計研究的流程：從資料收集、整理到分析和統計推論"
+            }
+          ],
+          "mnemonics": [
+            "統計學的英文\"Statistics\"來源於拉丁文\"Status\"，意為國家，最初用於收集國家人口和經濟數據。"
+          ],
+          "exercises": [
+            {
+              "type": "short_answer",
+              "question": "描述統計學與推論統計學有什麼區別？",
+              "answer": "描述統計學關注於組織、摘要和呈現已有數據；推論統計學則使用樣本數據對整體進行推測和決策。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "1.2",
+          "sectionTitle": "母體與樣本",
+          "content": "母體(Population)是指研究問題所涉及的所有可能觀察值的集合。\n\n樣本(Sample)是從母體中選取的一部分觀察值。由於成本、時間和可行性的限制，我們通常無法研究整個母體，而是通過研究樣本來推斷母體特性。\n\n良好的樣本應該具有代表性，即樣本的特性能夠反映母體的特性。抽樣方法的選擇對確保樣本代表性至關重要。",
+          "examples": [
+            "若要研究某大學學生的平均學習時間，母體是該大學所有學生，而樣本可能是隨機選擇的300名學生。",
+            "民意調查通常只訪問幾千人（樣本），然後用來推斷整個國家人口（母體）的意見。"
+          ],
+          "visuals": [
+            {
+              "path": "/static/images/ch1/parameter_statistic.png",
+              "description": "母體與樣本的關係：樣本是母體的子集，通過樣本特性推論母體參數"
+            }
+          ],
+          "mnemonics": [
+            "'樣本反映母體'：想像樣本是一面鏡子，能夠反映出母體的特性，但要記住，鏡子可能有些許扭曲（抽樣誤差）。"
+          ],
+          "exercises": [
+            {
+              "type": "short_answer",
+              "question": "為什麼研究者通常選擇研究樣本而不是整個母體？",
+              "answer": "研究整個母體通常成本高昂、耗時且在實際操作上不可行。通過科學的抽樣方法，可以用較小的樣本推斷母體特性，節省資源同時獲得合理的結論。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "1.3",
+          "sectionTitle": "統計學的發展",
+          "content": "統計學起源於國家治理的需要，最初用於人口普查和稅收數據收集。隨著時間發展，它逐漸成為一門獨立的科學學科。\n\n17-18世紀：概率論的發展為統計學奠定了理論基礎。\n\n19世紀：高斯、拉普拉斯等人發展了許多重要的統計方法。\n\n20世紀：R.A. Fisher等人的工作推動了現代統計學的發展。",
+          "examples": [
+            "1662年，John Graunt發表了《自然與政治觀察》，被認為是統計學的早期重要著作。",
+            "19世紀，高斯發明了最小二乘法，廣泛應用於數據擬合和參數估計。",
+            "20世紀30年代，Fisher發展了實驗設計和假設檢驗的基本原理。"
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「三階段記憶法」：記住統計學的三個主要發展階段 - 國家需要(17世紀前)→數學基礎(17-19世紀)→現代統計(20世紀至今)"
+          ],
+          "exercises": [
+            {
+              "type": "short_answer",
+              "question": "哪位科學家被稱為「現代統計學之父」？他的主要貢獻是什麼？",
+              "answer": "R.A. Fisher通常被稱為「現代統計學之父」。他的主要貢獻包括實驗設計方法、顯著性檢驗的P值概念以及最大似然估計等。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "1.4",
+          "sectionTitle": "統計學的基本概念",
+          "content": "母體參數(Parameters)是描述母體特徵的數值，如母體平均數(μ)、母體標準差(σ)。\n\n統計量(Statistics)是從樣本計算得出的數值，如樣本平均數(x̄)、樣本標準差(s)。\n\n變數(Variables)是研究中可測量的特性，分為類別變數和數值變數。\n\n數據(Data)是觀察或測量的結果，是統計分析的基礎。",
+          "examples": [
+            "例如研究大學生身高：母體參數是所有大學生的平均身高μ，而統計量是抽樣調查中測得的300名學生的平均身高x̄。"
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「母樣參統」：母體、樣本、參數、統計量，按流程記憶。"
+          ],
+          "exercises": [
+            {
+              "type": "multiple_choice",
+              "question": "以下哪項是母體參數的正確符號？",
+              "options": ["x̄ (x-bar)", "s", "μ (mu)", "p-hat"],
+              "answer": "μ (mu)"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "1.5",
+          "sectionTitle": "統計學的種類",
+          "overview": "區分描述統計（Descriptive Statistics）與推論統計（Inferential Statistics），並列舉常見應用場景。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "描述統計範例：計算班級同學的平均分數、標準差。",
+              "steps": [
+                "計算平均數：Σx / n",
+                "計算標準差： sqrt( Σ(x - μ)² / n )"
+              ]
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": [
+            {
+              "type": "coding",
+              "language": "JavaScript",
+              "prompt": "撰寫函式 computeMean(data) 計算陣列 data 的平均值。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "1.6",
+          "sectionTitle": "統計學的方法",
+          "overview": "說明質性資料與量化資料的處理差異，以及描述統計與推論統計方法概覽。",
+          "formulas": [],
+          "examples": [],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": []
+        },
+        {
+          "sectionNumber": "1.7",
+          "sectionTitle": "統計方法的實施步驟",
+          "overview": "從問題定義到資料收集、整理、分析、報告撰寫的完整流程，並強調研究設計與倫理。",
+          "formulas": [],
+          "examples": [],
+          "visuals": [
+            {
+              "type": "flowchart",
+              "src": "images/ch1_flowchart.png",
+              "caption": "統計研究設計流程圖"
+            }
+          ],
+          "mnemonics": [
+            "「定收整析報」五字訣：定義→收集→整理→分析→報告"
+          ],
+          "exercises": []
+        }
+      ]
+    }
+  ]
+}

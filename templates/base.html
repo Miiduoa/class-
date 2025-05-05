@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}學習平台{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/learning_platform.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <!-- Brand logo -->
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('home') }}">
+                <i class="bi bi-mortarboard fs-4 me-2"></i>
+                <span class="fw-bold">統計學習平台</span>
+            </a>
+            
+            <!-- Mobile toggle button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- Navbar content -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <!-- Home -->
+                    <li class="nav-item">
+                        <a class="nav-link px-3 d-flex align-items-center" href="{{ url_for('home') }}">
+                            <i class="bi bi-house-door me-2"></i>
+                            <span>首頁</span>
+                        </a>
+                    </li>
+                    
+                    <!-- Course center dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle px-3 d-flex align-items-center" href="#" id="coursesDropdown" 
+                           role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-journal-text me-2"></i>
+                            <span>課程中心</span>
+                        </a>
+                        <ul class="dropdown-menu shadow-sm">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center py-2" href="{{ url_for('home') }}">
+                                    <i class="bi bi-graph-up text-primary me-2"></i>
+                                    <span>統計學</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center py-2" href="{{ url_for('display_all_chapters') }}">
+                                    <i class="bi bi-list-ul text-success me-2"></i>
+                                    <span>統計學章節一覽</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center py-2" href="{{ url_for('show_lecture', lecture_file='統計學完整講義.html') }}">
+                                    <i class="bi bi-journal-bookmark text-primary me-2"></i>
+                                    <span>統計學完整講義</span>
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center py-2 disabled" href="#">
+                                    <i class="bi bi-calculator text-purple me-2"></i>
+                                    <span>數學 <small class="text-muted ms-1">(即將推出)</small></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center py-2 disabled" href="#">
+                                    <i class="bi bi-globe text-info me-2"></i>
+                                    <span>科學 <small class="text-muted ms-1">(即將推出)</small></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center py-2 disabled" href="#">
+                                    <i class="bi bi-cash-coin text-warning me-2"></i>
+                                    <span>經濟學 <small class="text-muted ms-1">(即將推出)</small></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center py-2 disabled" href="#">
+                                    <i class="bi bi-book text-secondary me-2"></i>
+                                    <span>人文 <small class="text-muted ms-1">(即將推出)</small></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Statistics content dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle px-3 d-flex align-items-center" href="#" id="statisticsDropdown" 
+                           role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-graph-up me-2"></i>
+                            <span>統計學內容</span>
+                        </a>
+                        <ul class="dropdown-menu shadow-sm">
+                            <li>
+                                <a class="dropdown-item py-2 d-flex align-items-center" href="{{ url_for('statistics_content') }}">
+                                    <i class="bi bi-grid-3x3-gap me-2 text-primary"></i>
+                                    <span>內容一覽</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2 d-flex align-items-center" href="{{ url_for('display_all_chapters') }}">
+                                    <i class="bi bi-list-ul me-2 text-success"></i>
+                                    <span>全部16章節</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center py-2" href="{{ url_for('show_lecture', lecture_file='統計學完整講義.html') }}">
+                                    <i class="bi bi-journal-bookmark me-2 text-primary"></i>
+                                    <span>完整講義</span>
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            {% for i in range(1, 17) %}
+                                <li>
+                                    <a class="dropdown-item py-2" href="{{ url_for('chapter', chapter_number=i) }}">
+                                        <span class="badge bg-primary rounded-pill me-2">{{ i }}</span>
+                                        第{{ i }}章
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    
+                    <!-- AI Learning Assistant dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle px-3 d-flex align-items-center" href="#" id="aiDropdown" 
+                           role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-robot me-2"></i>
+                            <span>AI學習助手</span>
+                        </a>
+                        <ul class="dropdown-menu shadow-sm">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center py-2" href="{{ url_for('ai.explain_concept') }}">
+                                    <i class="bi bi-lightbulb me-2 text-primary"></i>
+                                    <span>概念解釋</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center py-2" href="{{ url_for('ai.generate_practice') }}">
+                                    <i class="bi bi-pencil-square me-2 text-primary"></i>
+                                    <span>練習題生成</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center py-2" href="{{ url_for('ai.create_study_plan') }}">
+                                    <i class="bi bi-calendar-check me-2 text-primary"></i>
+                                    <span>學習計劃</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center py-2" href="{{ url_for('ai.chat_assistant') }}">
+                                    <i class="bi bi-chat-dots me-2 text-primary"></i>
+                                    <span>聊天助手</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <!-- Search form -->
+                <form class="d-flex" action="{{ url_for('search') }}" method="get">
+                    <div class="input-group">
+                        <input class="form-control" type="search" name="query" placeholder="搜尋內容..." aria-label="Search">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    {% block hero %}{% endblock %}
+
+    <main class="container my-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                    <h5><i class="bi bi-mortarboard me-2"></i>統計學習平台</h5>
+                    <p>提供高品質的統計學與多領域學習資源，幫助您掌握各科目的基本概念與應用。</p>
+                    <div class="d-flex gap-3 mt-3">
+                        <a href="#" class="text-decoration-none">
+                            <i class="bi bi-facebook fs-4"></i>
+                        </a>
+                        <a href="#" class="text-decoration-none">
+                            <i class="bi bi-youtube fs-4"></i>
+                        </a>
+                        <a href="#" class="text-decoration-none">
+                            <i class="bi bi-instagram fs-4"></i>
+                        </a>
+                        <a href="#" class="text-decoration-none">
+                            <i class="bi bi-linkedin fs-4"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
+                    <h5>快速連結</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{{ url_for('home') }}" class="text-decoration-none">首頁</a></li>
+                        <li class="mb-2"><a href="{{ url_for('chapter', chapter_number=1) }}" class="text-decoration-none">開始學習</a></li>
+                        <li class="mb-2"><a href="{{ url_for('search') }}" class="text-decoration-none">搜尋內容</a></li>
+                        <li class="mb-2"><a href="{{ url_for('lectures_index') }}" class="text-decoration-none">講義資料</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5>主要章節</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{{ url_for('chapter', chapter_number=1) }}" class="text-decoration-none">統計學簡介</a></li>
+                        <li class="mb-2"><a href="{{ url_for('chapter', chapter_number=5) }}" class="text-decoration-none">機率分配</a></li>
+                        <li class="mb-2"><a href="{{ url_for('chapter', chapter_number=9) }}" class="text-decoration-none">假設檢定</a></li>
+                        <li class="mb-2"><a href="{{ url_for('chapter10') }}" class="text-decoration-none">單一母體的參數檢定</a></li>
+                        <li class="mb-2"><a href="{{ url_for('chapter', chapter_number=13) }}" class="text-decoration-none">迴歸分析</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5>AI學習輔助</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{{ url_for('ai.explain_concept') }}" class="text-decoration-none">概念解釋</a></li>
+                        <li class="mb-2"><a href="{{ url_for('ai.generate_practice') }}" class="text-decoration-none">練習題生成</a></li>
+                        <li class="mb-2"><a href="{{ url_for('ai.create_study_plan') }}" class="text-decoration-none">學習計劃</a></li>
+                        <li class="mb-2"><a href="{{ url_for('ai.chat_assistant') }}" class="text-decoration-none">聊天助手</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4" style="opacity: 0.1;">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">© 2025 統計學習平台 | 保留所有權利</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+                    <p class="mb-0">由 AI 輔助開發 | <a href="#" class="text-decoration-none">隱私政策</a> | <a href="#" class="text-decoration-none">使用條款</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script>
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$','$'], ['\\(','\\)']],
+                processEscapes: true
+            }
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

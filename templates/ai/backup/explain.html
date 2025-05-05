@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block title %}AI 學習助手 - 概念解釋{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.5.1/styles/github.min.css">
+<style>
+    .form-card {
+        background-color: var(--neutral-white);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+    }
+    
+    .form-card-header {
+        background-color: var(--primary-blue);
+        color: var(--neutral-white);
+        padding: var(--space-lg);
+        font-weight: 600;
+    }
+    
+    .form-card-body {
+        padding: var(--space-xl);
+    }
+    
+    .explanation-card {
+        background-color: var(--neutral-white);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        margin-top: var(--space-xl);
+        overflow: hidden;
+    }
+    
+    .explanation-header {
+        background-color: var(--primary-blue-light);
+        color: var(--primary-blue-dark);
+        padding: var(--space-lg);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+    }
+    
+    .explanation-body {
+        padding: var(--space-xl);
+    }
+    
+    .markdown-content h1 {
+        font-size: 1.75rem;
+        margin-bottom: var(--space-md);
+        color: var(--primary-blue-dark);
+    }
+    
+    .markdown-content h2 {
+        font-size: 1.5rem;
+        margin-top: var(--space-lg);
+        margin-bottom: var(--space-md);
+    }
+    
+    .markdown-content h3 {
+        font-size: 1.25rem;
+        margin-top: var(--space-lg);
+        margin-bottom: var(--space-sm);
+    }
+    
+    .markdown-content p {
+        margin-bottom: var(--space-md);
+        line-height: 1.7;
+    }
+    
+    .markdown-content ul, 
+    .markdown-content ol {
+        margin-bottom: var(--space-md);
+        padding-left: var(--space-xl);
+    }
+    
+    .markdown-content li {
+        margin-bottom: var(--space-sm);
+    }
+    
+    .markdown-content .formula {
+        background-color: var(--primary-blue-light);
+        padding: var(--space-md);
+        border-radius: var(--radius-md);
+        margin: var(--space-md) 0;
+        overflow-x: auto;
+    }
+    
+    .markdown-content .example {
+        background-color: var(--neutral-light);
+        border-left: 4px solid var(--primary-blue);
+        padding: var(--space-md);
+        margin: var(--space-md) 0;
+    }
+    
+    .loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-xl);
+    }
+    
+    .loading .spinner-border {
+        margin-right: var(--space-md);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <h1 class="mb-4">AI 學習助手 - 概念解釋</h1>
+            <p class="lead mb-5">輸入您想了解的統計學概念，AI 助手將為您提供詳細的解釋與範例。</p>
+            
+            <div class="form-card">
+                <div class="form-card-header">
+                    <i class="bi bi-lightbulb me-2"></i>概念查詢
+                </div>
+                <div class="form-card-body">
+                    <form id="explainForm" method="get">
+                        <div class="mb-4">
+                            <label for="concept" class="form-label">您想了解的概念</label>
+                            <input type="text" class="form-control form-control-lg" id="concept" name="concept" 
+                                   placeholder="例如：標準差、中央極限定理、t檢定..." 
+                                   value="{{ concept }}" required>
+                            <div class="form-text">輸入統計學中的概念、方法或公式名稱</div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-search me-2"></i>取得解釋
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            {% if explanation %}
+            <div class="explanation-card">
+                <div class="explanation-header">
+                    <i class="bi bi-lightbulb-fill me-2"></i>
+                    <span>「{{ concept }}」的解釋</span>
+                </div>
+                <div class="explanation-body">
+                    <div class="markdown-content">
+                        {{ explanation | safe }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/marked@4.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/highlight.js@11.5.1/lib/highlight.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const explainForm = document.getElementById('explainForm');
+        
+        explainForm.addEventListener('submit', function(e) {
+            const conceptInput = document.getElementById('concept').value.trim();
+            if (!conceptInput) {
+                e.preventDefault();
+                alert('請輸入您想了解的概念');
+            }
+        });
+    });
+</script>
+{% endblock %} 

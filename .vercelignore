@@ -1,0 +1,6 @@
+lecture_data/*
+   web_lecture/*
+   __pycache__/
+   *.zip
+   *.pyc
+   *.pyo

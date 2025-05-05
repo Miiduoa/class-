@@ -1,0 +1,565 @@
+{
+  "chapters": [
+    {
+      "chapterNumber": 7,
+      "chapterTitle": "連續隨機變數及其常用的機率分配",
+      "sections": [
+        {
+          "sectionNumber": "7.1",
+          "sectionTitle": "連續隨機變數的機率分配",
+          "overview": "定義 PDF，並以微分觀念說明 P(a≤X≤b)=∫ₐᵇ f(x)dx。",
+          "formulas": [
+            "f(x) ≥ 0；∫_{−∞}^{∞} f(x)dx = 1"
+          ],
+          "examples": [
+            {
+              "description": "示例：均勻分布 PDF，檢查積分為 1。",
+              "steps": [
+                "f(x)=1/(b−a) for a≤x≤b",
+                "∫ₐᵇ 1/(b−a) dx =1"
+              ]
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch7_7.1_pdf.png",
+              "caption": "連續分布 PDF 示意"
+            }
+          ],
+          "mnemonics": [
+            "「微積累和」：PDF 微分式，區間積分得機率。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "說明 PDF 與 PMF 的差異及各自適用場合。",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "7.2",
+          "sectionTitle": "常態分配",
+          "overview": "介紹 N(μ,σ²) 分布特性：對稱、鐘型，並記憶密度函數形式。",
+          "formulas": [
+            "f(x)=1/(σ√{2π})·e^{−(x−μ)²/(2σ²)}"
+          ],
+          "examples": [
+            {
+              "description": "標準正態 N(0,1) 曲線下 μ±σ、2σ 範圍面積示意。"
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch7_7.2_normal.png",
+              "caption": "常態分布曲線"
+            }
+          ],
+          "mnemonics": [
+            "「二πσ」：分母 σ√{2π} 記憶技巧。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "計算 N(0,1) 中 P(−1≤Z≤1) ≈ 0.68。",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "7.3",
+          "sectionTitle": "標準常態分配",
+          "overview": "說明標準化程序 Z=(X−μ)/σ，使任意 X 映射至 N(0,1)。",
+          "formulas": [
+            "Z = (X − μ)/σ"
+          ],
+          "examples": [
+            {
+              "description": "某隨機變數 X~N(100,25)，求 P(X≤110)。",
+              "steps": [
+                "標準化 Z=(110−100)/5=2",
+                "查表得 P(Z≤2)=0.9772"
+              ]
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「減均除標」：減 μ、除 σ。"
+          ],
+          "exercises": [
+            {
+              "type": "coding",
+              "language": "Python",
+              "prompt": "用 scipy.stats 計算 P(X>120) for X~N(100,25)。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "7.4",
+          "sectionTitle": "均等分配",
+          "overview": "連續均等分布 U(a,b)，對定義域均勻分佈。",
+          "formulas": [
+            "f(x)=1/(b−a) for a≤x≤b"
+          ],
+          "examples": [
+            {
+              "description": "模擬 U(0,1) 亂數並繪製直方圖。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「一平尺」：高=1/(b−a)，寬=（b−a），面積=1。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "U(2,5) 的平均數與變異數？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "7.5",
+          "sectionTitle": "指數分配",
+          "overview": "模型描述事件到達時間間隔，記憶 PDF 與無記憶性質。",
+          "formulas": [
+            "f(x)=λ e^{−λx}, x≥0"
+          ],
+          "examples": [
+            {
+              "description": "λ=0.5 時，P(X>3) = e^{−0.5×3}=0.2231。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「萎縮 e」：λ * e^{−λx}。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "驗證指數分配的無記憶性：P(X>t+s|X>t)=P(X>s)。",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "7.6",
+          "sectionTitle": "二項分配與常態分配之關係",
+          "overview": "當 n 大且 p 不極端，可用常態分配近似二項。",
+          "formulas": [
+            "B(n,p)≈N(np, np(1−p))"
+          ],
+          "examples": [
+            {
+              "description": "n=100,p=0.2 時，近似 N(20,16)。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「npnpq」：平均 np，變異 npq。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "何時需要 continuity correction？為何？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "7.7",
+          "sectionTitle": "泊松分配與指數分配之關係",
+          "overview": "描述事件計數與時間間隔的對偶性。Poisson 參數 λ 同時作速率。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "Poisson(λ) 事件間隔 ~ Exp(λ)。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「率同分互」：計數泊松、間隔指數，率 λ 相同。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "解釋為何 Poisson 過程的事件間隔服從 Exp(λ)。",
+              "answer": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapterNumber": 8,
+      "chapterTitle": "簡單隨機抽樣與抽樣分配",
+      "sections": [
+        {
+          "sectionNumber": "8.1",
+          "sectionTitle": "抽樣的重要性與抽樣誤差",
+          "overview": "說明抽樣偏誤、隨機誤差與非隨機誤差的來源。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "便利抽樣 vs. 隨機抽樣對結果的影響比較。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「偏隨非」：偏誤 vs. 隨機 vs. 非隨機。"
+          ],
+          "exercises": [
+            {
+              "type": "short-answer",
+              "question": "列舉三種常見抽樣誤差並說明成因。",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "8.2",
+          "sectionTitle": "簡單隨機抽樣",
+          "overview": "每個樣本具同等機會被抽中，介紹名義與實作方法。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "從名單中以亂數表選出 n 個樣本。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「等機亂選」：平等機會，亂數選取。"
+          ],
+          "exercises": [
+            {
+              "type": "coding",
+              "language": "Python",
+              "prompt": "利用 random.sample 從列表中抽取 10 筆樣本。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "8.3",
+          "sectionTitle": "抽樣分配",
+          "overview": "重複抽樣所得統計量之分布，包含平均數與比例的抽樣分配。",
+          "formulas": [
+            "Var( x̄ ) = σ²/n；Var( p̂ )=p(1−p)/n"
+          ],
+          "examples": [
+            {
+              "description": "模擬從 N(0,1) 重抽 1000 次平均數分布直方圖。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「σ²除 n」：抽樣分配變異 σ²/n。"
+          ],
+          "exercises": [
+            {
+              "type": "coding",
+              "language": "Python",
+              "prompt": "模擬二項分配比例 p̂ 的抽樣分配並畫圖。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "8.4",
+          "sectionTitle": "樣本平均數的抽樣分配",
+          "overview": "依中央極限定理，樣本平均數近似常態 (大樣本)。",
+          "formulas": [
+            "x̄ ~ approx N(μ,σ²/n)"
+          ],
+          "examples": [
+            {
+              "description": "n=30, X~任意分布，模擬驗證 x̄ 的分布近似常態。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「CLT：大小皆態」：不論母體，只要 n 大。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "何謂「n ≥ 30 規則」？是否總適用？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "8.5",
+          "sectionTitle": "中央極限定理",
+          "overview": "詳述 CLT 的條件、定義與應用範圍。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "模擬不同母體，檢視平均數分布收斂常態。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「不論形，皆趨態」：CLT 核心精神。"
+          ],
+          "exercises": [
+            {
+              "type": "short-answer",
+              "question": "解釋中央極限定理的意義並舉例。",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "8.6",
+          "sectionTitle": "樣本不平均數抽樣分配的應用",
+          "overview": "介紹 t 分布在平均數估計上對 σ 未知情況的應用。",
+          "formulas": [
+            "t = (x̄−μ)/(s/√n)"
+          ],
+          "examples": [
+            {
+              "description": "n<30 且 σ 未知，使用 t 分布做平均數檢定。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「t 分自由」：自由度 df=n−1。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "何時使用 t 分布取代常態？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "8.7",
+          "sectionTitle": "樣本比例的抽樣分配",
+          "overview": "p̂ ~ approx N(p, p(1−p)/n) for large n。",
+          "formulas": [
+            "p̂ ~ N(p, p(1−p)/n)"
+          ],
+          "examples": [
+            {
+              "description": "模擬伯努利試驗比例抽樣分配。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「ppq除n」：分散 p(1−p)/n。"
+          ],
+          "exercises": [
+            {
+              "type": "coding",
+              "language": "Python",
+              "prompt": "模擬多次抽樣計算 p̂ 並繪製分布。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "8.8",
+          "sectionTitle": "其他抽樣方法",
+          "overview": "簡介分層抽樣、集束抽樣與系統抽樣原理。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "分層抽樣在母體有明顯群組時之應用。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「分集系」：分層、集束、系統。"
+          ],
+          "exercises": [
+            {
+              "type": "short-answer",
+              "question": "比較分層與集束抽樣優劣。",
+              "answer": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapterNumber": 9,
+      "chapterTitle": "統計估計",
+      "sections": [
+        {
+          "sectionNumber": "9.1",
+          "sectionTitle": "點估計的意義與限制",
+          "overview": "介紹估計量 (estimator) 與估計值 (estimate) 的概念。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "用樣本平均數作母體平均數的點估計。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「量值一一對應」：統計量→統計值。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "點估計有何缺點？如何以區間估計補足？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "9.2",
+          "sectionTitle": "估計式的評斷標準",
+          "overview": "無偏性、一致性、有效性、漸近正態性之定義。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "驗證樣本平均數為無偏估計量。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「無一效漸」：無偏、一致、有效、漸近正態。"
+          ],
+          "exercises": [
+            {
+              "type": "short-answer",
+              "question": "說明何謂一致性並舉例。",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "9.3",
+          "sectionTitle": "區間估計的意義",
+          "overview": "概念：以信賴水準建立區間，使母體參數落在該區間的機率為信賴度。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "95% CI for μ = x̄ ± z_{0.975}·σ/√n。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「區機信」：區間、機率、信賴。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "解釋 95% CI 中的 95% 意義。",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "9.4",
+          "sectionTitle": "母體平均數的區間估計-大樣本",
+          "overview": "已知 σ 時使用 Z 分布；公式與步驟。",
+          "formulas": [
+            "CI = x̄ ± z_{α/2}·σ/√n"
+          ],
+          "examples": [
+            {
+              "description": "n=100, x̄=50, σ=10, 95% CI。",
+              "steps": [
+                "z_{0.975}=1.96 → ±1.96·10/10=±1.96 → (48.04,51.96)"
+              ]
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "計算 90% CI 並比較寬度。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "9.5",
+          "sectionTitle": "母體平均數的區間估計-小樣本",
+          "overview": "σ 未知時以 t 分布取代 Z；df=n−1。",
+          "formulas": [
+            "CI = x̄ ± t_{α/2,df}·s/√n"
+          ],
+          "examples": [
+            {
+              "description": "n=15, x̄=20, s=4, 95% CI。",
+              "steps": [
+                "t_{0.975,14}=2.145 → ±2.145·4/√15≈±2.216"
+              ]
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "df 增大時 t 分布趨近哪種分布？"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "9.6",
+          "sectionTitle": "母體比例的區間估計",
+          "overview": "使用 p̂ ± z_{α/2}·√{p̂(1−p̂)/n}",
+          "formulas": [
+            "CI = p̂ ± z_{α/2}·√{p̂(1−p̂)/n}"
+          ],
+          "examples": [],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "若 p̂=0.4, n=100, 95% CI 為何？"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "9.7",
+          "sectionTitle": "樣本數的選擇",
+          "overview": "根據精度要求與成本限制計算所需 n。",
+          "formulas": [
+            "n = (z_{α/2}·σ/E)²"
+          ],
+          "examples": [
+            {
+              "description": "求 E=1, σ=5, 95% 信賴所需 n。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "若想將誤差減半，n 需增加幾倍？"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "9.8",
+          "sectionTitle": "母體變異數的區間估計",
+          "overview": "利用 χ² 分布，df=n−1。",
+          "formulas": [
+            "CI: ((n−1)s²)/χ²_{α/2,df} ≤ σ² ≤ ((n−1)s²)/χ²_{1−α/2,df}"
+          ],
+          "examples": [
+            {
+              "description": "n=10, s²=4, 95% CI。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "χ² 分布的偏態特性如何影響 CI？"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

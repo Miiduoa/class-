@@ -1,0 +1,330 @@
+{% extends 'base.html' %}
+
+{% block title %}測驗: {{ section.sectionNumber }} {{ section.sectionTitle }} - 統計學學習平台{% endblock %}
+
+{% block extra_css %}
+<style>
+    .quiz-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .quiz-timer {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #3498db;
+    }
+    
+    .quiz-option {
+        display: block;
+        padding: 12px 15px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .quiz-option:hover {
+        background-color: #e9ecef;
+    }
+    
+    .quiz-option.selected {
+        background-color: #d1ecf1;
+        border-color: #bee5eb;
+    }
+    
+    .quiz-option.correct {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+    }
+    
+    .quiz-option.incorrect {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+    
+    .quiz-feedback {
+        margin-top: 15px;
+        padding: 10px 15px;
+        border-radius: 5px;
+        display: none;
+    }
+    
+    .quiz-feedback.correct {
+        background-color: #d4edda;
+        color: #155724;
+        display: block;
+    }
+    
+    .quiz-feedback.incorrect {
+        background-color: #f8d7da;
+        color: #721c24;
+        display: block;
+    }
+    
+    .drag-item {
+        padding: 10px;
+        margin: 5px 0;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        cursor: move;
+    }
+    
+    .drop-target {
+        min-height: 50px;
+        padding: 10px;
+        margin: 5px 0;
+        background-color: #e9ecef;
+        border: 2px dashed #ced4da;
+        border-radius: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-9">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">首頁</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('chapter', chapter_number=chapter.chapterNumber) }}">第{{ chapter.chapterNumber }}章：{{ chapter.chapterTitle }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('section', chapter_number=chapter.chapterNumber, section_number=section.sectionNumber) }}">{{ section.sectionNumber }} {{ section.sectionTitle }}</a></li>
+                <li class="breadcrumb-item active">測驗</li>
+            </ol>
+        </nav>
+        
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">{{ section.sectionNumber }} {{ section.sectionTitle }} 測驗</h5>
+                <div class="quiz-timer">剩餘時間: <span id="timer">10:00</span></div>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-primary">
+                    <h5 class="alert-heading"><i class="bi bi-info-circle"></i> 測驗說明</h5>
+                    <p>本測驗含有 {{ exercises|length }} 題，請在時間內完成。完成後點擊「提交測驗」按鈕。</p>
+                </div>
+                
+                <div class="quiz-container">
+                    {% if exercises %}
+                        <form id="quizForm">
+                            {% for exercise in exercises %}
+                                <div class="card mb-4 quiz-card">
+                                    <div class="card-header">
+                                        第 {{ loop.index }} 題 ({{ exercise.type }})
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ exercise.question }}</h5>
+                                        
+                                        {% if exercise.type == 'quiz' or exercise.type == 'multiple-choice' %}
+                                            <div class="options-container">
+                                                {% set options = ['A', 'B', 'C', 'D'] %}
+                                                {% for option in options %}
+                                                <label class="quiz-option">
+                                                    <input type="radio" name="q{{ loop.parent.index }}" value="{{ option }}" class="me-2">
+                                                    選項{{ option }}: {% if exercise.options %}{{ exercise.options[loop.index0] }}{% else %}選項內容{% endif %}
+                                                </label>
+                                                {% endfor %}
+                                            </div>
+                                            
+                                            <div class="quiz-feedback" id="feedback-{{ loop.index }}"></div>
+                                        
+                                        {% elif exercise.type == 'true-false' %}
+                                            <div class="options-container">
+                                                <label class="quiz-option">
+                                                    <input type="radio" name="q{{ loop.index }}" value="true" class="me-2">
+                                                    正確
+                                                </label>
+                                                <label class="quiz-option">
+                                                    <input type="radio" name="q{{ loop.index }}" value="false" class="me-2">
+                                                    錯誤
+                                                </label>
+                                            </div>
+                                            
+                                            <div class="quiz-feedback" id="feedback-{{ loop.index }}"></div>
+                                            
+                                        {% elif exercise.type == 'short-answer' %}
+                                            <div class="mb-3">
+                                                <textarea class="form-control" rows="3" name="q{{ loop.index }}" placeholder="請在此輸入您的答案..."></textarea>
+                                            </div>
+                                            
+                                        {% elif exercise.type == 'drag-drop' %}
+                                            <p>{{ exercise.instruction }}</p>
+                                            <div class="drag-drop-container">
+                                                <div class="drag-items-container">
+                                                    {% for item in exercise.items %}
+                                                        <div class="drag-item" draggable="true" data-item-id="{{ loop.index }}">{{ item }}</div>
+                                                    {% endfor %}
+                                                </div>
+                                                
+                                                <div class="drop-targets-container mt-3">
+                                                    {% for i in range(exercise.items|length) %}
+                                                        <div class="drop-target" data-position="{{ loop.index }}">拖放至此 #{{ loop.index }}</div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            
+                                        {% elif exercise.type == 'coding' %}
+                                            <p>{{ exercise.prompt }}</p>
+                                            <div class="mb-3">
+                                                <textarea class="form-control code-editor" rows="8" name="q{{ loop.index }}" placeholder="// 在此輸入程式碼"></textarea>
+                                            </div>
+                                            
+                                        {% else %}
+                                            <div class="mb-3">
+                                                <textarea class="form-control" rows="3" name="q{{ loop.index }}" placeholder="請在此輸入您的答案..."></textarea>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+                                <button type="button" class="btn btn-outline-secondary me-md-2" id="saveBtn">
+                                    <i class="bi bi-save"></i> 儲存進度
+                                </button>
+                                <button type="submit" class="btn btn-primary" id="submitBtn">
+                                    <i class="bi bi-check-circle"></i> 提交測驗
+                                </button>
+                            </div>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i> 本節尚無測驗題目。
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3">
+        <div class="sticky-top" style="top: 20px;">
+            <div class="card mb-4">
+                <div class="card-header">
+                    題目導覽
+                </div>
+                <div class="card-body">
+                    <div class="row row-cols-5 g-2">
+                        {% for i in range(1, exercises|length + 1) %}
+                        <div class="col">
+                            <button type="button" class="btn btn-outline-primary w-100 question-nav" data-question="{{ i }}">{{ i }}</button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    測驗技巧
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">先快速瀏覽所有題目</li>
+                        <li class="list-group-item">優先回答有把握的題目</li>
+                        <li class="list-group-item">合理分配每題的時間</li>
+                        <li class="list-group-item">提交前檢查是否有漏答</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 計時器功能
+        let timeLeft = 10 * 60; // 10分鐘
+        const timerElement = document.getElementById('timer');
+        
+        const timerInterval = setInterval(function() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            
+            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                alert('時間到！系統將自動提交測驗。');
+                document.getElementById('quizForm').submit();
+            }
+            
+            timeLeft--;
+        }, 1000);
+        
+        // 題目導覽功能
+        const questionButtons = document.querySelectorAll('.question-nav');
+        questionButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const questionNumber = this.getAttribute('data-question');
+                const questionElement = document.querySelector(`.quiz-card:nth-child(${questionNumber})`);
+                questionElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+        
+        // 拖放功能（如果有拖放題）
+        const dragItems = document.querySelectorAll('.drag-item');
+        const dropTargets = document.querySelectorAll('.drop-target');
+        
+        dragItems.forEach(item => {
+            item.addEventListener('dragstart', function(e) {
+                e.dataTransfer.setData('text/plain', this.getAttribute('data-item-id'));
+                setTimeout(() => this.classList.add('dragging'), 0);
+            });
+            
+            item.addEventListener('dragend', function() {
+                this.classList.remove('dragging');
+            });
+        });
+        
+        dropTargets.forEach(target => {
+            target.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('drag-over');
+            });
+            
+            target.addEventListener('dragleave', function() {
+                this.classList.remove('drag-over');
+            });
+            
+            target.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+                
+                const itemId = e.dataTransfer.getData('text/plain');
+                const draggedItem = document.querySelector(`[data-item-id="${itemId}"]`);
+                
+                this.innerHTML = '';
+                this.appendChild(draggedItem.cloneNode(true));
+                draggedItem.style.display = 'none';
+            });
+        });
+        
+        // 提交表單處理
+        document.getElementById('quizForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 在實際場景中，這裡應該將答案提交到伺服器
+            alert('測驗已提交！');
+            
+            // 清除計時器
+            clearInterval(timerInterval);
+            
+            // 模擬回到章節頁面
+            setTimeout(() => {
+                window.location.href = "{{ url_for('section', chapter_number=chapter.chapterNumber, section_number=section.sectionNumber) }}";
+            }, 1000);
+        });
+        
+        // 儲存進度按鈕
+        document.getElementById('saveBtn').addEventListener('click', function() {
+            // 在實際場景中，這裡應該將進度儲存到伺服器
+            alert('已儲存測驗進度！');
+        });
+    });
+</script>
+{% endblock %} 

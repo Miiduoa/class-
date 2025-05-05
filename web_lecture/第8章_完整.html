@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>統計學講義</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        h2 {
+            color: #2c3e50;
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 30px;
+            border-left: 5px solid #3498db;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+            padding: 8px 0;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        .chapter-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .section-content {
+            margin-bottom: 20px;
+        }
+        .examples, .mnemonics, .exercises {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .examples {
+            background-color: #e8f4fc;
+            border-left: 5px solid #3498db;
+        }
+        .mnemonics {
+            background-color: #fcf3cf;
+            border-left: 5px solid #f1c40f;
+        }
+        .exercises {
+            background-color: #e8f8f5;
+            border-left: 5px solid #2ecc71;
+        }
+        .visualization-block {
+            background-color: #f0f4f8;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .visualization-block img {
+            max-width: 100%;
+            height: auto;
+            margin: 10px auto;
+        }
+        .visualization-placeholder {
+            background-color: #f0f4f8;
+            border: 1px dashed #d0d7de;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+            color: #7f8c8d;
+        }
+        .exercise {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #ccc;
+        }
+        .question {
+            font-weight: bold;
+        }
+        .answer {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+        .toc {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+        .toc h2 {
+            background: none;
+            border-left: none;
+            margin-top: 0;
+            padding-left: 0;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin-bottom: 5px;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #3498db;
+        }
+        .toc .section-link {
+            padding-left: 20px;
+            font-size: 0.9em;
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        .back-to-top:hover {
+            opacity: 1;
+            color: white;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .toc {
+                padding: 10px;
+            }
+        }
+        .formula {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Cambria Math', Georgia, serif;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <a href="#top" class="back-to-top" title="回到頂部">↑</a>
+    <div class="container" id="top">
+<h1>大學統計學</h1>
+<div class="toc">
+<h2>目錄</h2>
+<ul>
+<li><a href="#chapter-8">第8章: 點估計與區間估計</a>
+<ul>
+<li class="section-link"><a href="#section-8.1">8.1 估計量的性質</a></li>
+<li class="section-link"><a href="#section-8.2">8.2 最大概似估計法</a></li>
+<li class="section-link"><a href="#section-8.3">8.3 動差法</a></li>
+<li class="section-link"><a href="#section-8.4">8.4 母體平均數的區間估計</a></li>
+<li class="section-link"><a href="#section-8.5">8.5 母體比例的區間估計</a></li>
+<li class="section-link"><a href="#section-8.6">8.6 母體變異數的區間估計</a></li>
+<li class="section-link"><a href="#section-8.7">8.7 樣本大小的決定</a></li>
+</ul></li>
+</ul>
+</div>
+<h2 id="chapter-8" class="chapter-title">第8章: 點估計與區間估計</h2>
+<div class="chapter-overview mb-4">本章介紹點估計與區間估計的核心概念與應用，幫助學生掌握統計學的基礎知識並應用於實際問題分析。</div>
+<h3 id="section-8.1">8.1 估計量的性質</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>估計量的性質是指評估一個估計量是否適合用來估計母體參數時需要考慮的特性。一個好的估計量應該具備以下性質：
+1. 一致性：當樣本容量趨近無窮大時，估計量應該收斂於母體參數的真實值。
+2. 偏差：估計量的期望值應該等於真實的母體參數值，即估計量不應該過高或過低。
+3. 效率：估計量的方差應該盡可能小，以確保估計結果的準確性。
+4. 一致性：當樣本容量增加時，估計量的變異性應該減小。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>假設我們有一個樣本來自一個未知均值和方差的常態分佈。我們想要估計這個母體的均值，我們可以使用樣本平均數作為估計量。如果樣本平均數在樣本容量增加時趨近於母體均值，則這個估計量是一致的。</li>
+<li>在研究中，我們需要估計一個母體參數的比例。我們可以使用樣本比例作為估計量。如果樣本比例的期望值等於母體參數的真實比例，則這個估計量是無偏的。</li>
+<li>假設我們需要估計一個母體參數的變異數。我們可以使用樣本方差作為估計量。如果樣本方差的變異性在樣本容量增加時減小，則這個估計量是一致的。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>一致性：樣本容量無窮大時，估計量收斂於母體參數真實值。</li>
+<li>偏差：估計量期望值等於母體參數。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 什麼是估計量的一致性？為什麼這一性質對估計結果的準確性很重要？</div>
+<div class="answer">答案: 估計量的一致性是指當樣本容量趨近無窮大時，估計量應該收斂於母體參數的真實值。這是重要的，因為如果估計量不是一致的，則無法確定估計結果的準確性。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 估計量的偏差是什麼意思？一個無偏的估計量有什麼特點？</div>
+<div class="answer">答案: 估計量的偏差是指估計量的期望值與母體參數的真實值之間的差異。一個無偏的估計量的期望值等於母體參數的真實值。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: ？</div>
+<div class="answer">答案: 估計量的效率是指估計量的方差盡可能小。效率低的估計量可能導致估計結果的不穩定，無法確保估計結果的準確性。</div>
+</div>
+</div>
+<h3 id="section-8.2">8.2 最大概似估計法</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>最大概似估計法（Maximum Likelihood Estimation, MLE）是統計學中一種常見的參數估計方法，旨在尋找在給定觀察數據情況下，使得觀察到的樣本點出現的概率最大的參數值。概似函數（Likelihood Function）是根據樣本數據和參數值的關係而定義的函數，最大概似估計法通過最大化概似函數來估計參數值。</p><p>在最大概似估計法中，我們通常假設樣本是從一個特定的機率分佈中抽取的，然後根據觀察到的樣本數據，我們可以獲得一個估計函數，該函數使得觀察到的樣本點出現的概率最大化。這個函數的參數值即為最大概似估計值。</p><p>最大概似估計法的優點在於具有良好的理論性質和統計性質，並且在大樣本情況下通常能夠獲得一致性和測度論意義下的漸進正確性。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>假設我們有一組身高數據，想要估計男性和女性的平均身高。我們可以假設身高服從正態分佈，然後通過最大概似估計法來分別估計男性和女性的平均身高。</li>
+<li>在二項分佈中，我們可以使用最大概似估計法來估計成功的概率。</li>
+<li>在線性迴歸模型中，最大概似估計法也經常被用來估計迴歸係數。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>將最大概似估計法想像成尋找一個參數值，使得觀察到的樣本點出現的可能性最大化，就像是在尋找一個最貼合樣本數據的參數值。</li>
+<li>瞭解概似函數的意義和應用，有助於理解最大概似估計法的原理和運作方式。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 假設有一組二項分佈的樣本數據，包含10次試驗，成功了6次。利用最大概似估計法估計成功的概率。</div>
+<div class="answer">答案: 成功的概率的最大概似估計值為0.6。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 若一組數據服從正態分佈，利用最大概似估計法估計平均值和變異值。</div>
+<div class="answer">答案: 平均值和變異值的最大概似估計值分別為樣本均值和樣本方差。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 給定一組線性迴歸模型，利用最大概似估計法估計迴歸係數。</div>
+<div class="answer">答案: 迴歸係數的最大概似估計值可以通過最小化殘差平方和來獲得。</div>
+</div>
+</div>
+<h3 id="section-8.3">8.3 動差法</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>動差法（Method of Moments）是一種統計推論方法，通過將樣本矩估計量設置為母體矩的估計值來估計母體參數。在動差法中，我們使用樣本矩（樣本均值、樣本變異數等）來估計母體矩（均值、變異數等），進而估計母體參數。這種方法的基本思想是，通過設置樣本矩估計量和對應的母體矩相等，來獲得母體參數的估計值。</p><p>在動差法中，我們首先計算樣本矩的估計值，然後通過解一組方程來確定母體參數的估計值。這種方法的優勢在於其直觀性和易於理解性，使得推導過程相對簡單。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>假設我們有一組包含50個觀測值的數據集，我們希望估計這組數據的平均值和變異數。我們可以使用動差法，通過設置樣本均值和樣本變異數分別等於母體均值和母體變異數，來估計這兩個參數。</li>
+<li>在一個市場調查中，我們收集了一組樣本數據，包括銷售額和廣告花費。我們希望通過動差法來估計銷售額和廣告花費之間的關係，以及預測未來銷售額。</li>
+<li>在生物統計學中，動差法也常用於估計族群參數，例如估計自然生態系統中各種生物的數量和種類。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住動差法的基本思想：通過設置樣本矩估計量和對應的母體矩相等來估計母體參數。</li>
+<li>確保理解樣本矩和母體矩的概念，以及如何將它們相等來解決參數估計問題。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個製造廠家收集了一組產品的質量數據，均值為10，變異數為4。使用動差法估計這組數據的均值和變異數。</div>
+<div class="answer">答案: 均值的估計值為10，變異數的估計值為4。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個研究人員收集了一組學生成績數據，平均成績為80分，標準差為10分。使用動差法估計這組數據的平均成績和標準差。</div>
+<div class="answer">答案: 平均成績的估計值為80分，標準差的估計值為10分。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個研究小組希望估計一個新藥物對患者病情的影響。他們收集了一組患者的數據，使用動差法估計這個藥物對病情的影響。</div>
+<div class="answer">答案: 使用動差法可以通過設置樣本數據的特定矩和母體矩相等來估計藥物對病情的影響。</div>
+</div>
+</div>
+<h3 id="section-8.4">8.4 母體平均數的區間估計</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>母體平均數的區間估計是統計學中一個重要的概念，用於估計母體平均數的真實值。當我們無法對整個母體進行測量時，我們可以通過樣本數據來估計母體平均數。區間估計提供了一個區間，我們可以合理地認為母體平均數落在這個區間內的概率較高。</p><p>我們通常使用標準誤差（standard error）和信心水準（confidence level）來進行母體平均數的區間估計。標準誤差是樣本平均數的標準差，代表了樣本平均數對母體平均數的估計精確度；信心水準則是我們對母體平均數估計的信心程度，通常表示為95%或99%。</p><p>進行區間估計時，我們通常使用公式：\[ \bar{x} \pm Z \left(\frac{s}{\sqrt{n}}\right) \]其中，\[ \bar{x} \]為樣本平均數，s為樣本標準差，n為樣本容量，Z為對應於所選信心水準的Z值。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>假設我們想要估計一個城市的居民每月平均水電費用，我們可以從一個隨機抽樣的樣本中計算平均值和標準差，然後利用區間估計方法得出一個包含真實平均值的區間。</li>
+<li>在製藥業中，可以利用母體平均數的區間估計來估計某種藥物的有效成分含量，以確保產品質量符合標準。</li>
+<li>在金融領域，投資組合管理者可以使用區間估計來預測股票的未來報酬率，從而制定投資策略。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住區間估計的公式：\[ \bar{x} \pm Z \left(\frac{s}{\sqrt{n}}\right) \]</li>
+<li>理解標準誤差和信心水準的概念，標準誤差越小，區間就越窄，信心水準越高，區間就越寬。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個產品的樣本平均值為40，樣本標準差為5，樣本容量為100，計算信心水準為95%時的母體平均數的區間估計。</div>
+<div class="answer">答案: 區間估計為\[ 40 \pm 1.96 \left(\frac{5}{\sqrt{100}}\right) = 40 \pm 0.98 \]</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一份報告指出，一個城市的平均降雨量為120毫米，樣本標準差為15，樣本容量為50，計算信心水準為99%時的母體平均數的區間估計。</div>
+<div class="answer">答案: 區間估計為\[ 120 \pm 2.58 \left(\frac{15}{\sqrt{50}}\right) = 120 \pm 6.06 \]</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一份研究報告顯示，一個產品的樣本平均值為60，樣本標準差為8，樣本容量為25，計算信心水準為90%時的母體平均數的區間估計。</div>
+<div class="answer">答案: 區間估計為\[ 60 \pm 1.645 \left(\frac{8}{\sqrt{25}}\right) = 60 \pm 2.6 \]</div>
+</div>
+</div>
+<h3 id="section-8.5">8.5 母體比例的區間估計</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>母體比例的區間估計是統計學中用來估計一個母體中某個特定特徵的比例的方法。比例是指在母體中擁有某個特徵的個體數占總體個體數的比例。在實際應用中，我們通常無法對整個母體進行調查，因此需要透過樣本資料來估計母體比例。母體比例的區間估計可以讓我們計算一個區間，該區間包含真實母體比例的機會很高。</p><p>在進行母體比例的區間估計時，常用的方法是使用二項分佈或常態分佈來進行估計。當樣本數足夠大時，可以利用中心極限定理將二項分佈近似為常態分佈，從而進行區間估計。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>假設一個城市有100,000名成年人，我們想估計該城市抽菸者的比例。我們隨機抽取了500名成年人進行調查，其中有120人抽菸。利用這個樣本資料，我們可以計算出抽菸者的比例的區間估計。</li>
+<li>一家公司想了解員工對新政策的支持程度，公司共有1000名員工，他們隨機調查了200名員工，其中有150人支持新政策。透過這個樣本，可以估計全體員工對新政策的支持比例。</li>
+<li>一個研究團隊想估計某個國家對環境保護的關注程度，他們在全國各地抽取了1000名受訪者，其中有700人表示關注環境保護。透過這個樣本，可以估計全國對環境保護的關注比例。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住在進行母體比例的區間估計時，需要確保樣本數足夠大，以確保估計的準確性。</li>
+<li>熟悉二項分佈和常態分佈的性質，能夠幫助更好地理解母體比例的區間估計方法。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個研究團隊對某城市的市民進行了調查，抽取了300名市民，其中有60人表示支持某個提案。請估計這個城市市民對該提案的支持比例的95%置信區間。</div>
+<div class="answer">答案: 估計結果為支持比例的95%置信區間為(16.8%, 27.2%)。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個公司有500名員工，其中有80人參加了健身活動。請估計這個公司員工參加健身活動的比例的90%置信區間。</div>
+<div class="answer">答案: 估計結果為參加健身活動的比例的90%置信區間為(13.3%, 18.7%)。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個調查顯示，在一個國家的1000名受訪者中，有300人支持某個政策。請估計這個國家對這個政策的支持比例的99%置信區間。</div>
+<div class="answer">答案: 估計結果為支持比例的99%置信區間為(26.7%, 33.3%)。</div>
+</div>
+</div>
+<h3 id="section-8.6">8.6 母體變異數的區間估計</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>母體變異數的區間估計是統計學中重要的概念，它用來估計母體變異數的值並提供估計的不確定性範圍。在現實應用中，我們往往無法直接得知母體變異數，因此需要透過樣本資料來估計。區間估計提供了一個範圍，我們可以合理地相信母體變異數落在這個範圍內。</p><p>母體變異數的區間估計通常使用卡方分布來進行。當樣本容量較大時，樣本變異數除以自由度得到的統計量會近似服從卡方分布。利用這一性質，我們可以計算出一個區間，該區間內包含了母體變異數真實值的機率。</p><p>進行母體變異數的區間估計時，我們需要先確定信心水準（confidence level），通常使用常見的信心水準如95%或99%。信心水準表示如果我們重複進行取樣和估計，有95%的機率我們得到的區間包含真實的母體變異數。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一家製造公司希望了解一種產品的製造變異性，他們從生產線上隨機抽取30個樣本，計算出樣本變異數為4.5。根據卡方分布，計算出95%的信心水準下的母體變異數估計區間為（2.56, 7.84）。</li>
+<li>一個研究小組進行了一項實驗，測量了一種新藥的效果。他們使用了50名受試者，計算出樣本變異數為12.6。經過計算，得到99%信心水準下的母體變異數估計區間為（8.34, 18.48）。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住區間估計的目的是提供一個估計母體參數值的範圍，而信心水準表示我們對這個範圍的置信程度。</li>
+<li>理解卡方分布和自由度的關係，這是進行母體變異數區間估計的重要基礎。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個研究團隊對一批車輛的行駛里程進行了測試，共測試了20輛車，樣本變異數為225。計算出90%信心水準下的母體變異數估計區間。</div>
+<div class="answer">答案: （137.36, 384.09）</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一項實驗測量了一種新技術的效果，共有40個受試者，樣本變異數為9.8。計算出95%信心水準下的母體變異數估計區間。</div>
+<div class="answer">答案: （6.48, 14.74）</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一間工廠測試了一種新生產工藝的穩定性，抽取了25個樣本，樣本變異數為5.6。計算出99%信心水準下的母體變異數估計區間。</div>
+<div class="answer">答案: （3.11, 10.64）</div>
+</div>
+</div>
+<h3 id="section-8.7">8.7 樣本大小的決定</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在統計學中，樣本大小的決定是指確定需要多大的樣本數據來估計母體參數或進行假設檢定。樣本大小的選擇直接影響了估計的準確性和檢定的功效。通常情況下，樣本大小的決定取決於所需的信心水平、誤差容忍度、母體變異數等因素。當樣本大小較小時，估計結果可能不夠準確或者檢定的結果不夠可靠；當樣本大小較大時，雖然可以提高估計的準確性，但也會增加調查成本和時間成本。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>假設一家公司想要了解其員工對於新政策的滿意度，為了估計整個員工群體的平均滿意度，需要確定抽取多少員工的樣本才能達到一定的信心水平和誤差容忍度。</li>
+<li>一個醫學研究團隊想要進行一項藥物測試，需要確定病人組和對照組的樣本大小以確保實驗結果的可靠性。</li>
+<li>政府部門進行一項教育投入效果的評估，需要確定抽樣的學生數量以估計整個教育體系的效果。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住影響樣本大小的因素，包括信心水平、誤差容忍度、母體變異數等，這些因素會直接影響到最終的結果。</li>
+<li>理解樣本大小選擇的重要性，適當的樣本大小可以確保統計分析的準確性和可靠性。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個市場調查公司想要估計某產品在全國受歡迎的程度，該公司應該如何確定抽樣的大小？</div>
+<div class="answer">答案: 該公司應該考慮信心水平、誤差容忍度以及母體變異數等因素，根據這些因素計算出適當的樣本大小。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個研究小組想要探討不同年齡群體對於疫苗接種的態度，他們應該如何確定每個年齡群體的樣本大小？</div>
+<div class="answer">答案: 他們應該根據每個年齡群體的大小、預期的變異數和誤差容忍度來確定每個年齡群體的樣本大小。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個公司想要比較兩種不同的廣告策略對於銷售業績的影響，他們應該如何確定每個廣告策略的樣本大小？</div>
+<div class="answer">答案: 他們應該考慮兩種廣告策略的效果大小、預期的變異數和誤差容忍度來確定每個廣告策略的樣本大小。</div>
+</div>
+</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            }
+        };
+        
+        // 添加平滑滾動
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // 添加回到頂部按鈕顯示/隱藏功能
+        window.addEventListener('scroll', function() {
+            var backToTop = document.querySelector('.back-to-top');
+            if (window.pageYOffset > 300) {
+                backToTop.style.display = 'block';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>統計學講義</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        h2 {
+            color: #2c3e50;
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 30px;
+            border-left: 5px solid #3498db;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+            padding: 8px 0;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        .chapter-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .section-content {
+            margin-bottom: 20px;
+        }
+        .examples, .mnemonics, .exercises {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .examples {
+            background-color: #e8f4fc;
+            border-left: 5px solid #3498db;
+        }
+        .mnemonics {
+            background-color: #fcf3cf;
+            border-left: 5px solid #f1c40f;
+        }
+        .exercises {
+            background-color: #e8f8f5;
+            border-left: 5px solid #2ecc71;
+        }
+        .visualization-block {
+            background-color: #f0f4f8;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .visualization-block img {
+            max-width: 100%;
+            height: auto;
+            margin: 10px auto;
+        }
+        .visualization-placeholder {
+            background-color: #f0f4f8;
+            border: 1px dashed #d0d7de;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+            color: #7f8c8d;
+        }
+        .exercise {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #ccc;
+        }
+        .question {
+            font-weight: bold;
+        }
+        .answer {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+        .toc {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+        .toc h2 {
+            background: none;
+            border-left: none;
+            margin-top: 0;
+            padding-left: 0;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin-bottom: 5px;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #3498db;
+        }
+        .toc .section-link {
+            padding-left: 20px;
+            font-size: 0.9em;
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        .back-to-top:hover {
+            opacity: 1;
+            color: white;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .toc {
+                padding: 10px;
+            }
+        }
+        .formula {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Cambria Math', Georgia, serif;
+            overflow-x: auto;
+        }
+    </style>
+  <link rel="stylesheet" href="static/css/statistics.css">
+</head>
+<body>
+    <a href="#top" class="back-to-top" title="回到頂部">↑</a>
+    <div class="container" id="top">
+<h1>大學統計學</h1>
+<div class="toc">
+<h2>目錄</h2>
+<ul>
+<li><a href="#chapter-5">第5章: 離散機率分配</a>
+<ul>
+<li class="section-link"><a href="#section-5.1">5.1 伯努利試驗與二項分配</a></li>
+<li class="section-link"><a href="#section-5.2">5.2 超幾何分配</a></li>
+<li class="section-link"><a href="#section-5.3">5.3 泊松分配</a></li>
+<li class="section-link"><a href="#section-5.4">5.4 幾何分配</a></li>
+<li class="section-link"><a href="#section-5.5">5.5 負二項分配</a></li>
+<li class="section-link"><a href="#section-5.6">5.6 多項分配</a></li>
+<li class="section-link"><a href="#section-5.7">5.7 離散分配的應用案例</a></li>
+</ul></li>
+</ul>
+</div>
+<h2 id="chapter-5" class="chapter-title">第5章: 離散機率分配</h2>
+<div class="chapter-overview mb-4">本章介紹離散機率分配的核心概念與應用，幫助學生掌握統計學的基礎知識並應用於實際問題分析。</div>
+<h3 id="section-5.1">5.1 伯努利試驗與二項分配</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在統計學中，伯努利試驗是指一個只有兩種可能結果的試驗，比如成功或失敗、正面或反面。每次伯努利試驗的結果是獨立且具有相同的成功概率。若成功概率為 p，失敗概率為 1-p，則伯努利試驗的概率分配可以表示為：P(X=1) = p，P(X=0) = 1-p。當我們進行多次獨立且具有相同成功概率的伯努利試驗時，就可以引入二項分配。</p><p>二項分配是指進行 n 次伯努利試驗，成功次數為 X 的分配。其機率質量函數為二項式分佈，表示為 B(x; n, p) = C(n, x) * p^x * (1-p)^(n-x)，其中 C(n, x) 是組合係數。二項分配的期望值 E(X) = np，變異數 Var(X) = np(1-p)。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一個公平的硬幣投擲試驗中，每次成功的機率為 0.5。如果進行了 10 次硬幣投擲，成功的次數服從二項分配，可以計算在這 10 次中成功 5 次的機率。</li>
+<li>在製造某種產品時，每個產品有 0.1 的機率是次品。如果生產了 100 個產品，則次品的數量服從二項分配，可以計算生產的 10 個次品的機率。</li>
+<li>一個考生在單選題考試中，每道題目的正確率為 0.7。如果一共有 50 道題目，可以計算考生在這 50 道題目中答對 35 道題的機率。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>伯努利試驗只有兩種可能結果，成功和失敗，而二項分配則描述了多次伯努利試驗成功次數的分配。</li>
+<li>二項分配的期望值和變異數公式中都包含成功概率 p，這有助於記憶二項分配的期望值和變異數的計算方式。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 進行了 8 次伯努利試驗，成功的機率為 0.3。計算成功的次數為 2 次的機率。</div>
+<div class="answer">答案: 使用二項分配的機率質量函數 B(x; n, p) = C(n, x) * p^x * (1-p)^(n-x)，帶入 n=8, p=0.3, x=2，計算得到機率。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 進行了 12 次伯努利試驗，成功的機率為 0.6。計算成功的次數大於等於 8 次的機率。</div>
+<div class="answer">答案: 使用二項分配的機率質量函數 B(x; n, p) = C(n, x) * p^x * (1-p)^(n-x)，帶入 n=12, p=0.6，計算 x=8, 9, 10, 11, 12 時的機率，相加即可得到</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 進行了 5 次伯努利試驗，成功的機率為 0.4。計算成功的次數的期望值和變異數。</div>
+<div class="answer">答案: 期望值 E(X) = np，變異數 Var(X) = np(1-p)，帶入 n=5, p=0.4，計算即可得到期望值和變異數。</div>
+</div>
+</div>
+<h3 id="section-5.2">5.2 超幾何分配</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>超幾何分配是一種描述非取回抽樣的離散機率分配。在超幾何分配中，我們考慮一個有限母體，其中包含兩類物件（成功和失敗），每類物件的數量已知。當我們進行非取回抽樣時，成功物件的數量隨著每次抽樣的結果而改變。超幾何分配描述了在這種情況下成功物件的數量的機率分配。</p><p>假設母體中成功物件的總數為\(N\)，失敗物件的總數為\(M\)，而我們進行一次抽樣共抽出\(n\)個物件。那麼，超幾何分配可以用來計算在這\(n\)個物件中成功物件的個數\(X\)的概率分佈。超幾何分配的概率質量函數為：
+\[ P(X = x) = \frac{{\binom{N}{x} \cdot \binom{M}{n-x}}}{{\binom{N+M}{n}}} \]
+其中，\(\binom{a}{b}\)表示從\(a\)中選擇\(b\)個物件的組合數。</p><p>超幾何分配的期望值和變異數分別為：
+\[ E(X) = n \cdot \frac{N}{N+M} \]
+\[ Var(X) = n \cdot \frac{N}{N+M} \cdot \frac{M}{N+M} \cdot \frac{N+M-n}{N+M-1} \]</p><p>超幾何分配在實際應用中常常用於描述樣本中不同類型物件的抽樣情況，例如檢查生產線上不良品的比例、從人口中抽樣進行民意調查等。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>在一個製造工廠中，有300個產品中包含20個次品。如果我們隨機抽取了10個產品進行檢驗，計算其中有2個次品的概率。</li>
+<li>在一個城市的人口普查中，有5000名男性和3000名女性。如果我們隨機抽取了500名居民進行調查，計算其中有200名男性的概率。</li>
+<li>一個盒子裡有30支鉛筆，其中10支是藍色的。如果我們隨機抽取了8支鉛筆，計算其中有3支是藍色的概率。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住超幾何分配的概率質量函數公式，可以通過想像在有限母體中抽取物件的情境來理解。</li>
+<li>理解超幾何分配的期望值和變異數公式，可以通過比較母體中的物件數量和抽樣數量來記憶。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個袋子中有15個白球和10個黑球。如果從中抽取了7個球，計算其中至少有3個白球的概率。</div>
+<div class="answer">答案: 0.6609</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個班級中有20名女生和15名男生。如果隨機抽取了8名學生，計算其中有4名女生的概率。</div>
+<div class="answer">答案: 0.5940</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個箱子中有25個紅色球、15個藍色球和10個綠色球。如果從中抽取了12個球，計算其中至少有5個紅色球的概率。</div>
+<div class="answer">答案: 0.8212</div>
+</div>
+</div>
+<h3 id="section-5.3">5.3 泊松分配</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>泊松分配是一種描述在一定時間或空間內事件發生的次數的機率分配。當事件發生的概率很小，但總體發生的次數很大時，常常可以使用泊松分配來逼近實際情況。泊松分配的概率質量函數為：
+\[ P(X = k) = \frac{e^{-\lambda} \lambda^k}{k!} \]
+其中，\( \lambda \) 為事件在一定時間或空間內平均發生的次數，而 \( k \) 則代表實際發生的次數。</p><p>泊松分配的特點包括：1) 事件發生的機率在不同時間或空間內是獨立的；2) 事件在任意非重疊的時間或空間內的發生次數是獨立的；3) 事件在極短的時間或空間內發生的機率是恆定的。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>餐廳每小時平均接到的訂單數為5個，試問在下一小時內接到3個訂單的機率是多少？</li>
+<li>某路口每小時平均發生的車禍次數為2次，問在下一小時內沒有發生車禍的機率是多少？</li>
+<li>一個網站平均每小時收到的訪問次數為10次，試問在下一小時內收到至少15次訪問的機率是多少？</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>泊松分配常用於描述稀有事件的發生情況，可以將其想像成在一片寧靜的湖面上，偶爾出現的漣漪波紋，每個波紋即代表一個事件的發生。</li>
+<li>計算泊松分配的機率時，可以先確定事件的平均發生次數 \( \lambda \)，再代入公式進行計算。記住機率質量函數中的 \( e^{-\lambda} \) 是為了考慮到事件不發生的可能性。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 某商店每小時平均有3位顧客進入購物，求在下一小時內至少有5位顧客進入的機率。</div>
+<div class="answer">答案: 使用泊松分配的機率質量函數，計算 \( P(X \geq 5) = 1 - P(X < 5) \)。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個郵局每小時平均處理4封包裹，求在下一小時內最多處理2封包裹的機率。</div>
+<div class="answer">答案: 利用泊松分配的機率質量函數，計算 \( P(X \leq 2) \)。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 某工廠每小時平均生產10個產品，求在下一小時內生產13個產品的機率。</div>
+<div class="answer">答案: 根據泊松分配的機率質量函數，計算 \( P(X = 13) \)。</div>
+</div>
+</div>
+<h3 id="section-5.4">5.4 幾何分配</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在統計學中，幾何分配是描述在一系列獨立伯努利試驗中，首次成功發生的概率分配。這種分配通常應用於描述在重複試驗中，在第一次成功之前所需的試驗次數。幾何分配的概率質量函數可以用來計算在第n次試驗中首次成功發生的概率，並且它是一種離散概率分配。</p><p>假設成功事件的機率為p，失敗事件的機率為1-p，則在第n次試驗中首次成功的概率可以表示為：P(X = n) = (1-p)^(n-1) * p。其中，X代表首次成功的試驗次數。幾何分配的期望值為1/p，方差為(1-p)/p^2。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一家公司希望找到第一位購買某項產品的客戶，該產品的購買率為0.1。求公司預計要接觸多少位客戶才能找到第一位購買該產品的人？</li>
+<li>一個籃球運動員在罰球線上投籃，他的罰球命中率為0.8。試問他平均需要投籃多少次才能取得第一個進球？</li>
+<li>一個學生參加一個問答遊戲，每次回答問題正確的機率為0.3。問他平均需要回答多少道問題才能得到第一個正確答案？</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>幾何分配可以記憶為「幾何」形狀，意味著首次成功發生的概率與試驗次數之間的關係，就像幾何形狀中的邊長和面積之間的關係一樣。</li>
+<li>期望值的計算公式1/p中，可以將p解釋為成功事件的機率，記住這個公式有助於理解幾何分配的期望值。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個硬幣正面朝上的機率為0.4，求第一次出現正面朝上的機率。</div>
+<div class="answer">答案: P(X = 1) = 0.4</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一位學生通過一個考試的機率為0.6，問他平均需要參加多少次考試才能第一次通過？</div>
+<div class="answer">答案: 平均需要參加1/0.6 ≈ 1.67次考試才能第一次通過。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個籃球運動員的罰球命中率為0.7，求他第一次進球的機率。</div>
+<div class="answer">答案: P(X = 1) = 0.7 * (1-0.7)^(1-1) ≈ 0.7</div>
+</div>
+</div>
+<h3 id="section-5.5">5.5 負二項分配</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>負二項分配（Negative Binomial Distribution）是描述在一系列獨立且相同的伯努利試驗中，直到出現指定次數的成功之前，所需的失敗次數的機率分配。與二項分配相似，不同之處在於二項分配是描述指定次數的成功次數，而負二項分配描述的是達到指定成功次數之前的失敗次數。</p><p>在負二項分配中，我們有兩個關鍵參數：成功的機率\(p\)和需要達到的成功次數\(r\)。我們想知道在進行多次伯努利試驗後，出現\(r\)次成功之前需要進行多少次失敗。負二項分配的機率質量函數如下：
+\[ P(X = x) = \binom{x+r-1}{x} p^r (1-p)^x, \text{其中} x = 0, 1, 2, \ldots \]</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一個街口的紅綠燈平均每10分鐘會變一次燈，小明從零開始等待紅燈出現，問他在第四次看到紅燈之前，要等多久的時間？</li>
+<li>一位足球守門員在對抗對手的射門時，成功扑出射門的機率為0.2，如果他需要成功扑出5次射門才能結束比賽，問他需要阻止多少次射門？</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>將負二項分配想象成一場比賽，成功的次數是球隊得分，失敗的次數是對手得分，直到球隊得分達到指定分數才能贏得比賽。</li>
+<li>記住負二項分配描述的是在達到指定成功次數之前的失敗次數，這有助於理解其背後的概念。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個硬幣正面朝上的概率為0.3，某人想要在硬幣正面朝上的情況下出現5次，他需要進行多少次硬幣翻轉才能達到這個目標？</div>
+<div class="answer">答案: 這是一個負二項分配</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一支籃球隊在罰球時，球員命中的概率是0.8，如果球隊需要罰進7個球才能贏得比賽，問他們最多需要幾次罰球？</div>
+<div class="answer">答案: 這也是一個負二項分配</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 某學生準備考試，對於一道題目作答正確的機率是0.6，如果他需要答對10道題才能通過考試，問他最少需要回答多少題？</div>
+<div class="answer">答案: 這是另一個負二項分配</div>
+</div>
+</div>
+<h3 id="section-5.6">5.6 多項分配</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>多項分配（Multinomial Distribution）是一種描述多個獨立重複試驗結果的離散機率分配。在多項分配中，每次試驗有多個可能的結果，並且每種結果的機率在每次試驗中都保持不變。舉例來說，假設有一個骰子，每次擲出的結果可以是1、2、3、4、5或6，每個結果的機率都是1/6。如果進行了n次擲骰子的獨立試驗，我們就可以使用多項分配來計算每個結果出現次數的機率分配。</p><p>在多項分配中，我們需要確定每種結果的機率和進行試驗的次數。多項分配的機率質量函數可以用以下公式表示：</p><p>P(X1 = x1, X2 = x2, ..., Xk = xk) = (n! / x1!x2!...xk!) * p1^x1 * p2^x2 * ... * pk^xk</p><p>其中，n表示試驗的總次數，k表示可能的結果種類數，xi表示第i種結果出現的次數，pi表示第i種結果的機率。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>考慮一個有3個不同顏色球的袋子，每次從中取球放回，並重複5次。每個球被選中的機率為1/3。我們可以使用多項分配計算每個顏色球被選中的次數分配。</li>
+<li>在一個電子遊戲中，一個玩家進行10次戰鬥，每次戰鬥有3種可能的結果：勝利、失敗、平局，並且每個結果的機率分別為0.4、0.5和0.1。我們可以使用多項分配來計算玩家在這10次戰鬥中獲得不同結果的機率。</li>
+<li>在一個市場調查中，受訪者被要求選擇他們最喜歡的三種食物。如果有5種不同的食物供他們選擇，我們可以使用多項分配來計算不同食物被選中的次數分配。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住多項分配的公式可以幫助你計算多個結果的機率分配。</li>
+<li>想像每次獨立試驗都像是將不同顏色球放回袋子中取球的過程，這有助於理解多項分配的概念。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個有4個不同顏色球的袋子，每次從中取球放回，並重複6次。每個球被選中的機率為1/4。計算每個顏色球被選中的次數分配。</div>
+<div class="answer">答案: 你可以使用多項分配的公式，將n設為6，k設為4，pi設為1/4，計算每個顏色球被選中次數的機率分配。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個學生進行了8次測驗，每次測驗有5個可能的等級：A、B、C、D、F，機率分別為0.2、0.3、0.25、0.15、0.1。計算學生在這8次測驗中獲得不同等級的次數分配。</div>
+<div class="answer">答案: 使用多項分配公式，將n設為8，k設為5，pi分別設為0.2、0.3、0.25、0.15、0.1，計算學生在8次測驗中獲得不同等級的機率分配。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個餐廳提供了7種主菜供客人選擇，每位客人被要求選擇3種主菜。計算每種主菜被選中的次數分配。</div>
+<div class="answer">答案: 使用多項分配的公式，將n設為3，k設為7，pi設為1/7，計算每種主菜被選中的次數分配。</div>
+</div>
+</div>
+<h3 id="section-5.7">5.7 離散分配的應用案例</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>離散分配是統計學中一個重要的概念，用來描述在特定條件下不同事件發生的機率分佈情況。常見的離散分配有二項分配、泊松分配和幾何分配等。這些分配可以應用在各種實際情況下，例如投擲硬幣、計算機故障率等。透過了解這些分配的特性，我們可以更好地理解和預測事件發生的機率。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>二項分配：在一個有限次重複試驗中，每次試驗有固定的成功機率$p$，失敗機率$q=1-p$，這時成功次數的分佈就符合二項分配。例如，假設我們進行了10次投擲硬幣的實驗，成功是指出現正面，失敗是指出現反面，成功機率$p=0.5$，失敗機率$q=1-0.5=0.5$，我們可以計算出正面出現3次的機率。</li>
+<li>泊松分配：泊松分配用來描述在一段固定時間或空間內某事件發生的次數，例如每小時進入一家商店的顧客人數、每天發生的交通事故數等。假設某商店平均每小時進入5位顧客，我們可以使用泊松分配來計算在某個小時內進入8位顧客的機率。</li>
+<li>幾何分配：幾何分配描述了在重複獨立試驗中，首次成功所需的試驗次數。例如，某電腦系統平均每小時運行10小時後會出現故障，我們可以利用幾何分配來計算第一次出現故障在第5小時的機率。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住離散分配的特點：二項分配適用於有限次試驗、泊松分配適用於描述次數、幾何分配適用於描述首次成功所需的次數。</li>
+<li>利用實際例子理解：將離散分配應用到生活中的例子中，有助於理解和記憶不同分配的特性和適用情況。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個公平的硬幣連續投擲，計算前3次正面出現2次的機率。</div>
+<div class="answer">答案: 使用二項分配計算，$P(X=2) = \binom{3}{2} \times (0.5)^2 \times (0.5)^1$</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個電腦平均每小時收到3封垃圾郵件，計算在某小時內收到5封垃圾郵件的機率。</div>
+<div class="answer">答案: 使用泊松分配計算，$P(X=5) = \frac{e^{-3} \times 3^5}{5!}$</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個學生每週平均需要練習5次才能通過一個特定的測驗，計算他第一次通過測驗需要練習8次的機率。</div>
+<div class="answer">答案: 使用幾何分配計算，$P(X=8) = (1-0.2)^7 \times 0.2$</div>
+</div>
+</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            }
+        };
+        
+        // 添加平滑滾動
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // 添加回到頂部按鈕顯示/隱藏功能
+        window.addEventListener('scroll', function() {
+            var backToTop = document.querySelector('.back-to-top');
+            if (window.pageYOffset > 300) {
+                backToTop.style.display = 'block';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        });
+    </script>
+  <script src="static/js/statistics.js"></script>
+</body>
+</html>

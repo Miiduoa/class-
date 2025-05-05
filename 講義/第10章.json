@@ -1,0 +1,15 @@
+{
+  "courseTitle": "大學統計學",
+  "version": "1.0",
+  "chapters": [
+    {
+      "error": "Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    {
+      "error": "Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    {
+      "error": "Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    }
+  ]
+}

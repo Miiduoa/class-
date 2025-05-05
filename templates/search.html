@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}搜尋結果 - 統計學學習平台{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h1 class="section-title">搜尋結果</h1>
+        
+        <form action="{{ url_for('search') }}" method="get" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="query" class="form-control" value="{{ query|default('') }}" placeholder="輸入關鍵字搜尋...">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> 搜尋
+                </button>
+            </div>
+        </form>
+        
+        {% if results %}
+            <p>找到 {{ results|length }} 筆相關資料：</p>
+            
+            <div class="list-group mt-3">
+                {% for result in results %}
+                <a href="{{ url_for('section', chapter_number=result.chapter_number, section_number=result.section_number) }}" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ result.section_number }} {{ result.section_title }}</h5>
+                        <small class="text-muted">第{{ result.chapter_number }}章</small>
+                    </div>
+                    <p class="mb-1">{{ result.chapter_title }}</p>
+                    {% if result.overview %}
+                    <small class="text-muted">{{ result.overview|truncate(200) }}</small>
+                    {% endif %}
+                </a>
+                {% endfor %}
+            </div>
+        {% elif query %}
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> 沒有找到與「{{ query }}」相關的內容。請嘗試其他關鍵字。
+            </div>
+            
+            <h5 class="mt-4">搜尋建議：</h5>
+            <ul>
+                <li>檢查拼字是否正確</li>
+                <li>嘗試使用不同的關鍵字</li>
+                <li>使用更一般性的詞彙</li>
+                <li>減少關鍵字數量</li>
+            </ul>
+        {% else %}
+            <div class="alert alert-primary">
+                <i class="bi bi-info-circle"></i> 請輸入關鍵字以搜尋課程內容。
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if not results and query %}
+<div class="card mt-4">
+    <div class="card-header">
+        熱門章節
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">第一章：緒論</h5>
+                        <p class="card-text">統計學的基本概念與重要性</p>
+                        <a href="{{ url_for('chapter', chapter_number=1) }}" class="btn btn-sm btn-outline-primary">查看章節</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">第四章：分析資料</h5>
+                        <p class="card-text">以統計測量數來呈現資料特性</p>
+                        <a href="{{ url_for('chapter', chapter_number=4) }}" class="btn btn-sm btn-outline-primary">查看章節</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">第七章：連續隨機變數</h5>
+                        <p class="card-text">連續隨機變數及其常用的機率分配</p>
+                        <a href="{{ url_for('chapter', chapter_number=7) }}" class="btn btn-sm btn-outline-primary">查看章節</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %} 

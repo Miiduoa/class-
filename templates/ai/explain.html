@@ -1,0 +1,322 @@
+{% extends "base.html" %}
+
+{% block title %}AI 概念解釋 - 統計學習平台{% endblock %}
+
+{% block hero %}
+<div class="hero" style="padding: var(--space-lg) 0;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-2">
+                        <li class="breadcrumb-item"><a href="{{ url_for('home') }}" class="text-white opacity-75">首頁</a></li>
+                        <li class="breadcrumb-item"><a href="#" class="text-white opacity-75">AI 助手</a></li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">概念解釋</li>
+                    </ol>
+                </nav>
+                <h1 class="mb-3">AI 概念解釋助手</h1>
+                <p class="lead mb-0">輸入任何統計學概念，AI將為您提供詳細解釋，包括定義、應用範例與重要性。</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card ai-assistant-card mb-4">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-3" style="width: 48px; height: 48px;">
+                        <i class="bi bi-lightbulb text-white fs-4"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0">輸入您想了解的概念</h3>
+                        <p class="text-muted mb-0">越具體的概念解釋越詳細</p>
+                    </div>
+                </div>
+                
+                <form id="explain-form">
+                    <div class="mb-4">
+                        <label for="topic" class="form-label">統計學概念</label>
+                        <input type="text" class="form-control form-control-lg" id="topic" name="topic" 
+                                placeholder="例如：標準差、假設檢定、p值、常態分佈..." required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="difficulty" class="form-label">難度級別</label>
+                        <select class="form-select" id="difficulty" name="difficulty">
+                            <option value="beginner">初學者 (簡單易懂的解釋)</option>
+                            <option value="intermediate" selected>中級 (平衡深度與易懂性)</option>
+                            <option value="advanced">高級 (深入技術細節)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-search me-2"></i>獲取解釋
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div id="loading" style="display: none;" class="text-center my-5">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">載入中...</span>
+            </div>
+            <p class="lead mt-3">正在生成解釋，請稍等...</p>
+        </div>
+        
+        <div id="result-card" class="card mb-4" style="display: none;">
+            <div class="card-header bg-primary text-white py-3">
+                <h4 id="explanation-title" class="mb-0"></h4>
+            </div>
+            <div class="card-body p-4">
+                <div id="explanation-content" class="markdown-content"></div>
+                
+                <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                    <button class="btn btn-outline-primary" id="new-search">
+                        <i class="bi bi-arrow-left me-2"></i>新搜索
+                    </button>
+                    <div>
+                        <button class="btn btn-outline-secondary me-2" id="copy-result">
+                            <i class="bi bi-clipboard me-2"></i>複製
+                        </button>
+                        <button class="btn btn-primary" id="save-result">
+                            <i class="bi bi-bookmark me-2"></i>保存
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="alert alert-danger" id="error-message" style="display: none;">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span id="error-text">發生錯誤，請稍後再試。</span>
+        </div>
+        
+        <!-- 相關概念 -->
+        <div class="card mt-5">
+            <div class="card-body">
+                <h4 class="mb-4">熱門統計學概念</h4>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <a href="#" class="text-decoration-none" onclick="searchConcept('常態分佈'); return false;">
+                            <div class="card bg-light border-0 h-100">
+                                <div class="card-body text-center py-3">
+                                    <i class="bi bi-graph-up text-primary fs-4 mb-2"></i>
+                                    <p class="mb-0">常態分佈</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="#" class="text-decoration-none" onclick="searchConcept('假設檢定'); return false;">
+                            <div class="card bg-light border-0 h-100">
+                                <div class="card-body text-center py-3">
+                                    <i class="bi bi-check-square text-primary fs-4 mb-2"></i>
+                                    <p class="mb-0">假設檢定</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="#" class="text-decoration-none" onclick="searchConcept('標準差'); return false;">
+                            <div class="card bg-light border-0 h-100">
+                                <div class="card-body text-center py-3">
+                                    <i class="bi bi-calculator text-primary fs-4 mb-2"></i>
+                                    <p class="mb-0">標準差</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="#" class="text-decoration-none" onclick="searchConcept('迴歸分析'); return false;">
+                            <div class="card bg-light border-0 h-100">
+                                <div class="card-body text-center py-3">
+                                    <i class="bi bi-bar-chart-line text-primary fs-4 mb-2"></i>
+                                    <p class="mb-0">迴歸分析</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="#" class="text-decoration-none" onclick="searchConcept('信賴區間'); return false;">
+                            <div class="card bg-light border-0 h-100">
+                                <div class="card-body text-center py-3">
+                                    <i class="bi bi-distribute-vertical text-primary fs-4 mb-2"></i>
+                                    <p class="mb-0">信賴區間</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="#" class="text-decoration-none" onclick="searchConcept('中央極限定理'); return false;">
+                            <div class="card bg-light border-0 h-100">
+                                <div class="card-body text-center py-3">
+                                    <i class="bi bi-bell-curve text-primary fs-4 mb-2"></i>
+                                    <p class="mb-0">中央極限定理</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('explain-form');
+    const resultCard = document.getElementById('result-card');
+    const loading = document.getElementById('loading');
+    const errorMessage = document.getElementById('error-message');
+    const explanationTitle = document.getElementById('explanation-title');
+    const explanationContent = document.getElementById('explanation-content');
+    const copyButton = document.getElementById('copy-result');
+    const newSearchButton = document.getElementById('new-search');
+    const saveButton = document.getElementById('save-result');
+    
+    // 綁定表單提交事件
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // 獲取表單數據
+        const topic = document.getElementById('topic').value.trim();
+        
+        if (!topic) {
+            showError('請輸入想要解釋的概念');
+            return;
+        }
+        
+        // 隱藏結果和錯誤，顯示加載
+        resultCard.style.display = 'none';
+        errorMessage.style.display = 'none';
+        loading.style.display = 'block';
+        
+        const formData = new FormData(form);
+        
+        // 發送AJAX請求
+        fetch('/ai/explain', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('網絡請求失敗');
+            }
+            return response.json();
+        })
+        .then(data => {
+            loading.style.display = 'none';
+            
+            if (data.error) {
+                showError(data.error);
+                return;
+            }
+            
+            // 顯示結果
+            resultCard.style.display = 'block';
+            
+            const topicDisplay = formData.get('topic');
+            const difficultyText = getDifficultyText(formData.get('difficulty'));
+            explanationTitle.innerText = `${topicDisplay} (${difficultyText})`;
+            
+            // 格式化並顯示內容
+            const formattedText = formatExplanation(data.explanation);
+            explanationContent.innerHTML = formattedText;
+            
+            // 滾動到結果區域
+            resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        })
+        .catch(error => {
+            loading.style.display = 'none';
+            console.error('Error:', error);
+            showError('請求失敗，請稍後再試');
+        });
+    });
+    
+    // 顯示錯誤訊息
+    function showError(message) {
+        errorMessage.style.display = 'block';
+        document.getElementById('error-text').innerText = message;
+    }
+    
+    // 獲取難度文本
+    function getDifficultyText(difficulty) {
+        switch(difficulty) {
+            case 'beginner':
+                return '初學者';
+            case 'advanced':
+                return '高級';
+            case 'intermediate':
+            default:
+                return '中級';
+        }
+    }
+    
+    // 格式化解釋內容
+    function formatExplanation(text) {
+        // 簡單的Markdown轉HTML處理
+        // 標題
+        text = text.replace(/## (.*?)$/gm, '<h2>$1</h2>');
+        text = text.replace(/### (.*?)$/gm, '<h3>$1</h3>');
+        
+        // 換行
+        text = text.replace(/\n\n/g, '</p><p>');
+        
+        // 列表
+        text = text.replace(/^\* (.*?)$/gm, '<li>$1</li>');
+        text = text.replace(/<li>/g, '<ul><li>');
+        text = text.replace(/<\/li>\n/g, '</li></ul>\n');
+        
+        // 粗體
+        text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+        // 斜體
+        text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        
+        return '<p>' + text + '</p>';
+    }
+    
+    // 新搜索按鈕
+    newSearchButton.addEventListener('click', function() {
+        resultCard.style.display = 'none';
+        form.reset();
+        document.getElementById('topic').focus();
+    });
+    
+    // 複製內容按鈕
+    copyButton.addEventListener('click', function() {
+        const text = document.getElementById('explanation-title').innerText + '\n\n' + 
+                    explanationContent.innerText;
+        
+        navigator.clipboard.writeText(text).then(
+            function() {
+                const originalText = copyButton.innerHTML;
+                copyButton.innerHTML = '<i class="bi bi-check me-2"></i>已複製';
+                setTimeout(() => {
+                    copyButton.innerHTML = originalText;
+                }, 2000);
+            }
+        );
+    });
+    
+    // 保存結果按鈕
+    saveButton.addEventListener('click', function() {
+        alert('保存功能將在未來版本中推出');
+    });
+});
+
+// 搜索預設概念
+function searchConcept(concept) {
+    document.getElementById('topic').value = concept;
+    document.getElementById('explain-form').dispatchEvent(new Event('submit'));
+}
+</script>
+{% endblock %} 

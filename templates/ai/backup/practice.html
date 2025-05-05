@@ -1,0 +1,439 @@
+{% extends "base.html" %}
+
+{% block title %}ChatGPT練習題生成{% endblock %}
+
+{% block extra_css %}
+<style>
+    .markdown-content {
+        line-height: 1.8;
+    }
+    .markdown-content h1, 
+    .markdown-content h2, 
+    .markdown-content h3, 
+    .markdown-content h4 {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    .markdown-content p {
+        margin-bottom: 1rem;
+    }
+    .markdown-content ul, 
+    .markdown-content ol {
+        margin-bottom: 1rem;
+        padding-left: 2rem;
+    }
+    .markdown-content li {
+        margin-bottom: 0.5rem;
+    }
+    .markdown-content strong {
+        font-weight: 600;
+        color: var(--primary-blue);
+    }
+    .pulse-animation {
+        animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(45, 95, 181, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(45, 95, 181, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(45, 95, 181, 0); }
+    }
+    .practice-question {
+        border-left: 5px solid var(--primary-blue);
+        padding: 1rem 1.5rem;
+        margin-bottom: 2rem;
+        background-color: rgba(45, 95, 181, 0.05);
+        border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    }
+    .question-header {
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--primary-blue);
+    }
+    .question-body {
+        margin-bottom: 1.5rem;
+    }
+    .answer-section {
+        border-top: 1px dashed rgba(45, 95, 181, 0.3);
+        padding-top: 1rem;
+        margin-top: 1rem;
+    }
+    .answer-header {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--secondary-teal);
+    }
+    .difficulty-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 2rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+    }
+    .beginner {
+        background-color: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+    }
+    .intermediate {
+        background-color: rgba(59, 130, 246, 0.1);
+        color: #3b82f6;
+    }
+    .advanced {
+        background-color: rgba(139, 92, 246, 0.1);
+        color: #8b5cf6;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('home') }}">首頁</a></li>
+                    <li class="breadcrumb-item"><a href="#">AI助手</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">練習題生成</li>
+                </ol>
+            </nav>
+            
+            <div class="card mb-4 shadow-sm border-0">
+                <div class="card-body">
+                    <h1 class="mb-4"><i class="bi bi-pencil-square me-3 text-primary"></i>練習題生成助手</h1>
+                    <p class="lead mb-4">輸入統計學主題，AI將為您生成相關練習題，幫助您檢驗知識掌握程度並強化學習效果。</p>
+                    
+                    <form id="practice-form">
+                        <div class="mb-4">
+                            <label for="topic" class="form-label">選擇練習主題</label>
+                            <input type="text" class="form-control form-control-lg" id="topic" name="topic" 
+                                   placeholder="例如：假設檢定、相關性分析、回歸模型..." required>
+                            <div class="form-text">輸入統計學主題，越具體的主題生成的練習題越相關。</div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                            <label for="number" class="form-label">題目數量</label>
+                            <select class="form-select" id="number" name="number">
+                                    <option value="1">1題 (快速練習)</option>
+                                    <option value="3" selected>3題 (標準練習)</option>
+                                    <option value="5">5題 (深入練習)</option>
+                            </select>
+                        </div>
+                        
+                            <div class="col-md-6 mb-4">
+                                <label for="difficulty" class="form-label">難度級別</label>
+                            <select class="form-select" id="difficulty" name="difficulty">
+                                    <option value="beginner">初學者 (基礎概念應用)</option>
+                                    <option value="intermediate" selected>中級 (綜合分析能力)</option>
+                                    <option value="advanced">高級 (深度思考挑戰)</option>
+                            </select>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary btn-lg px-4">
+                                <i class="bi bi-lightning me-2"></i>生成練習題
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div id="loading" style="display: none;" class="text-center my-5">
+                <div class="spinner-border text-primary pulse-animation" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">載入中...</span>
+                </div>
+                <p class="lead mt-3">正在生成練習題，請稍等...</p>
+                <p class="text-muted">我們正在為您量身定制相關的練習題</p>
+            </div>
+            
+            <div class="card shadow-sm border-0" id="result-card" style="display: none;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 id="questions-title" class="mb-0"></h2>
+                        <span id="difficulty-badge" class="difficulty-badge intermediate">中級難度</span>
+                    </div>
+                    
+                    <div id="questions-content" class="markdown-content"></div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                        <div>
+                            <button class="btn btn-outline-primary" id="new-search">
+                                <i class="bi bi-arrow-left me-2"></i>新主題
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline-secondary me-2" id="copy-result">
+                                <i class="bi bi-clipboard me-2"></i>複製練習題
+                            </button>
+                            <button class="btn btn-outline-secondary me-2" id="toggle-answers">
+                                <i class="bi bi-eye me-2"></i>顯示/隱藏答案
+                            </button>
+                            <button class="btn btn-primary" id="save-result">
+                                <i class="bi bi-download me-2"></i>下載PDF
+                            </button>
+                        </div>
+                </div>
+                </div>
+            </div>
+            
+            <div class="alert alert-danger" id="error-message" style="display: none;">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <span id="error-text">發生錯誤，請稍後再試。</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('practice-form');
+    const resultCard = document.getElementById('result-card');
+    const loading = document.getElementById('loading');
+    const errorMessage = document.getElementById('error-message');
+    const questionsTitle = document.getElementById('questions-title');
+    const questionsContent = document.getElementById('questions-content');
+    const difficultyBadge = document.getElementById('difficulty-badge');
+    const copyButton = document.getElementById('copy-result');
+    const newSearchButton = document.getElementById('new-search');
+    const saveButton = document.getElementById('save-result');
+    const toggleAnswersButton = document.getElementById('toggle-answers');
+    
+    let answersVisible = true;
+    
+    // 綁定表單提交事件
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // 獲取表單數據
+        const topic = document.getElementById('topic').value.trim();
+        
+        if (!topic) {
+            showError('請輸入練習主題');
+            return;
+        }
+        
+        // 隱藏結果和錯誤，顯示加載
+        resultCard.style.display = 'none';
+        errorMessage.style.display = 'none';
+        loading.style.display = 'block';
+        
+        const formData = new FormData(form);
+        
+        // 發送AJAX請求
+        fetch('/ai/practice', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('網絡請求失敗');
+            }
+            return response.json();
+        })
+        .then(data => {
+            loading.style.display = 'none';
+            
+            if (data.error) {
+                showError(data.error);
+                return;
+            }
+            
+            // 顯示結果
+            resultCard.style.display = 'block';
+            
+            const topicDisplay = formData.get('topic');
+            const difficulty = formData.get('difficulty');
+            const number = formData.get('number');
+            
+            // 更新標題和難度標籤
+            questionsTitle.innerText = `${topicDisplay} 練習題`;
+            updateDifficultyBadge(difficulty);
+            
+            // 格式化並顯示練習題
+            const formattedQuestions = formatQuestions(data.questions, difficulty);
+            questionsContent.innerHTML = formattedQuestions;
+            
+            // 設置答案顯示狀態
+            answersVisible = true;
+            toggleAnswersButton.innerHTML = '<i class="bi bi-eye-slash me-2"></i>隱藏答案';
+            
+            // 滾動到結果區域
+            resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        })
+        .catch(error => {
+            loading.style.display = 'none';
+            console.error('Error:', error);
+            showError('發生錯誤: ' + error.message);
+        });
+    });
+    
+    // 複製功能
+    copyButton.addEventListener('click', function() {
+        const text = questionsContent.innerText;
+        navigator.clipboard.writeText(text)
+            .then(() => {
+                copyButton.innerHTML = '<i class="bi bi-check-lg me-2"></i>已複製';
+                copyButton.classList.add('btn-success');
+                copyButton.classList.remove('btn-outline-secondary');
+                
+                setTimeout(() => {
+                    copyButton.innerHTML = '<i class="bi bi-clipboard me-2"></i>複製練習題';
+                    copyButton.classList.remove('btn-success');
+                    copyButton.classList.add('btn-outline-secondary');
+                }, 2000);
+            })
+            .catch(err => {
+                showError('複製失敗: ' + err);
+        });
+    });
+    
+    // 切換答案顯示/隱藏
+    toggleAnswersButton.addEventListener('click', function() {
+        answersVisible = !answersVisible;
+        
+        const answerSections = document.querySelectorAll('.answer-section');
+        answerSections.forEach(section => {
+            section.style.display = answersVisible ? 'block' : 'none';
+        });
+        
+        if (answersVisible) {
+            toggleAnswersButton.innerHTML = '<i class="bi bi-eye-slash me-2"></i>隱藏答案';
+        } else {
+            toggleAnswersButton.innerHTML = '<i class="bi bi-eye me-2"></i>顯示答案';
+        }
+    });
+    
+    // 新主題按鈕
+    newSearchButton.addEventListener('click', function() {
+        resultCard.style.display = 'none';
+        form.reset();
+        document.getElementById('topic').focus();
+    });
+    
+    // 儲存PDF按鈕 (模擬功能)
+    saveButton.addEventListener('click', function() {
+        saveButton.innerHTML = '<i class="bi bi-check-lg me-2"></i>已下載';
+        saveButton.classList.add('btn-success');
+        saveButton.classList.remove('btn-primary');
+        
+        setTimeout(() => {
+            saveButton.innerHTML = '<i class="bi bi-download me-2"></i>下載PDF';
+            saveButton.classList.remove('btn-success');
+            saveButton.classList.add('btn-primary');
+        }, 2000);
+    });
+    
+    // 輔助函數：顯示錯誤訊息
+    function showError(message) {
+        errorMessage.style.display = 'block';
+        document.getElementById('error-text').textContent = message;
+        errorMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    
+    // 輔助函數：更新難度標籤
+    function updateDifficultyBadge(difficulty) {
+        const difficultyMap = {
+            'beginner': '初學者難度',
+            'intermediate': '中級難度',
+            'advanced': '高級難度'
+        };
+        
+        // 更新文字
+        difficultyBadge.innerText = difficultyMap[difficulty] || '中級難度';
+        
+        // 更新樣式
+        difficultyBadge.className = 'difficulty-badge ' + difficulty;
+    }
+    
+    // 輔助函數：格式化練習題內容
+    function formatQuestions(text, difficulty) {
+        // 首先嘗試識別問題和答案的分隔模式
+        const cleanedText = text.replace(/\\n/g, '\n');
+        
+        // 使用正則表達式找出問題和答案的模式
+        let formattedHtml = '';
+        
+        // 如果文本是Markdown風格的問題列表
+        if (cleanedText.match(/問題\s*\d+|\*\*問題\s*\d+\*\*|練習題\s*\d+|\*\*練習題\s*\d+\*\*/i)) {
+            // 拆分文本為問題和答案
+            const questionBlocks = cleanedText.split(/(?=問題\s*\d+:?|練習題\s*\d+:?|\*\*問題\s*\d+:?\*\*|\*\*練習題\s*\d+:?\*\*)/i);
+            
+            // 對於每個問題塊進行處理
+            questionBlocks.forEach((block, index) => {
+                if (!block.trim()) return; // 跳過空塊
+                
+                // 查找問題和答案
+                const questionMatch = block.match(/^(問題\s*\d+:?|練習題\s*\d+:?|\*\*問題\s*\d+:?\*\*|\*\*練習題\s*\d+:?\*\*)(.*?)(?=解[答]|答案|Δξξ)/is);
+                
+                if (questionMatch) {
+                    const questionTitle = questionMatch[1].replace(/\*\*/g, '');
+                    const questionText = questionMatch[2].trim();
+                    const answerText = block.replace(questionMatch[0], '').trim();
+                    
+                    // 創建格式化的問題卡片
+                    formattedHtml += `
+                        <div class="practice-question">
+                            <div class="question-header">${questionTitle}</div>
+                            <div class="question-body">${formatMarkdown(questionText)}</div>
+                            <div class="answer-section">
+                                <div class="answer-header">解答：</div>
+                                <div class="answer-body">${formatMarkdown(answerText)}</div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // 如果無法識別問題/答案格式，直接顯示原始文本
+                    formattedHtml += `<div class="practice-question">${formatMarkdown(block)}</div>`;
+                }
+            });
+        } else {
+            // 沒有明確的問題/答案結構，使用簡單格式化
+            formattedHtml = formatMarkdown(cleanedText);
+        }
+        
+        return formattedHtml;
+    }
+    
+    // 輔助函數：格式化Markdown文本
+    function formatMarkdown(text) {
+        // 處理markdown樣式的文本
+        let formatted = text
+            // 處理標題
+            .replace(/^#+\s+(.*)$/gm, '<h4>$1</h4>')
+            // 處理粗體和斜體
+            .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+            // 處理列表
+            .replace(/^\d+\.\s+(.*)$/gm, '<li>$1</li>')
+            .replace(/^-\s+(.*)$/gm, '<li>$1</li>')
+            // 處理段落
+            .replace(/\n\n/g, '</p><p>')
+            // 處理換行
+            .replace(/\n/g, '<br>');
+        
+        // 處理數學符號，讓它們看起來更好
+        formatted = formatted
+            .replace(/(\w+)\_(\w+)/g, '$1<sub>$2</sub>') // 下標
+            .replace(/(\w+)\^(\w+)/g, '$1<sup>$2</sup>'); // 上標
+            
+        // 包裝為段落
+        if (!formatted.startsWith('<h') && !formatted.startsWith('<p>')) {
+            formatted = '<p>' + formatted;
+        }
+        if (!formatted.endsWith('</p>')) {
+            formatted += '</p>';
+        }
+        
+        // 將連續的li元素包裝為ul
+        formatted = formatted.replace(/(<li>.*?<\/li>)+/g, function(match) {
+            return '<ul>' + match + '</ul>';
+    });
+        
+        return formatted;
+    }
+});
+</script>
+{% endblock %} 

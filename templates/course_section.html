@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ section.title }} - 統計學課程{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/course.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/statistics_lecture.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="course-container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('course_index') }}">課程首頁</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('course_chapter', chapter_num=chapter.chapter) }}">第{{ chapter.chapter }}章：{{ chapter.title }}</a></li>
+            <li class="breadcrumb-item active">{{ section.title }}</li>
+        </ol>
+    </nav>
+
+    <div class="card section-card mb-4">
+        <div class="card-header section-header">
+            <h2 class="mb-0">{{ section.title }}</h2>
+        </div>
+        <div class="card-body">
+            <!-- 學習目標 -->
+            <div class="learning-objectives mb-4">
+                <h3>學習目標</h3>
+                <ul>
+                    {% for objective in learning_objectives %}
+                    <li>{{ objective }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- 講義內容 -->
+            {% if section_content %}
+            <div class="lecture-content mb-4">
+                {{ section_content|safe }}
+            </div>
+            {% else %}
+            <div class="alert alert-info no-content-alert">
+                <p>這個小節還沒有講義內容。請查看其他學習資源或聯繫講師。</p>
+            </div>
+            {% endif %}
+
+            <!-- 視覺化內容 -->
+            {% if visualization %}
+            <div class="visualization-container mb-4">
+                <h3>視覺化輔助</h3>
+                <img src="{{ visualization }}" alt="{{ section.title }}視覺化" class="img-fluid">
+            </div>
+            {% endif %}
+
+            <!-- 例子 -->
+            {% if examples and examples|length > 0 %}
+            <div class="examples-container mb-4">
+                <h3>例子</h3>
+                {% for example in examples %}
+                <div class="example-card">
+                    {{ example|safe }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- 練習 -->
+            {% if exercises and exercises|length > 0 %}
+            <div class="exercises-container mb-4">
+                <h3>練習</h3>
+                {% for exercise in exercises %}
+                <div class="exercise-card">
+                    {{ exercise|safe }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 導航按鈕 -->
+    <div class="nav-buttons">
+        {% if prev_section %}
+        <a href="{{ url_for('course_section', chapter_num=prev_section.chapter, section_index=prev_section.section) }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> 上一節
+        </a>
+        {% else %}
+        <div></div>
+        {% endif %}
+
+        {% if next_section %}
+        <a href="{{ url_for('course_section', chapter_num=next_section.chapter, section_index=next_section.section) }}" class="btn btn-outline-primary">
+            下一節 <i class="fas fa-arrow-right"></i>
+        </a>
+        {% else %}
+        <div></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+    };
+</script>
+{% endblock %} 

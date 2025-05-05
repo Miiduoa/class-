@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>統計學講義</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        h2 {
+            color: #2c3e50;
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 30px;
+            border-left: 5px solid #3498db;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+            padding: 8px 0;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        .chapter-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .section-content {
+            margin-bottom: 20px;
+        }
+        .examples, .mnemonics, .exercises {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .examples {
+            background-color: #e8f4fc;
+            border-left: 5px solid #3498db;
+        }
+        .mnemonics {
+            background-color: #fcf3cf;
+            border-left: 5px solid #f1c40f;
+        }
+        .exercises {
+            background-color: #e8f8f5;
+            border-left: 5px solid #2ecc71;
+        }
+        .visualization-block {
+            background-color: #f0f4f8;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .visualization-block img {
+            max-width: 100%;
+            height: auto;
+            margin: 10px auto;
+        }
+        .visualization-placeholder {
+            background-color: #f0f4f8;
+            border: 1px dashed #d0d7de;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+            color: #7f8c8d;
+        }
+        .exercise {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #ccc;
+        }
+        .question {
+            font-weight: bold;
+        }
+        .answer {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+        .toc {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+        .toc h2 {
+            background: none;
+            border-left: none;
+            margin-top: 0;
+            padding-left: 0;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin-bottom: 5px;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #3498db;
+        }
+        .toc .section-link {
+            padding-left: 20px;
+            font-size: 0.9em;
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        .back-to-top:hover {
+            opacity: 1;
+            color: white;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .toc {
+                padding: 10px;
+            }
+        }
+        .formula {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Cambria Math', Georgia, serif;
+            overflow-x: auto;
+        }
+    </style>
+  <link rel="stylesheet" href="static/css/statistics.css">
+</head>
+<body>
+    <a href="#top" class="back-to-top" title="回到頂部">↑</a>
+    <div class="container" id="top">
+<h1>大學統計學</h1>
+<div class="toc">
+<h2>目錄</h2>
+<ul>
+<li><a href="#chapter-14">第14章: 多元迴歸分析</a>
+<ul>
+<li class="section-link"><a href="#section-14.1">14.1 多元迴歸模型的建立</a></li>
+<li class="section-link"><a href="#section-14.2">14.2 多元迴歸係數的解釋</a></li>
+<li class="section-link"><a href="#section-14.3">14.3 模型選擇與變數選取</a></li>
+<li class="section-link"><a href="#section-14.4">14.4 多重共線性問題</a></li>
+<li class="section-link"><a href="#section-14.5">14.5 類別變數與交互項</a></li>
+<li class="section-link"><a href="#section-14.6">14.6 模型檢驗與診斷</a></li>
+<li class="section-link"><a href="#section-14.7">14.7 使用統計軟體進行多元迴歸分析</a></li>
+</ul></li>
+</ul>
+</div>
+<h2 id="chapter-14" class="chapter-title">第14章: 多元迴歸分析</h2>
+<div class="chapter-overview mb-4">本章介紹多元迴歸分析的核心概念與應用，幫助學生掌握統計學的基礎知識並應用於實際問題分析。</div>
+<h3 id="section-14.1">14.1 多元迴歸模型的建立</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>多元迴歸模型是統計學中一種用來探討多個自變數對因變數影響的方法。在建立多元迴歸模型時，我們將一個或多個自變數納入模型中，以預測因變數的值。透過最小化殘差平方和的方法，我們可以找到最適合的迴歸係數，進而建立一個能夠解釋資料變異的模型。</p><p>在建立多元迴歸模型時，需要注意自變數之間的共線性問題，避免多個自變數之間存在高度相關性，影響模型的穩定性和準確性。此外，也要確保模型符合迴歸分析的基本假設，如線性關係、常態性、誤差項獨立性和變異數同質性。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>以房屋價格為因變數，房屋大小、地段、年齡等為自變數，建立多元迴歸模型預測房屋價格。</li>
+<li>以學生成績為因變數，學生的學習時間、家庭背景、興趣等為自變數，分析這些因素對學生成績的影響。</li>
+<li>在市場營銷中，可以使用多元迴歸模型分析廣告費用、促銷活動等因素對銷售量的影響。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住多元迴歸模型的建立過程中，需要確保自變數之間不能存在共線性，以及模型符合基本假設。</li>
+<li>深入理解殘差平方和的最小化原則，有助於理解如何找到最適合的迴歸係數，建立有效的模型。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 在一個多元迴歸模型中，如果自變數之間存在高度相關性，會對模型造成什麼影響？</div>
+<div class="answer">答案: 自變數之間的高度相關性會導致模型不穩定，迴歸係數的估計不準確，難以解釋各個自變數對因變數的獨立貢獻。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 解釋為什麼在建立多元迴歸模型時要確保模型符合基本假設？</div>
+<div class="answer">答案: 確保模型符合基本假設可以增加模型的準確性和穩定性，使得模型的預測能力更可靠。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 解釋殘差平方和的最小化原則在多元迴歸模型中的重要性。</div>
+<div class="answer">答案: 通過最小化殘差平方和，我們可以找到最適合的迴歸係數，構建一個能夠最好地解釋資料變異的模型。</div>
+</div>
+</div>
+<h3 id="section-14.2">14.2 多元迴歸係數的解釋</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在多元迴歸分析中，係數是用來衡量自變數對依變數的影響程度。當有多個自變數時，每個自變數的係數代表著在其他自變數固定的情況下，該自變數對依變數的影響。通常，我們專注於解釋每個自變數的係數，以了解各自變數對依變數的獨立貢獻。當自變數之間存在共線性時，係數的解釋可能會變得複雜，因為共線性會使各係數之間相互影響。</p><p>此外，係數的符號（正負號）代表了自變數和依變數之間的關係方向。當係數為正時，表示自變數的增加與依變數的增加呈正相關；當係數為負時，表示自變數的增加與依變數的減少呈負相關。係數的大小則代表了自變數對依變數的影響程度，絕對值較大的係數表示對依變數的影響較大。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>在一個多元迴歸模型中，假設我們研究房屋價格與房屋大小、地段和年齡的關係。如果房屋大小的係數為0.6，地段的係數為0.3，年齡的係數為-0.2，則可以解釋為房屋大小對房屋價格的影響最大，地段次之且為正向影響，而年齡對房屋價格則呈現負向影響。</li>
+<li>在一個營銷研究中，我們想了解廣告支出、促銷活動和產品品質對銷售額的影響。如果廣告支出的係數為0.7，促銷活動的係數為0.5，產品品質的係數為0.4，則可以解釋為廣告支出對銷售額的影響最大，其次是促銷活動和產品品質。</li>
+<li>在一個健康研究中，我們想了解運動時間、飲食攝入和睡眠時間對體重的影響。如果運動時間的係數為-0.6，飲食攝入的係數為0.4，睡眠時間的係數為0.3，則可以解釋為運動時間對體重的影響最大且為負向影響，飲食攝入次之並為正向影響，睡眠時間則對體重影響最小。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>將係數視為影響力大小的指標，正負號表示方向，絕對值表示影響程度。</li>
+<li>當有多個自變數時，專注解釋每個自變數的係數，理解各自變數對依變數的獨立貢獻。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 在一個多元迴歸模型中，自變數A的係數為0.8，自變數B的係數為-0.5。請解釋自變數A和B對依變數的影響。</div>
+<div class="answer">答案: 自變數A對依變數的影響最大且為正向影響，自變數B對依變數的影響次之且為負向影響。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 在一個多元迴歸模型中，自變數X的係數為0.6，自變數Y的係數為0.4，自變數Z的係數為-0.3。請解釋自變數X、Y和Z對依變數的影響。</div>
+<div class="answer">答案: 自變數X對依變數的影響最大且為正向影響，自變數Y次之且為正向影響，自變數Z對依變數的影響最小且為負向影響。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 在一個多元迴歸模型中，自變數P的係數為-0.7，自變數Q的係數為0.3，自變數R的係數為0.5。請解釋自變數P、Q和R對依變數的影響。</div>
+<div class="answer">答案: 自變數P對依變數的影響最大且為負向影響，自變數Q對依變數的影響最小且為正向影響，自變數R次之且為正向影響。</div>
+</div>
+</div>
+<h3 id="section-14.3">14.3 模型選擇與變數選取</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在多元迴歸分析中，模型選擇與變數選取是一個關鍵的步驟，它們確保建立的迴歸模型既能夠有效預測目標變數，又能夠避免過度擬合。模型選擇涉及選擇不同的迴歸模型形式（如線性、多項式、對數等），而變數選取則是確定哪些自變數應該包含在模型中以最大化模型的預測能力。這兩個步驟需要結合統計方法、專業知識和實際經驗來完成。</p><p>在模型選擇方面，研究人員可以利用信息準則（如AIC、BIC）、交叉驗證、假設檢定等方法來評估不同模型的優劣。這些方法旨在找到一個既能適配數據又能簡單解釋的模型。另外，變數選取可以通過前向選擇、後向選擇、逐步選擇等技術進行，以確保選取的自變數是與目標變數密切相關的。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一個研究人員希望通過多元迴歸分析來預測學生的考試成績。在模型選擇階段，研究人員可以比較使用不同變數（如學習時間、家庭背景、睡眠時間等）構建的迴歸模型，並選擇最適合的模型。在變數選取階段，研究人員可以使用逐步選擇方法確定最終的自變數組合。</li>
+<li>一家公司希望通過多元迴歸分析來預測產品銷售量。在模型選擇過程中，他們可以比較使用不同市場因素（如廣告投入、競爭產品售價、季節性因素等）構建的模型。在變數選取階段，他們可以利用相關性分析和專業知識來確定最終的自變數。</li>
+<li>一個研究小組希望通過多元迴歸分析來研究氣候變化對農作物產量的影響。他們可以在模型選擇階段比較使用不同氣候因素（如溫度、降雨量、風速等）構建的模型。在變數選取階段，他們可以利用專業知識和文獻回顧確定最相關的自變數。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>當面臨模型選擇與變數選取時，記住要同時考慮模型的適配度和簡潔性，避免過度擬合的情況。</li>
+<li>利用不同的評估方法和技術來進行模型選擇和變數選取，以獲得更可靠的結果。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 在一個房地產價格預測的多元迴歸模型中，你會如何進行模型選擇？列舉至少三種方法。</div>
+<div class="answer">答案: 可以使用AIC、BIC信息準則、交叉驗證和假設檢定等方法進行模型選擇。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 請解釋前向選擇、後向選擇和逐步選擇在變數選取過程中的作用。</div>
+<div class="answer">答案: 前向選擇是逐步添加最具影響力的變數，後向選擇是逐步刪除對模型貢獻較小的變數，逐步選擇則是同時考慮添加和刪除變數，直至最優模型被確定。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 為什麼在多元迴歸分析中進行模型選擇和變數選取是必要的步驟？請提供兩個理由。</div>
+<div class="answer">答案: 模型選擇和變數選取可以幫助避免過度擬合，提高模型的泛化能力；同時，它們能夠確保建立的模型具有解釋性和預測能力。</div>
+</div>
+</div>
+<h3 id="section-14.4">14.4 多重共線性問題</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>多重共線性是指在多元迴歸模型中，自變數之間存在高度相關性或線性關係，導致無法準確估計模型參數的一種問題。當自變數之間存在較高的共線性時，估計的參數會變得不穩定，即使模型整體的適配度仍然高，但對於個別自變數的影響效果無法準確判斷。多重共線性會對模型的解釋力和預測能力造成嚴重影響，因此需要注意和處理。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>假設一個房價預測模型中，自變數包括房屋面積和房間數量，如果這兩個自變數之間存在高度相關，則模型可能無法準確估計出每個變數對於房價的影響程度。</li>
+<li>在市場營銷研究中，若同時考慮廣告支出和促銷活動對銷售量的影響，而這兩個變數之間存在共線性，則難以準確評估各自對銷售量的影響。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>審慎選擇自變數：確保自變數之間盡可能獨立，避免高度相關的變數同時進入模型。</li>
+<li>使用變異膨脹因子（VIF）檢查：VIF是檢測共線性的指標，當VIF值超過10時，表示存在較嚴重的共線性問題。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 什麼是多重共線性？它對多元迴歸模型有什麼影響？</div>
+<div class="answer">答案: 多重共線性是指在多元迴歸模型中，自變數之間存在高度相關性或線性關係，導致無法準確估計模型參數的</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 如何檢測多重共線性？提供一個常用的指標。</div>
+<div class="answer">答案: 可以使用變異膨脹因子（VIF）來檢測多重共線性。VIF值超過10表示存在共線性</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 的例子。</div>
+<div class="answer">答案: 在股票市場研究中，若同時考慮股價和市值對股票收益的影響，而這兩個變數之間存在高度相關，可能導致多重共線性</div>
+</div>
+</div>
+<h3 id="section-14.5">14.5 類別變數與交互項</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在多元迴歸分析中，類別變數與交互項是兩個重要的概念。類別變數是指具有有限數量且沒有順序性的變數，通常用於表示分類或群組；而交互項則是指在迴歸模型中，兩個或多個變數的乘積項。當我們考慮類別變數和交互項時，可以更好地了解變數之間的關係，並提高模型的解釋力。</p><p>當存在類別變數時，我們通常會使用虛擬變數（dummy variables）來表示。虛擬變數是一種特殊的二元變數，用1和0來表示不同的類別。例如，在一個研究中，我們想探討學生的學業成績如何受到性別（男性/女性）的影響，我們可以引入一個性別的虛擬變數，其中男性為1，女性為0。</p><p>當考慮交互項時，我們要思考不同變數之間是否存在交互作用效應，即變數之間的影響是否隨著它們之間的關係而改變。例如，在上述學業成績的例子中，我們可能還想探討性別和家庭背景（高/低收入）的交互作用對學業成績的影響。</p><p>透過引入類別變數和交互項，我們可以更全面地分析變數之間的複雜關係，提高模型的預測準確度，並找出更深層次的因果關係。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>在市場研究中，研究人員可能想探討廣告形式（電視廣告/網路廣告/平面廣告）與受眾特徵（年齡/性別）之間的交互作用對產品銷售量的影響。</li>
+<li>在醫學研究中，研究人員可能研究不同治療方式（藥物治療/手術治療/物理治療）對患者病情恢復的影響，同時考慮不同年齡群體的交互作用效應。</li>
+<li>在教育研究中，研究人員可能想探討學生學習成就（高/低）在不同教學方式（傳統教學/專題教學）下的差異，並考慮學生家庭背景（高/低收入）的影響。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住在虛擬變數中，通常將一個群體設為參考組（dummy group），其他群體則相對比較。</li>
+<li>理解交互作用的概念，需要考慮不同變數之間的關係是否會隨著其他變數的改變而改變。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 在一個研究中，想探討不同工作經驗（高/低）與不同教育程度（本科/碩士/博士）之間的交互作用對薪資的影響，請設計虛擬變數和交互項。</div>
+<div class="answer">答案: 工作經驗虛擬變數（高經驗=1，低經驗=0），教育程度虛擬變數（本科=1，碩士=0，博士=0），交互項=工作經驗*教育程度。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 在一個商品銷售研究中，想探討促銷方式（折扣/贈品）與消費者性別（男性/女性）之間的交互作用對銷售量的影響，請設計虛擬變數和交互項。</div>
+<div class="answer">答案: 促銷方式虛擬變數（折扣=1，贈品=0），消費者性別虛擬變數（男性=1，女性=0），交互項=促銷方式*消費者性別。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 在一個健康研究中，想探討運動時間（高/低）與飲食習慣（健康飲食/不健康飲食）之間的交互作用對體重的影響，請設計虛擬變數和交互項。</div>
+<div class="answer">答案: 運動時間虛擬變數（高運動時間=1，低運動時間=0），飲食習慣虛擬變數（健康飲食=1，不健康飲食=0），交互項=運動時間*飲食習慣。</div>
+</div>
+</div>
+<h3 id="section-14.6">14.6 模型檢驗與診斷</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在多元迴歸分析中，模型檢驗與診斷是確保迴歸模型適合性的重要步驟。透過模型檢驗，我們可以確保所建立的迴歸模型符合統計假設，並且能夠正確解釋資料間的關係。主要的模型檢驗與診斷方法包括殘差分析、異方差檢定、多重共線性檢定、影響度分析等。</p><p>在殘差分析中，我們會檢視迴歸模型的殘差是否符合常態性、獨立性和變異數相等的假設。若殘差無法滿足這些假設，可能表示模型有問題，需要進一步檢討。另外，異方差檢定用來確認殘差變異數是否在不同解釋變數的水準下有所改變，若有異方差存在，模型的估計量將無效。</p><p>多重共線性檢定則用來檢視解釋變數之間是否存在高度相關性，若有共線性問題存在，可能導致模型估計不穩定。最後，影響度分析則是評估每個解釋變數對於因變數的解釋程度，進而找出對模型影響較大的變數。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>在一個房價預測的多元迴歸模型中，透過殘差分析發現殘差並不符合常態分配，可能表示模型存在偏誤。</li>
+<li>在一個市場份額預測的迴歸模型中，透過異方差檢定發現殘差的變異數與解釋變數有關，需要進一步處理。</li>
+<li>在一個學業成績預測的迴歸模型中，透過多重共線性檢定發現解釋變數之間存在高度相關性，需要刪除部分變數以改善模型。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記得檢查殘差：殘差分析是模型檢驗的重要步驟，確保模型的殘差符合假設。</li>
+<li>異方差檢定關注變異數：異方差檢定用來確認殘差變異數是否在不同解釋變數的水準下有所改變。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 解釋什麼是殘差分析？為什麼殘差分析在模型檢驗中很重要？</div>
+<div class="answer">答案: 殘差分析是檢視迴歸模型預測值與實際觀測值之間的差異，確保殘差滿足常態性、獨立性和變異數相等的假設。它是模型檢驗中重要的一環，可以幫助我們確認模型是否適合。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 多重共線性是什麼？它會對多元迴歸模型造成什麼影響？</div>
+<div class="answer">答案: 多重共線性指解釋變數之間存在高度相關性的情況。它會導致模型估計不穩定，使得解釋變數的係數難以解釋。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 影響度分析的主要目的是什麼？如何進行影響度分析？</div>
+<div class="answer">答案: 影響度分析的目的是評估每個解釋變數對於因變數的解釋程度。可以透過計算每個變數的影響度指標或者進行加入/排除變數的模型比較來進行影響度分析。</div>
+</div>
+</div>
+<h3 id="section-14.7">14.7 使用統計軟體進行多元迴歸分析</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在多元迴歸分析中，我們探討多個自變數對一個連續型應變數的影響。使用統計軟體進行多元迴歸分析可以幫助我們確定各個自變數對應變數的影響程度，並進行模型擬合和預測。在進行多元迴歸分析時，我們需要注意共線性、異常值、殘差檢驗等問題，以確保模型的準確性和可靠性。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一個市場研究公司希望了解廣告支出、產品價格和促銷活動對產品銷量的影響，他們可以使用多元迴歸分析來建立相應的預測模型。</li>
+<li>一個醫學研究團隊想要探討血糖水平受年齡、飲食習慣和運動量的影響，他們可以利用多元迴歸分析來評估各個因素的影響程度。</li>
+<li>一家製造公司希望預測產品的質量受原料成本、生產線速度和員工技能的影響，他們可以透過多元迴歸分析找出相應的關係。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住多元迴歸分析的目的：探討多個自變數對一個連續型應變數的影響。</li>
+<li>注意共線性問題：當自變數之間存在高度相關性時，可能會導致共線性問題，影響模型的穩定性和可解釋性。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 請解釋多元迴歸分析的目的。</div>
+<div class="answer">答案: 多元迴歸分析的目的是探討多個自變數對一個連續型應變數的影響。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: ？</div>
+<div class="answer">答案: 高度共線性可能會影響模型的穩定性和可解釋性。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 請舉一個實際的多元迴歸分析應用例子。</div>
+<div class="answer">答案: 例如，一個市場研究公司想要了解廣告支出、產品價格和促銷活動對產品銷量的影響。</div>
+</div>
+</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            }
+        };
+        
+        // 添加平滑滾動
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // 添加回到頂部按鈕顯示/隱藏功能
+        window.addEventListener('scroll', function() {
+            var backToTop = document.querySelector('.back-to-top');
+            if (window.pageYOffset > 300) {
+                backToTop.style.display = 'block';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        });
+    </script>
+  <script src="static/js/statistics.js"></script>
+</body>
+</html>

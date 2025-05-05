@@ -1,0 +1,101 @@
+/* 自訂 CSS 樣式 */
+
+/* 強化視覺元素 */
+.visual-element {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.visual-element:hover {
+    transform: scale(1.02);
+}
+
+/* 章節頁面樣式 */
+.chapter-toc {
+    border-left: 3px solid #3498db;
+    padding-left: 15px;
+}
+
+/* 公式樣式 */
+.math-formula {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    font-family: 'Cambria Math', Georgia, serif;
+    overflow-x: auto;
+}
+
+/* 高亮教學重點 */
+.highlight-box {
+    background-color: #fffde7;
+    border-left: 4px solid #fbc02d;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+/* 交互練習區塊 */
+.interactive-exercise {
+    background-color: #e8f5e9;
+    border: 1px solid #c8e6c9;
+    border-radius: 5px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+/* 學習進度指示器 */
+.progress-indicator {
+    height: 8px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    margin: 15px 0;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #3498db, #2980b9);
+    border-radius: 4px;
+}
+
+/* 印刷樣式優化 */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    body {
+        font-size: 12pt;
+    }
+    
+    h1, h2, h3 {
+        page-break-after: avoid;
+    }
+    
+    p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+    }
+    
+    table, figure {
+        page-break-inside: avoid;
+    }
+}
+
+/* 行動裝置優化 */
+@media (max-width: 576px) {
+    .section-title {
+        font-size: 1.5rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+}
+
+/* 深色模式支援 */
+@media (prefers-color-scheme: dark) {
+    .dark-mode-support {
+        background-color: #333;
+        color: #f5f5f5;
+    }
+} 

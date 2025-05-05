@@ -1,0 +1,327 @@
+{
+  "chapters": [
+    {
+      "chapterNumber": 13,
+      "chapterTitle": "變異數分析",
+      "sections": [
+        {
+          "sectionNumber": "13.1",
+          "sectionTitle": "檢定多個母體平均數是否相同",
+          "overview": "利用單因子 ANOVA，比較 k 組平均數；檢定 H₀: μ₁=μ₂=…=μ_k。",
+          "formulas": [
+            "F = MSB / MSW",
+            "MSB = SSB/(k−1)，MSW = SSW/(N−k)"
+          ],
+          "examples": [
+            {
+              "description": "比較三種肥料對作物產量的影響。",
+              "steps": [
+                "計算組間平方和 SSB",
+                "計算組內平方和 SSW",
+                "求 F 值並與臨界值比較"
+              ]
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch13_13.1_anova.png",
+              "caption": "ANOVA 方差分解示意"
+            }
+          ],
+          "mnemonics": [
+            "「組間除組內」：F = 組間均方 ÷ 組內均方"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "若 F > F_{α,k−1,N−k}，代表什麼？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "13.2",
+          "sectionTitle": "多重比較",
+          "overview": "ANOVA 顯著後，用 Tukey、Bonferroni 等方法進行組間配對比較。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "用 Tukey HSD 比較三組間平均差異。",
+              "steps": [
+                "計算 q 值臨界",
+                "比較各對差值是否超過 q·SE"
+              ]
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「多比控錯」：多重比較要控制 Type I 錯誤"
+          ],
+          "exercises": [
+            {
+              "type": "short-answer",
+              "question": "Tukey HSD 與 Bonferroni 的差異？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "13.3",
+          "sectionTitle": "實驗設計",
+          "overview": "介紹完全隨機設計與隨機區組設計，說明抗雜訊能力差異。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "植物試驗採隨機區組分配不同肥料。",
+              "steps": [
+                "將試驗田分區",
+                "區內隨機排列處理"
+              ]
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「組內隨機」：減少區內雜訊，提高效率"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "何時適合用隨機區組設計？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "13.4",
+          "sectionTitle": "一因子變異數分析–完全隨機設計",
+          "overview": "完全隨機設計下，處理間隨機化分配；公式同基本 ANOVA。",
+          "formulas": [],
+          "examples": [],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": []
+        },
+        {
+          "sectionNumber": "13.5",
+          "sectionTitle": "一因子變異數分析–隨機區組設計",
+          "overview": "加入區變項，模型含處理與區效應；減少誤差平方和。",
+          "formulas": [],
+          "examples": [],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": []
+        },
+        {
+          "sectionNumber": "13.6",
+          "sectionTitle": "二因子變異數分析",
+          "overview": "有兩個因子時，檢定主效應與交互作用。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "比較肥料與灌溉量對產量之交互作用。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "如何解讀交互作用效應圖？",
+              "answer": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapterNumber": 14,
+      "chapterTitle": "簡單迴歸分析與相關分析",
+      "sections": [
+        {
+          "sectionNumber": "14.1",
+          "sectionTitle": "兩變數間的關係",
+          "overview": "判斷 X 與 Y 是否線性相關，並用散佈圖初步觀察方向與強度。",
+          "formulas": [],
+          "examples": [],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch14_14.1_scatter.png",
+              "caption": "散佈圖示例"
+            }
+          ],
+          "mnemonics": [],
+          "exercises": []
+        },
+        {
+          "sectionNumber": "14.2",
+          "sectionTitle": "簡單迴歸分析的方法",
+          "overview": "最小平方法推導迴歸直線： ŷ = b₀ + b₁ x，並檢定斜率是否為 0。",
+          "formulas": [
+            "b₁ = Σ(xᵢ−x̄)(yᵢ−ȳ) / Σ(xᵢ−x̄)²",
+            "b₀ = ȳ − b₁ x̄"
+          ],
+          "examples": [
+            {
+              "description": "計算家庭收入 vs. 支出迴歸線。",
+              "steps": [
+                "計算 b₁, b₀",
+                "繪製回歸直線並檢定"
+              ]
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「一斜一截」：斜率、截距各自含義"
+          ],
+          "exercises": [
+            {
+              "type": "coding",
+              "language": "Python",
+              "prompt": "用 statsmodels 做簡單線性迴歸並輸出摘要。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "14.3",
+          "sectionTitle": "相關分析",
+          "overview": "檢驗皮爾森 r 顯著性，並區分因果與相關。",
+          "formulas": [],
+          "examples": [],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": []
+        },
+        {
+          "sectionNumber": "14.4",
+          "sectionTitle": "相關分析與迴歸分析的關係",
+          "overview": "r² 解釋變異比例；簡單迴歸中 r 與 b₁ 的關係。",
+          "formulas": [
+            "r² = SSR / SST"
+          ],
+          "examples": [],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": []
+        }
+      ]
+    },
+    {
+      "chapterNumber": 15,
+      "chapterTitle": "複迴歸分析與複相關分析",
+      "sections": [
+        {
+          "sectionNumber": "15.1",
+          "sectionTitle": "複迴歸分析的方法",
+          "overview": "多元最小平方法： ŷ = b₀ + b₁x₁ + … + b_p x_p，並解讀係數。",
+          "formulas": [],
+          "examples": [],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": []
+        },
+        {
+          "sectionNumber": "15.2",
+          "sectionTitle": "複相關分析",
+          "overview": "部分相關與多重相關係數 R，解釋多變量關係。",
+          "formulas": [],
+          "examples": [],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": []
+        },
+        {
+          "sectionNumber": "15.3",
+          "sectionTitle": "複迴歸模型中解釋變數的相對重要性",
+          "overview": "標準化回歸係數 β；VIF 檢測多重共線性。",
+          "formulas": [
+            "VIF_j = 1/(1−R_j²)"
+          ],
+          "examples": [],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": []
+        }
+      ]
+    },
+    {
+      "chapterNumber": 16,
+      "chapterTitle": "時間數列分析與預測",
+      "sections": [
+        {
+          "sectionNumber": "16.1",
+          "sectionTitle": "時間數列的意義與性質",
+          "overview": "定義趨勢、季節性、循環與不規則成分。",
+          "formulas": [],
+          "examples": [],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": []
+        },
+        {
+          "sectionNumber": "16.2",
+          "sectionTitle": "時間數列資料的組成",
+          "overview": "分解模型：加法 Y_t = T_t + S_t + C_t + I_t；乘法類似。",
+          "formulas": [],
+          "examples": [],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": []
+        },
+        {
+          "sectionNumber": "16.3",
+          "sectionTitle": "時間數列的模型",
+          "overview": "介紹 ARIMA 模型：AR(p), MA(q), 差分 d。",
+          "formulas": [],
+          "examples": [],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": []
+        },
+        {
+          "sectionNumber": "16.4",
+          "sectionTitle": "時間數列的古典分析方法",
+          "overview": "用移動平均、指數平滑法做趨勢與季節性估計。",
+          "formulas": [],
+          "examples": [],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": []
+        },
+        {
+          "sectionNumber": "16.5",
+          "sectionTitle": "時間數列的迴歸分析方法",
+          "overview": "用虛擬變數捕捉季節性，再做回歸分析。",
+          "formulas": [],
+          "examples": [],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": []
+        },
+        {
+          "sectionNumber": "16.6",
+          "sectionTitle": "利用平滑法分析時間數列",
+          "overview": "單指數與雙指數平滑，並介紹 Holt–Winters 方法。",
+          "formulas": [],
+          "examples": [],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": []
+        },
+        {
+          "sectionNumber": "16.7",
+          "sectionTitle": "預測精確度的衡量",
+          "overview": "介紹 MSE、MAE、MAPE 等指標評估預測準確度。",
+          "formulas": [
+            "MSE = Σ(e_t²)/n；MAE = Σ|e_t|/n；MAPE = Σ|e_t/y_t|/n"
+          ],
+          "examples": [],
+          "visuals": [],
+          "mnemonics": [],
+          "exercises": []
+        }
+      ]
+    }
+  ]
+}

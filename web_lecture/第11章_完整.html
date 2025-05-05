@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>統計學講義</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        h2 {
+            color: #2c3e50;
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 30px;
+            border-left: 5px solid #3498db;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+            padding: 8px 0;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        .chapter-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .section-content {
+            margin-bottom: 20px;
+        }
+        .examples, .mnemonics, .exercises {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .examples {
+            background-color: #e8f4fc;
+            border-left: 5px solid #3498db;
+        }
+        .mnemonics {
+            background-color: #fcf3cf;
+            border-left: 5px solid #f1c40f;
+        }
+        .exercises {
+            background-color: #e8f8f5;
+            border-left: 5px solid #2ecc71;
+        }
+        .visualization-block {
+            background-color: #f0f4f8;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .visualization-block img {
+            max-width: 100%;
+            height: auto;
+            margin: 10px auto;
+        }
+        .visualization-placeholder {
+            background-color: #f0f4f8;
+            border: 1px dashed #d0d7de;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+            color: #7f8c8d;
+        }
+        .exercise {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #ccc;
+        }
+        .question {
+            font-weight: bold;
+        }
+        .answer {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+        .toc {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+        .toc h2 {
+            background: none;
+            border-left: none;
+            margin-top: 0;
+            padding-left: 0;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin-bottom: 5px;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #3498db;
+        }
+        .toc .section-link {
+            padding-left: 20px;
+            font-size: 0.9em;
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        .back-to-top:hover {
+            opacity: 1;
+            color: white;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .toc {
+                padding: 10px;
+            }
+        }
+        .formula {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Cambria Math', Georgia, serif;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <a href="#top" class="back-to-top" title="回到頂部">↑</a>
+    <div class="container" id="top">
+<h1>大學統計學</h1>
+<div class="toc">
+<h2>目錄</h2>
+<ul>
+<li><a href="#chapter-11">第11章: 兩母體的參數檢定</a>
+<ul>
+<li class="section-link"><a href="#section-11.1">11.1 獨立樣本平均數差異的檢定</a></li>
+<li class="section-link"><a href="#section-11.2">11.2 配對樣本平均數差異的檢定</a></li>
+<li class="section-link"><a href="#section-11.3">11.3 兩母體比例差異的檢定</a></li>
+<li class="section-link"><a href="#section-11.4">11.4 兩母體變異數比的F檢定</a></li>
+<li class="section-link"><a href="#section-11.5">11.5 非參數方法中的兩樣本檢定</a></li>
+<li class="section-link"><a href="#section-11.6">11.6 實務應用案例</a></li>
+<li class="section-link"><a href="#section-11.7">11.7 使用統計軟體進行兩樣本檢定</a></li>
+</ul></li>
+</ul>
+</div>
+<h2 id="chapter-11" class="chapter-title">第11章: 兩母體的參數檢定</h2>
+<div class="chapter-overview mb-4">本章介紹兩母體的參數檢定的核心概念與應用，幫助學生掌握統計學的基礎知識並應用於實際問題分析。</div>
+<h3 id="section-11.1">11.1 獨立樣本平均數差異的檢定</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在統計學中，獨立樣本平均數差異的檢定是一種用來比較兩個獨立樣本平均數之間是否存在顯著差異的統計方法。這種檢定通常用於研究兩個母體的平均值是否相等，進而得出對於兩個母體是否具有統計上的差異的結論。</p><p>在進行獨立樣本平均數差異的檢定時，我們首先假定兩個樣本是從正態分佈的母體中獨立抽取得到的。然後，我們使用 t 檢定來計算樣本平均值之間的差異是否大於我們所設定的顯著水準。如果差異顯著，我們就可以拒絕兩個母體平均值相等的虛無假設。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一個研究人員想要比較兩種不同瑜珈訓練課程對參與者的壓力水平是否有影響。他隨機選取了兩組參與者，一組接受課程A，另一組接受課程B。在課程結束後，他測量了兩組參與者的壓力水平，並使用獨立樣本 t 檢定來比較兩組的平均壓力水平是否有顯著差異。</li>
+<li>一家公司想要評估兩種不同廣告策略對於產品銷量的影響。他們將市場分為兩組，一組接受廣告A的影響，另一組接受廣告B的影響。最後，他們比較了兩組的平均銷量，並使用獨立樣本 t 檢定來確定兩組銷量是否存在顯著差異。</li>
+<li>一個研究者想要研究兩個不同地區居民的平均收入是否有顯著差異。他隨機選取了兩個地區的樣本，並使用獨立樣本 t 檢定來比較兩個地區的平均收入是否存在統計上的差異。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住在進行獨立樣本平均數差異檢定時，首先要檢查樣本來自的母體是否為正態分佈。</li>
+<li>確保理解 t 檢定的運作原理，以及如何根據計算的 t 值和自由度得出結論。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個研究者想要比較兩個不同藥物對於降低患者血壓的效果。他隨機選取了兩組患者，一組服用藥物A，另一組服用藥物B。他收集了兩組患者的血壓數據，並進行獨立樣本 t 檢定。如果結果顯示兩組患者的平均血壓有顯著差異，該研究者應該採取什麼行動？</div>
+<div class="answer">答案: 如果獨立樣本 t 檢定結果顯示兩組患者的平均血壓有顯著差異，研究者可以得出結論認為兩種藥物對於降低患者血壓的效果是不同的，並擬定進一步的研究計劃或調整治療方案。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一家零售商想要比較兩個不同促銷活動對於商品銷售量的影響。他隨機選取了兩組店鋪，一組實施促銷活動A，另一組實施促銷活動B。最後，他收集了兩組店鋪的銷售量數據，並進行了獨立樣本 t 檢定。如果結果顯示兩組店鋪的平均銷售量無顯著差異，該零售商應該如何解釋這一結果？</div>
+<div class="answer">答案: 如果獨立樣本 t 檢定結果顯示兩組店鋪的平均銷售量無顯著差異，零售商可以得出結論認為兩種促銷活動對於商品銷售量的影響是相似的，可以考慮在未來的促銷活動中選擇更適合的策略。</div>
+</div>
+</div>
+<h3 id="section-11.2">11.2 配對樣本平均數差異的檢定</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>配對樣本平均數差異的檢定是一種統計方法，用來比較兩個相關母體的平均數是否有顯著差異。在這種情況下，我們有兩組相關的樣本數據，例如同一組受測者在兩個不同時間點或條件下的觀測值。我們的目標是檢定這兩組樣本的平均數是否存在顯著差異。</p><p>進行配對樣本平均數差異的檢定時，我們首先計算每對配對樣本的差值，然後對這些差值進行假設檢定。通常使用 t 檢定或配對樣本 t 檢定來進行檢定，該檢定基於差值的平均數和標準誤差來評估差異是否顯著。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一個研究人員想要檢定一種新的訓練方法對學生學習成績的影響。他在學生接受訓練前和訓練後分別測試了他們的成績，然後使用配對樣本 t 檢定來比較這兩個時間點的平均成績差異。</li>
+<li>一家公司對員工進行了新的工作培訓課程，並測試了員工在培訓前和培訓後的工作表現。透過配對樣本 t 檢定，他們評估了培訓對員工工作表現的影響。</li>
+<li>一個營養學研究中心對受試者的體重進行了測量，然後給予他們一種新的減肥藥物並再次測量體重。使用配對樣本 t 檢定，研究人員評估這種藥物對體重的影響。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住在配對樣本平均數差異的檢定中，我們首先計算每對樣本的差值，然後進行假設檢定。</li>
+<li>理解 t 檢定的原理和步驟，有助於更好地應用配對樣本 t 檢定來比較兩組相關樣本的平均數。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一位研究者對一組受測者進行了心理壓力測量，然後給予他們一種放鬆訓練，再次測量心理壓力。以下是其中五位受測者的心理壓力數據（前後）：(10, 8), (12, 9), (15, 11), (9, 7), (11, 10)。請使用配對樣本 t 檢定檢定這兩次測量的平均數是否有顯著差異。</div>
+<div class="answer">答案: 進行計算後，得到 t 值為 3.21，自由度為 4，p 值為 0.030。由於 p 值小於顯著性水平 0.05，我們拒絕虛無假設，可以認為這兩次測量的平均數存在顯著差異。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一位研究者對一組受測者在服用安眠藥前後的睡眠時間進行了測試，以下是其中部分受測者的睡眠時間數據（前後）：(7.5, 6.8), (8.2, 7.3), (6.9, 6.5), (9.1, 8.7), (7.8, 7.2)。請使用配對樣本 t 檢定檢定這兩次測量的平均數是否有顯著差異。</div>
+<div class="answer">答案: 進行計算後，得到 t 值為 2.42，自由度為 4，p 值為 0.060。由於 p 值大於顯著性水平 0.05，我們無法拒絕虛無假設，認為這兩次測量的平均數沒有顯著差異。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個體育教練對他的籃球隊進行了一個月的射籃訓練，然後測試了每個球員的命中率。以下是其中部分球員的命中率數據（前後）：(0.75, 0.78), (0.82, 0.80), (0.68, 0.72), (0.71, 0.75), (0.79, 0.81)。請使用配對樣本 t 檢定檢定這兩次測量的平均數是否有顯著差異。</div>
+<div class="answer">答案: (</div>
+</div>
+</div>
+<h3 id="section-11.3">11.3 兩母體比例差異的檢定</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>兩母體比例差異的檢定是一種統計方法，用於比較兩個不同母體的比例是否存在顯著差異。在進行比例差異檢定時，我們通常會先提出虛無假設（兩母體的比例相等）和對立假設（兩母體的比例不相等），然後利用樣本數據進行檢定。常用的統計檢定方法包括 Z 檢定和卡方檢定。</p><p>在進行兩母體比例差異的檢定時，我們需要計算兩個樣本的比例估計值、標準誤差，並計算檢定統計量。根據檢定統計量的大小和顯著水準，我們可以判斷是否拒絕虛無假設，進而得出兩母體比例是否存在顯著差異的結論。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一個研究人員想要研究男性和女性對某種產品的購買偏好是否存在差異，於是分別調查了100位男性和100位女性的購買情況，最後利用比例差異檢定方法來檢驗兩者之間是否存在顯著差異。</li>
+<li>一家公司想要了解在不同地區對其產品的滿意度是否存在明顯區別，於是在兩個地區進行了滿意度調查，最後進行了兩母體比例差異的檢定。</li>
+<li>一個政府部門希望了解不同年齡層人群對某項政策的支持率是否有所不同，進行了相應的調查後，進行了兩母體比例差異檢定。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住兩母體比例差異檢定的步驟：設定虛無假設和對立假設、計算檢定統計量、設定顯著水準、判斷結論。</li>
+<li>熟練掌握計算比例估計值和標準誤差的公式，這是進行兩母體比例差異檢定的基礎。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個研究中調查了200名學生中的男女比例，結果顯示男生比例為0.6，女生比例為0.4，請進行兩母體比例差異的檢定。</div>
+<div class="answer">答案: 根據給定資料計算比例估計值和標準誤差，得出檢定統計量，並根據顯著水準判斷結論。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一項調查顯示兩個城市對某項新政策的支持率分別為0.55和0.45，樣本量分別為300和400，請進行兩母體比例差異的檢定。</div>
+<div class="answer">答案: 根據給定資料計算比例估計值和標準誤差，得出檢定統計量，並根據顯著水準判斷結論。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一份報告顯示兩個不同行業的員工對於工作環境的滿意度比例分別為0.7和0.6，樣本量分別為200和250，請進行兩母體比例差異的檢定。</div>
+<div class="answer">答案: 根據給定資料計算比例估計值和標準誤差，得出檢定統計量，並根據顯著水準判斷結論。</div>
+</div>
+</div>
+<h3 id="section-11.4">11.4 兩母體變異數比的F檢定</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>兩母體變異數比的F檢定是用來比較兩個母體變異數是否相等的統計方法。在進行F檢定時，我們假設兩個母體的樣本來自獨立且正態分佈的母體，並且兩母體的變異數相等。F檢定的原假設為兩個母體的變異數相等，對立假設則為兩個母體的變異數不相等。我們計算樣本的變異數比，然後根據F分佈找到對應的臨界值，來判斷是否拒絕原假設。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一家公司想要比較兩種不同訓練方法對員工績效的影響，他們將隨機選取一部分員工進行A訓練，另一部分員工進行B訓練，然後測試員工的表現。透過F檢定，可以判斷兩種訓練方法對員工表現的變異數是否相等。</li>
+<li>一個研究人員想要檢定兩種藥物的療效，他們將隨機分配病人群組，一組使用藥物A，另一組使用藥物B，最後測量病人的治療效果。透過F檢定，可以比較兩種藥物的療效是否有顯著差異。</li>
+<li>一個工廠進行了兩種不同生產工藝的比較，他們測試了兩組樣本的生產量變異數，通過F檢定可以確定兩種工藝的生產變異數是否相等。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>F檢定的原假設是母體變異數相等，對立假設是母體變異數不相等，可以記憶為「F for Variance Equality」。</li>
+<li>F檢定通常應用在比較兩個群體的變異數是否相等，可以記憶為「F for Comparing Variances」。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個研究人員想要比較兩個不同訓練方法對學生考試成績的影響，他分別將兩組學生進行訓練，然後測試他們的考試成績。請設定原假設和對立假設。</div>
+<div class="answer">答案: 原假設：兩個訓練方法的母體變異數相等；對立假設：兩個訓練方法的母體變異數不相等。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個研究人員想要比較兩個不同投資組合的風險水平，他將進行F檢定來檢定兩組投資組合的變異數是否相等。如果F值計算結果為2.5，樣本量為10，自由度為(3,6)，請在0.05的顯著水平下判斷原假設是否成立。</div>
+<div class="answer">答案: 因為F值計算結果為2.5小於臨界值3.49，所以在0.05的顯著水平下無法拒絕原假設，即兩組投資組合的變異數相等。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個研究人員進行了兩個實驗組的比較，他得到F值為4.2，樣本量為15，自由度為(5,10)，請判斷在0.01的顯著水平下是否應該拒絕原假設。</div>
+<div class="answer">答案: 因為F值計算結果為4.2大於臨界值4.96，所以在0.01的顯著水平下應該拒絕原假設，即兩個實驗組的變異數不相等。</div>
+</div>
+</div>
+<h3 id="section-11.5">11.5 非參數方法中的兩樣本檢定</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在統計學中，當兩個母體的分配情況不明確或不符合常態分配時，我們可以使用非參數方法來進行兩樣本檢定。這些方法不依賴於母體參數的具體數值，而是基於樣本的順序或排名來做出結論。其中，最常見的方法包括符號檢定、秩和檢定和秩和檢定。</p><p>符號檢定是一種非參數方法，用於比較兩個樣本的中位數是否有顯著差異。這個方法將兩個樣本合併後，計算其中一個樣本的觀察值高於另一個樣本的概率，如果這個概率小於事先設定的顯著水準，我們就可以拒絕虛無假設，認為兩個樣本的中位數有顯著差異。</p><p>秩和檢定則是用於比較兩個樣本的位置參數（如中位數、平均值）是否有顯著差異。這個方法將兩個樣本的觀測值進行排名，然後計算兩組排名之和，進而判斷是否存在統計上的差異。這種方法同樣不要求樣本來自常態分佈。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一個研究想要比較兩種不同藥物對病人疼痛指數的影響。由於樣本數較小且不符合常態分佈，研究人員採用符號檢定來比較兩組病人的中位數疼痛指數是否有統計上的顯著差異。</li>
+<li>一個公司想要評估不同培訓方法對員工表現的影響。為了避免對母體分佈的假設，他們使用秩和檢定來比較兩組員工的平均表現是否有顯著差異。</li>
+<li>一個研究小組對兩個城市的空氣質量進行比較。由於樣本數量不大且資料分佈不均勻，他們選擇使用非參數方法中的兩樣本檢定來確定兩個城市的空氣質量是否有統計上的差異。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住符號檢定是比較中位數，而秩和檢定是比較位置參數（如平均值、中位數）。</li>
+<li>理解非參數方法的核心思想是不依賴於母體參數的具體數值，而是基於樣本的順序或排名。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 符號檢定和秩和檢定分別適用於比較哪些統計量？請簡要說明其應用場景。</div>
+<div class="answer">答案: 符號檢定適用於比較中位數，適用於樣本數較小且不符合常態分佈的情況；秩和檢定適用於比較位置參數（如平均值、中位數），適用於樣本數量不大且資料分佈不均勻的情況。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個研究小組想要比較兩組學生的考試成績，請問他們應該選擇使用符號檢定還是秩和檢定？為什麼？</div>
+<div class="answer">答案: 他們應該選擇使用秩和檢定，因為他們想要比較兩組學生的平均成績，而不僅僅是中位數。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 請解釋為什麼非參數方法中的兩樣本檢定對於小樣本且母體分佈不明確的情況非常有用。</div>
+<div class="answer">答案: 因為非參數方法不要求樣本來自常態分佈，且對於小樣本的結果更具有魯棒性，可以幫助我們做出對母體差異的結論而不需要過多的假設。</div>
+</div>
+</div>
+<h3 id="section-11.6">11.6 實務應用案例</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在統計學中，兩母體的參數檢定是一種統計方法，用來比較兩個母體的參數是否有顯著差異。當我們有兩組獨立的樣本，想要了解這兩組樣本所代表的母體是否存在差異時，可以使用兩母體的參數檢定。在進行檢定時，我們會設定虛無假設和對立假設，然後利用統計方法來判斷是否有足夠的證據拒絕虛無假設，進而得出結論。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一家公司想要比較兩個不同廣告策略對於銷售量的影響，他們分別對兩組消費者實施不同廣告策略，然後收集銷售數據。通過兩母體的參數檢定，可以確定這兩種廣告策略在銷售量上是否存在顯著差異。</li>
+<li>一所學校想要研究兩個不同教學方法對學生成績的影響，他們隨機將學生分為兩組，分別接受不同的教學方法，然後進行期末考試。透過兩母體的參數檢定，可以判斷這兩種教學方法對學生成績是否有統計上的差異。</li>
+<li>一家製造公司想要比較兩種不同生產工藝的產品瑕疵率，他們從兩條生產線上分別抽取樣本，檢測產品的瑕疵率。透過兩母體的參數檢定，可以確定這兩條生產線的產品瑕疵率是否有顯著差異。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>設定虛無假設與對立假設時，可以用「H0」代表虛無假設，「H1」代表對立假設，這樣有助於記憶兩者之間的對應關係。</li>
+<li>在進行兩母體的參數檢定時，要確保樣本來源獨立，並注意兩組樣本的大小、變異數等統計特性，以選擇合適的檢定方法。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 什麼是兩母體的參數檢定？請簡要說明其步驟。</div>
+<div class="answer">答案: 兩母體的參數檢定是用來比較兩組獨立樣本所代表的母體參數是否有顯著差異的統計方法。步驟包括設定虛無假設與對立假設、計算檢定統計量、決定顯著水準和拒絕域、進行假設檢定、做出結論。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 請舉例說明一個實際應用場景，可以使用兩母體的參數檢定進行統計分析。</div>
+<div class="answer">答案: 一個實際應用場景是一家零售店想要比較兩個不同促銷活動對於銷售額的影響。他們隨機選取兩組顧客，分別在不同時間實施不同促銷活動，然後比較兩組的平均銷售額是否有顯著差異。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 在進行兩母體的參數檢定時，為什麼需要確保樣本來源獨立？這對結果有什麼影響？</div>
+<div class="answer">答案: 確保樣本來源獨立可以減少外部因素對實驗結果的干擾，確保結果的可靠性和有效性。如果樣本來源不獨立，可能會導致結果偏誤，使得兩母體的參數檢定結果失去可信度。</div>
+</div>
+</div>
+<h3 id="section-11.7">11.7 使用統計軟體進行兩樣本檢定</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在進行兩樣本檢定時，我們通常會使用統計軟體來進行計算和假設檢定。這種檢定可以用來比較兩個母體參數的差異，例如平均數或比例。統計軟體能夠快速幫助我們計算出樣本統計量，並根據給定的顯著水準與自由度來判斷是否拒絕虛無假設。常見的兩樣本檢定方法包括獨立樣本 t 檢定和配對樣本 t 檢定。</p><p>在獨立樣本 t 檢定中，我們假設兩個樣本是獨立的，並檢定它們的平均數是否有顯著差異。統計軟體會計算出 t 值並根據 t 分佈找到相應的 p 值，進而判斷結果的顯著性。而在配對樣本 t 檢定中，我們比較的是同一組樣本在兩個不同時間點或條件下的變化，此時統計軟體也能輔助計算並進行假設檢定。</p><p>統計軟體在兩樣本檢定中的應用使得我們更容易進行複雜的統計分析，並快速獲得結果，使決策更加客觀和科學。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一家公司想比較兩種不同培訓方法對員工績效的影響，他們收集了兩組員工的績效數據，使用統計軟體進行獨立樣本 t 檢定，以確定兩種方法是否有顯著差異。</li>
+<li>一個研究小組對一種新藥的效果進行研究，他們對同一組受試者在服用藥物前後的生理指標進行檢測，並使用統計軟體進行配對樣本 t 檢定，以評估藥物對指標的影響。</li>
+<li>一個市場調查公司想知道兩個不同品牌產品的平均滿意度是否有差異，他們對兩組消費者進行調查，並使用統計軟體進行獨立樣本 t 檢定來進行比較。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>獨立樣本檢定中，獨立的「I」字母可以讓你聯想到使用獨立樣本 t 檢定。</li>
+<li>配對樣本檢定中，配對的「P」字母可以幫助你記住使用配對樣本 t 檢定。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個研究想比較兩個不同教學方法對學生成績的影響，他們分別對兩組學生進行測試，結果如下：樣本1平均分為80，樣本2平均分為85，樣本1標準差為10，樣本2標準差為12。請使用統計軟體進行獨立樣本 t 檢定，假設顯著水準為0.05。</div>
+<div class="answer">答案: 統計軟體計算出 t 值為 -2.108，自由度為 n1 + n2 - 2 = 18，對應的 p 值為 0.049。因為 p 值小於 0.05，我們可以拒絕虛無假設，認為兩種教學方法對學生成績有顯著影響。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個研究想了解一種新營養補充品對運動表現的影響，他們對同一組運動員在服用補充品前後的體能指標進行了檢測，結果如下：配對差異為3，標準差為2。請使用統計軟體進行配對樣本 t 檢定，假設顯著水準為0.01。</div>
+<div class="answer">答案: 統計軟體計算出 t 值為 1.5，自由度為 n - 1 = 9，對應的 p 值為 0.08。因為 p 值大於 0.01，我們無法拒絕虛無假設，認為補充品對運動表現沒有顯著影響。</div>
+</div>
+</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            }
+        };
+        
+        // 添加平滑滾動
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // 添加回到頂部按鈕顯示/隱藏功能
+        window.addEventListener('scroll', function() {
+            var backToTop = document.querySelector('.back-to-top');
+            if (window.pageYOffset > 300) {
+                backToTop.style.display = 'block';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>統計學講義</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        h2 {
+            color: #2c3e50;
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 30px;
+            border-left: 5px solid #3498db;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+            padding: 8px 0;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        .chapter-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .section-content {
+            margin-bottom: 20px;
+        }
+        .examples, .mnemonics, .exercises {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .examples {
+            background-color: #e8f4fc;
+            border-left: 5px solid #3498db;
+        }
+        .mnemonics {
+            background-color: #fcf3cf;
+            border-left: 5px solid #f1c40f;
+        }
+        .exercises {
+            background-color: #e8f8f5;
+            border-left: 5px solid #2ecc71;
+        }
+        .visualization-block {
+            background-color: #f0f4f8;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .visualization-block img {
+            max-width: 100%;
+            height: auto;
+            margin: 10px auto;
+        }
+        .visualization-placeholder {
+            background-color: #f0f4f8;
+            border: 1px dashed #d0d7de;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+            color: #7f8c8d;
+        }
+        .exercise {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #ccc;
+        }
+        .question {
+            font-weight: bold;
+        }
+        .answer {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+        .toc {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+        .toc h2 {
+            background: none;
+            border-left: none;
+            margin-top: 0;
+            padding-left: 0;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin-bottom: 5px;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #3498db;
+        }
+        .toc .section-link {
+            padding-left: 20px;
+            font-size: 0.9em;
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        .back-to-top:hover {
+            opacity: 1;
+            color: white;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .toc {
+                padding: 10px;
+            }
+        }
+        .formula {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Cambria Math', Georgia, serif;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <a href="#top" class="back-to-top" title="回到頂部">↑</a>
+    <div class="container" id="top">
+<h1>大學統計學</h1>
+<div class="toc">
+<h2>目錄</h2>
+<ul>
+<li><a href="#chapter-7">第7章: 抽樣分配與中央極限定理</a>
+<ul>
+<li class="section-link"><a href="#section-7.1">7.1 抽樣分配的概念</a></li>
+<li class="section-link"><a href="#section-7.2">7.2 樣本平均數的分配</a></li>
+<li class="section-link"><a href="#section-7.3">7.3 中央極限定理</a></li>
+<li class="section-link"><a href="#section-7.4">7.4 樣本比例的分配</a></li>
+<li class="section-link"><a href="#section-7.5">7.5 樣本變異數的分配</a></li>
+<li class="section-link"><a href="#section-7.6">7.6 抽樣誤差與精確度</a></li>
+<li class="section-link"><a href="#section-7.7">7.7 有限母體的抽樣校正</a></li>
+</ul></li>
+</ul>
+</div>
+<h2 id="chapter-7" class="chapter-title">第7章: 抽樣分配與中央極限定理</h2>
+<div class="chapter-overview mb-4">本章介紹抽樣分配與中央極限定理的核心概念與應用，幫助學生掌握統計學的基礎知識並應用於實際問題分析。</div>
+<h3 id="section-7.1">7.1 抽樣分配的概念</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>抽樣分配是統計學中一個重要的概念，指的是從母體中抽取樣本後計算出的統計量的分佈。當我們從母體中抽取多個樣本，每個樣本都計算出一個統計量，這些統計量的分佈即為抽樣分配。抽樣分配有助於我們理解樣本統計量的性質，並且能夠幫助我們做出對母體的統計推斷。</p><p>在抽樣分配中，常見的統計量包括平均數、變異數、相關係數等。透過大量的樣本抽取和統計量計算，我們可以獲得這些統計量的分佈情況，進而推斷母體的特性。抽樣分配的重要性在於它能幫助我們進行統計推斷，並且為後續的統計分析提供基礎。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>假設一家公司想了解員工的平均工資水平，他們可以隨機抽取幾個部門的員工，計算每個部門的平均工資，然後分析這些平均值的分佈，以推斷整個公司的平均工資水平。</li>
+<li>在市場調查中，為了了解某一產品的滿意度，調查人員可以從不同地區抽取樣本，計算出每個地區的平均滿意度，進而推斷整個市場對該產品的滿意度。</li>
+<li>在醫學研究中，為了估計某種治療方法的有效性，研究人員可以從不同的臨床試驗中抽取樣本，計算出每個試驗組的平均治療效果，然後分析這些效果的分佈。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>將抽樣分配比喻成為一個抽獎活動，每個樣本就像是一張彩票，而抽取的統計量則是中獎號碼，通過這樣的比喻可以更容易理解抽樣分配的概念。</li>
+<li>理解抽樣分配的重要性，可以從提高統計推斷的準確性和穩定性的角度來記憶這一概念。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 從一個母體中抽取了10個樣本，計算出平均值為50，標準差為5，該平均值的抽樣分配是什麼？</div>
+<div class="answer">答案: 平均值的抽樣分配為母體平均值的標準差除以樣本數的平方根，即5/√10。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 如果一個樣本的大小為30，樣本平均值為100，樣本標準差為10，該樣本的抽樣分配是什麼？</div>
+<div class="answer">答案: 樣本平均值的抽樣分配為母體平均值，且標準差為母體標準差除以樣本數的平方根，即10/√30。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 為什麼抽樣分配在統計學中如此重要？</div>
+<div class="answer">答案: 抽樣分配能夠幫助我們理解樣本統計量的性質，並且為統計推斷提供基礎，提高推斷的準確性和可靠性。</div>
+</div>
+</div>
+<h3 id="section-7.2">7.2 樣本平均數的分配</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在統計學中，樣本平均數的分配是指當從總體中抽取不同大小的樣本並計算其平均值時，這些平均值的分配情況。根據中央極限定理，當樣本大小足夠大時，這些樣本平均數將呈現出近似常態分佈的特性。這對於統計推論和假設檢定非常重要，因為我們可以利用常態分佈的性質來進行推論和設置信心區間。</p><p>當我們從總體中抽取一個大小為 n 的樣本，計算其平均值，然後不斷重複這個過程，我們可以得到很多樣本平均數。這些樣本平均數的平均值將等於母體平均值，並且隨著樣本大小的增加，樣本平均數的變異性將減小。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>假設一個製造公司想要知道每小時生產的零件平均數量。他們可以從每小時生產的不同樣本中計算平均值，並通過樣本平均數的分佈來估計母體平均值。</li>
+<li>在一個市場調查中，研究人員可能需要計算每位受訪者的平均支出，以了解整個受訪者群體的消費習慣。他們可以從不同樣本計算平均支出，並通過樣本平均數的分佈來估計母體的平均支出。</li>
+<li>在醫學研究中，科學家們可能需要計算不同藥物對病人的平均治療效果。通過從不同樣本中計算平均治療效果，他們可以了解這些藥物的整體效果。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住中央極限定理是樣本平均數的分配呈現近似常態分佈的重要理論基礎。</li>
+<li>理解樣本平均數的分配是統計推論中常用的方法，有助於我們對母體特徵進行估計和推斷。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 從一個包含 100 個數據點的總體中，抽取大小為 30 的樣本，計算其平均值。如果重複進行此過程 1000 次，試問這 1000 個樣本平均數的平均值應該接近於多少？</div>
+<div class="answer">答案: 這 1000 個樣本平均數的平均值應該接近於總體平均值。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 當樣本大小增加時，樣本平均數的變異性會如何變化？</div>
+<div class="answer">答案: 當樣本大小增加時，樣本平均數的變異性會減小。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 為什麼樣本平均數的分配對統計推論和假設檢定如此重要？</div>
+<div class="answer">答案: 樣本平均數的分配可以幫助我們估計母體的平均值和變異數，並且在進行統計推論時提供重要的參考依據。</div>
+</div>
+</div>
+<h3 id="section-7.3">7.3 中央極限定理</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>中央極限定理（Central Limit Theorem, CLT）是統計學中一個重要的定理，它說明當從任意獨立同分布的母體中抽取大量樣本時，這些樣本的平均值的抽樣分配將趨近於常態分配，無論母體的分配形式是什麼。換句話說，當樣本數足夠大時，樣本平均值的分佈將是一個接近常態分佈的分佈，而且這個常態分佈的平均數將等於母體的平均數，標準差等於母體標準差除以樣本大小的平方根。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>假設我們想評估全球某大型企業員工的平均薪資，但無法調查每位員工。我們可以隨機抽取一小部分員工，計算其平均薪資，根據中央極限定理，這些平均薪資將近似服從常態分佈，從而可以用來估計整個企業員工的平均薪資。</li>
+<li>在品質控制中，我們可以抽取一小部分生產品進行檢測，根據這些樣本的測量結果，利用中央極限定理來估計整個生產批次的平均值及變異數。</li>
+<li>在市場調查中，透過抽樣調查來獲取消費者對產品的滿意度評分，根據這些評分的平均值，可以利用中央極限定理來估計整個消費者群體的平均滿意度分佈。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住中央極限定理的核心思想：當樣本數足夠大時，樣本平均值的分佈將接近常態分佈。</li>
+<li>理解中央極限定理的應用範圍：無論母體的分配形式如何，只要樣本數足夠大，樣本平均值都將趨近於常態分佈。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 從一個均勻分佈的母體中抽取100個樣本，計算這100個樣本的平均值。根據中央極限定理，當樣本數增加到1000時，這些樣本平均值的抽樣分配會有何變化？</div>
+<div class="answer">答案: 當樣本數增加到1000時，這些樣本平均值的抽樣分配將更接近常態分佈。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 如果從一個指數分佈的母體中抽取樣本，計算這些樣本的平均值，根據中央極限定理，這些平均值的抽樣分配會是什麼形式？</div>
+<div class="answer">答案: 根據中央極限定理，無論母體的分佈形式如何，當樣本數足夠大時，這些平均值的抽樣分配將近似服從常態分佈。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 為什麼中央極限定理在實際應用中非常重要？請提供一個具體的例子說明。</div>
+<div class="answer">答案: 中央極限定理在實際應用中重要，因為它允許我們利用一小部分樣本來估計母體的特徵，例如平均值或變異數，從而節省成本和時間。例如，市場調查中可以利用中央極限定理來估計整個消費者群體的平均滿意度分佈。</div>
+</div>
+</div>
+<h3 id="section-7.4">7.4 樣本比例的分配</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在統計學中，樣本比例的分配是指當我們從總體中抽取一個樣本時，計算樣本中某個特定特徵（例如成功的次數）的比例的分配。這個比例通常用樣本成功的次數除以樣本總數來表示。樣本比例的分配是二項分配的一個特例，其中每次試驗只有兩種可能的結果，成功或失敗。</p><p>當樣本容量足夠大時，根據中央極限定理，這些樣本比例的分配將呈現出一個接近常態分配的形狀，即使原始總體分配不是常態的。這使得我們可以利用常態分配的性質來進行推論統計分析，例如計算置信區間、假設檢定等。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>在一個調查中，我們想要估計某個城市居民對某個政策的支持率。我們從這個城市中隨機抽取了300位居民，然後計算他們支持該政策的比例。這個比例就是樣本比例，我們可以通過這個樣本比例來對整個城市居民的支持率進行估計。</li>
+<li>在製藥業中，一家公司想要確定其生產線上產品合格的比例。他們每小時從生產線上抽取樣本，然後檢測其中產品合格的比例，以確保生產的產品質量。</li>
+<li>在市場調查中，一家公司想要了解消費者對其產品的滿意度。他們通過訪問隨機抽取的消費者，計算樣本中對產品滿意的比例，以便評估整體市場的滿意度水平。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>**理解二項分配：** 樣本比例的分配是二項分配的一個特例，記住每次試驗只有兩種可能的結果（成功或失敗），有助於理解和應用樣本比例的分配。</li>
+<li>**中央極限定理：** 理解中央極限定理的概念對於理解樣本比例的分配極為重要。記住當樣本容量足夠大時，樣本比例的分配將呈現出常態分配的形狀，這將有助於進行統計推論。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個電商公司進行了一項促銷活動，隨機抽取了200位顧客進行調查，其中有150位顧客表示他們對這次促銷活動感興趣。計算這個樣本的成功比例是多少？</div>
+<div class="answer">答案: 成功比例為150/200 = 0.75。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個調查發現，在一個城市中，有600位受訪者中有400人支持某個提案。計算這個樣本的支持比例是多少？</div>
+<div class="answer">答案: 支持比例為400/600 = 0.67。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一家工廠每小時從生產線上抽取20個樣本進行質量檢測，其中有15個樣本合格。計算這個樣本的合格比例是多少？</div>
+<div class="answer">答案: 合格比例為15/20 = 0.75。</div>
+</div>
+</div>
+<h3 id="section-7.5">7.5 樣本變異數的分配</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在統計學中，樣本變異數的分配是指當我們從總體中抽取多個樣本時，這些樣本的變異數的分布情況。當總體呈現特定分配時，樣本變異數的分配也會有特定的形式。一個重要的結果是，當樣本容量足夠大時，樣本變異數的分布將接近常態分佈。這是中央極限定理的應用之一。</p><p>當樣本容量較小時，樣本變異數的分配通常會呈現右偏的形態，這是因為樣本的變異性較大，而隨著樣本容量增加，樣本變異數的分配漸漸接近常態分佈。這對於我們在進行統計推論時非常重要，因為常態分佈具有許多方便的性質。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>假設我們想知道某個地區學生的平均成績的變異數，但我們無法調查每一個學生，這時可以通過抽取樣本並計算其變異數來估計總體的變異數。</li>
+<li>在製藥業中，為了確保生產出的藥品質量穩定，需要對每個批次進行檢驗，樣本變異數的分配可以幫助我們了解每個批次的品質變異程度。</li>
+<li>研究人員想研究某種新藥對患者的治療效果，可以通過抽樣獲取病人樣本，計算樣本變異數來評估新藥的有效性。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>當樣本容量增加時，樣本變異數的分配會趨近於常態分佈，這可以讓我們在進行統計分析時更方便地應用常態分佈的性質。</li>
+<li>樣本變異數的分配可以幫助我們了解樣本中數據的變異程度，進而對總體的特性進行推斷。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 從一個總體中抽取樣本，樣本容量為25，計算樣本變異數，重複進行多次抽樣，形成樣本變異數的分佈。該分佈呈現什麼特點？</div>
+<div class="answer">答案: 隨著抽樣次數增加，樣本變異數的分佈將逐漸接近常態分佈。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 為什麼當樣本容量較小時，樣本變異數的分配通常呈現右偏的形態？</div>
+<div class="answer">答案: 當樣本容量較小時，樣本的變異性比較大，因此樣本變異數的分配通常呈現右偏的形態。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 樣本變異數的分配對於統計學的推斷有什麼重要意義？</div>
+<div class="answer">答案: 樣本變異數的分配可以幫助我們了解樣本的變異程度，進而進行對總體特性的推斷。</div>
+</div>
+</div>
+<h3 id="section-7.6">7.6 抽樣誤差與精確度</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>抽樣誤差是指由於抽樣方式或樣本規模不當所導致的估計值和真實值之間的差異。在統計學中，我們通常使用抽樣來代表整個母體，但由於無法對整個母體進行調查，我們必須仰賴樣本來做出推斷。抽樣誤差的大小會受到多個因素的影響，例如抽樣方法的設計、樣本容量的大小以及母體的特性。精確度則是指估計值的信賴程度，即估計值的可信度和可靠性。</p><p>當抽取的樣本規模越大，抽樣誤差通常會減少，因為更大的樣本可能更好地代表母體。此外，使用隨機抽樣方法可以減少抽樣誤差，因為每個母體單位都有機會被選入樣本，從而減少偏誤。要提高估計的精確度，可以增加樣本容量、提高信心水準或使用更精確的估計方法。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>在市場調查中，如果抽樣誤差太大，可能會導致對目標市場的了解不足，進而影響市場策略的制定。</li>
+<li>在政治民意調查中，抽樣誤差的大小會影響到對候選人支持率的準確度，進而影響選舉結果的預測。</li>
+<li>在生產製造中，抽樣誤差的控制可以確保生產過程中產品質量的穩定性，減少次品率。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記憶抽樣誤差與精確度的關係：抽樣誤差越小，精確度越高，因為誤差越小代表估計值越接近真實值。</li>
+<li>掌握提高精確度的方法：增加樣本容量、提高信心水準和使用更精確的估計方法可以提高估計的精確度。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個民意調查樣本包含1000名受訪者，估計某個候選人的支持率為50%，信心水準為95%，計算其抽樣誤差。</div>
+<div class="answer">答案: 抽樣誤差為約±3.1%。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 如果將上述民意調查樣本擴大到2000名受訪者，預期抽樣誤差會如何變化？</div>
+<div class="answer">答案: 隨著樣本容量增加，抽樣誤差會減少，精確度提高。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 為了提高市場調查的精確度，你會選擇增加樣本容量還是提高信心水準？為什麼？</div>
+<div class="answer">答案: 提高信心水準，因為提高信心水準可以增加估計的可信度，從而提高精確度。</div>
+</div>
+</div>
+<h3 id="section-7.7">7.7 有限母體的抽樣校正</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>有限母體的抽樣校正是統計學中一個重要的概念，當母體是有限大小時，抽樣分配和中央極限定理可能不再適用。在這種情況下，需要進行抽樣校正，以確保結果的準確性。當母體大小有限時，抽樣後母體的大小會減少，這會導致樣本統計量的分佈有所偏移。抽樣校正通過修正樣本統計量的變異數，解決了這個問題。</p><p>抽樣校正的基本原則是根據母體大小和樣本大小計算校正因子，將樣本統計量的變異數進行調整。通常情況下，隨著母體大小的增加，校正因子會趨近於1，表示樣本統計量的分佈逼近正態分佈。抽樣校正確保了在有限母體情況下對母體參數進行估計的準確性。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>假設一個小型公司有100名員工，研究人員想要估計這些員工的平均工資。如果直接對全體員工進行調查，可能會耗費大量時間和資源。透過抽樣校正，可以合理地從這100名員工中選取一個樣本，並校正統計量，以得出對全體員工平均工資的準確估計。</li>
+<li>在一個小型學校的研究中，研究人員希望了解學生對某項政策的滿意度。由於學生人數有限，無法將全體學生納入樣本，因此需要進行抽樣校正，以確保樣本統計量能夠準確反映全體學生的滿意度。</li>
+<li>在市場調查中，如果目標人群是某個特定族群或少數群體，通常會面臨有限母體的情況。透過抽樣校正，研究人員可以更準確地了解這些特定族群的意見和偏好。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住抽樣校正的目的：確保在有限母體情況下對母體參數進行估計的準確性。</li>
+<li>理解校正因子的作用：校正因子可以幫助調整樣本統計量的變異數，使其更貼近母體的真實情況。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個小型農場有50頭牛，研究人員想要估計這些牛的平均體重。如果他們隨機抽取了10頭牛進行測量，應如何進行抽樣校正？</div>
+<div class="answer">答案: 可以計算校正因子，根據母體大小和樣本大小來調整樣本統計量的變異數，以確保估計結果的準確性。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一所小型企業有30名員工，研究人員希望了解他們對新政策的看法。如果他們隨機選取了15名員工進行調查，應如何應用抽樣校正？</div>
+<div class="answer">答案: 可以使用抽樣校正來調整樣本統計量，以確保對全體員工的看法進行準確估計。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個小型社區有100家家庭，研究人員希望了解他們對當地公共設施的滿意度。如果他們只能對其中20家家庭進行調查，該如何應用抽樣校正？</div>
+<div class="answer">答案: 透過抽樣校正計算校正因子，調整樣本統計量的變異數，以確保對全體社區的滿意度進行準確估計。</div>
+</div>
+</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            }
+        };
+        
+        // 添加平滑滾動
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // 添加回到頂部按鈕顯示/隱藏功能
+        window.addEventListener('scroll', function() {
+            var backToTop = document.querySelector('.back-to-top');
+            if (window.pageYOffset > 300) {
+                backToTop.style.display = 'block';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

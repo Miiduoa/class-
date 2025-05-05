@@ -1,0 +1,136 @@
+/* 統計學講義特定樣式 */
+
+/* 整體頁面樣式 */
+body.lecture-page {
+    font-family: "Microsoft JhengHei", Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+/* 講義標題 */
+.lecture-title {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3498db;
+}
+
+/* 章節標題 */
+.chapter-title {
+    color: #2c3e50;
+    background-color: #ecf0f1;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 30px;
+    border-left: 5px solid #3498db;
+}
+
+/* 小節標題 */
+.section-title {
+    color: #34495e;
+    margin-top: 25px;
+    padding: 8px 0;
+    border-bottom: 1px solid #bdc3c7;
+}
+
+/* 內容區塊 */
+.content-block {
+    background-color: #ffffff;
+    padding: 20px;
+    margin: 15px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* 例子區塊 */
+.examples-block {
+    background-color: #e8f4fc;
+    border-left: 5px solid #3498db;
+}
+
+/* 記憶技巧區塊 */
+.mnemonics-block {
+    background-color: #fcf3cf;
+    border-left: 5px solid #f1c40f;
+}
+
+/* 練習題區塊 */
+.exercises-block {
+    background-color: #e8f8f5;
+    border-left: 5px solid #2ecc71;
+}
+
+/* 數學公式 */
+.formula {
+    font-family: "Cambria Math", Georgia, serif;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 4px;
+    overflow-x: auto;
+}
+
+/* 圖表與圖像 */
+.lecture-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 20px auto;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* 返回頂部按鈕 */
+.back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #3498db;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 40px;
+    z-index: 1000;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.back-to-top:hover {
+    opacity: 1;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    body.lecture-page {
+        padding: 10px;
+    }
+    
+    .content-block {
+        padding: 15px;
+    }
+}
+
+/* 打印樣式 */
+@media print {
+    body.lecture-page {
+        max-width: 100%;
+        padding: 0;
+        background-color: white;
+    }
+    
+    .content-block {
+        box-shadow: none;
+        border: 1px solid #ddd;
+        page-break-inside: avoid;
+    }
+    
+    .back-to-top {
+        display: none;
+    }
+} 

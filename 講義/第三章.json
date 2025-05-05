@@ -1,0 +1,194 @@
+{
+  "chapters": [
+    {
+      "chapterNumber": 3,
+      "chapterTitle": "檢視資料的分布-以統計表與統計圖呈現",
+      "sections": [
+        {
+          "sectionNumber": "3.1",
+          "sectionTitle": "類別資料的整理與呈現",
+          "overview": "將質性／類別資料彙整成次數表、相對次數表，並以長條圖與圓餅圖呈現，掌握各類別之分布比例。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "一班 30 名學生依血型分組，計算各血型人數並繪製圓餅圖。",
+              "steps": [
+                "彙整次數：A:12、B:8、O:6、AB:4",
+                "計算百分比：A:40%、B:26.7%、O:20%、AB:13.3%",
+                "繪製圓餅圖／長條圖"
+              ]
+            }
+          ],
+          "visuals": [
+            {
+              "path": "/static/images/ch3/bar_pie.png",
+              "description": "長條圖與圓餅圖示例"
+            }
+          ],
+          "mnemonics": [
+            "「表→圖→表」：先表格再長條或圓餅，最後回表格加註百分比。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "試將以下顏色喜好（紅、藍、綠、黃）資料做次數表並畫長條圖。",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "3.2",
+          "sectionTitle": "數量資料的整理與呈現",
+          "overview": "將連續或離散數量資料分組成組距、頻數表，並以直方圖與折線圖顯示分布趨勢。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "某工廠 50 件產品重量(kg)，分成 5 組距，計算頻數並繪製直方圖。",
+              "steps": [
+                "計算組距寬度 = (最大–最小)/組數",
+                "分組並計算頻數",
+                "以直方圖顯示"
+              ]
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch3_3.2_histogram_line.png",
+              "caption": "直方圖與折線圖示例"
+            }
+          ],
+          "mnemonics": [
+            "「組距頻數畫直方」：先找範圍再分組、頻數、直方圖。"
+          ],
+          "exercises": [
+            {
+              "type": "coding",
+              "language": "Python",
+              "prompt": "使用 matplotlib 畫出樣本資料的直方圖並標示各組頻率。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "3.3",
+          "sectionTitle": "枝葉圖",
+          "overview": "利用枝葉圖同時保留原始資料數字與分布形狀，適合小樣本的快速檢視。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "將以下 15 個分數做枝葉圖：78, 82, 85, …",
+              "steps": [
+                "將十位數作枝、個位數作葉",
+                "依枝排序，將葉依大小排列"
+              ]
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch3_3.3_stem_leaf.png",
+              "caption": "枝葉圖示例"
+            }
+          ],
+          "mnemonics": [
+            "「枝幹顯大意，葉子見細節」。"
+          ],
+          "exercises": [
+            {
+              "type": "short-answer",
+              "question": "試手動畫出以下數據的枝葉圖並解讀分布集中趨勢。",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "3.4",
+          "sectionTitle": "時間數列資料的整理與呈現",
+          "overview": "將時間序列資料繪製折線圖或季節性圖，用以觀察趨勢與週期。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "某商店 12 個月銷售額，繪製折線圖並標示最高／最低月份。"
+            }
+          ],
+          "visuals": [
+            {
+              "type": "animation",
+              "src": "animations/ch3_3.4_time_series.gif",
+              "caption": "動態折線圖示例"
+            }
+          ],
+          "mnemonics": [
+            "「時折看趨勢」：時間→折線→趨勢。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "觀察折線圖後，指出是否存在季節性波動？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "3.5",
+          "sectionTitle": "兩組數量資料的整理與呈現",
+          "overview": "同時比較兩組數據分布，可用並列直方圖、箱型圖或條件折線圖。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "比較甲組／乙組學生考試成績分布，繪製箱型圖。",
+              "steps": [
+                "計算五數摘要（最小值、Q1、中位數、Q3、最大值）",
+                "繪製箱型圖並比較中位數差異"
+              ]
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch3_3.5_boxplot.png",
+              "caption": "並列箱型圖示例"
+            }
+          ],
+          "mnemonics": [
+            "「箱中見分布，線上看差異」。"
+          ],
+          "exercises": [
+            {
+              "type": "coding",
+              "language": "R",
+              "prompt": "使用 ggplot2 繪製兩組資料的並列箱型圖。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "3.6",
+          "sectionTitle": "統計圖表的優質性與扭曲性",
+          "overview": "檢查圖表設計陷阱：軸斷裂、比例失真、顏色誤導，並學習最佳實務。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "分析一張上下限不一的折線圖，討論其如何誤導閱讀者。"
+            }
+          ],
+          "visuals": [
+            {
+              "path": "/static/images/ch3/misleading_graph.png",
+              "description": "常見的圖表扭曲技巧及其視覺效果"
+            }
+          ],
+          "mnemonics": [
+            "「四不原則」：不截斷、不扭曲、不選擇性呈現、不省略關鍵信息。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "指出以下圖表中至少兩項不良設計並提出修正建議。",
+              "answer": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

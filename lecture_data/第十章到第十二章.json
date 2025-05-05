@@ -1,0 +1,381 @@
+{
+  "chapters": [
+    {
+      "chapterNumber": 10,
+      "chapterTitle": "假設檢定",
+      "sections": [
+        {
+          "sectionNumber": "10.1",
+          "sectionTitle": "假設檢定的基本概念",
+          "overview": "建立虛無假設 H₀ 與對立假設 H₁，選擇適當檢定統計量，並根據顯著水準 α 做拒絕域判斷。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "檢定一支新藥是否改變平均血壓：H₀: μ=120, H₁: μ≠120。"
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch10_10.1_hypothesis.png",
+              "caption": "假設檢定流程圖"
+            }
+          ],
+          "mnemonics": [
+            "「假統拒決」：假設→統計量→拒絕域→決策。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "何謂第一型與第二型錯誤？試舉例。",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "10.2",
+          "sectionTitle": "母體平均數的假設檢定–大樣本",
+          "overview": "已知 σ 時，使用 Z 統計量：Z=(x̄−μ₀)/(σ/√n)，比較標準常態臨界值。",
+          "formulas": [
+            "Z = (x̄ − μ₀)/(σ/√n)"
+          ],
+          "examples": [
+            {
+              "description": "n=100, x̄=52, μ₀=50, σ=5, α=0.05 → Z=4, 拒絕 H₀。"
+            }
+          ],
+          "mnemonics": [
+            "「Z大樣」：Z 檢定適合 σ 已知、大樣本。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "計算 p-value 並解釋意義。",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "10.3",
+          "sectionTitle": "母體平均數的假設檢定–小樣本",
+          "overview": "σ 未知且 n<30，改用 t 統計量：t=(x̄−μ₀)/(s/√n)，查 t 分布表。",
+          "formulas": [
+            "t = (x̄ − μ₀)/(s/√n)"
+          ],
+          "examples": [
+            {
+              "description": "n=16, x̄=23, μ₀=20, s=4, df=15 → t≈3/1=3 → 拒絕 H₀。"
+            }
+          ],
+          "mnemonics": [
+            "「t小樣」：t 檢定適合 σ 未知、小樣本。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "df 增大時 t 臨界值如何變化？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "10.4",
+          "sectionTitle": "母體比例的假設檢定",
+          "overview": "檢定 p₀ 時使用 Z 統計量：Z=(p̂−p₀)/√{p₀(1−p₀)/n}。",
+          "formulas": [
+            "Z = (p̂ − p₀)/√{p₀(1−p₀)/n}"
+          ],
+          "examples": [
+            {
+              "description": "抽樣 200, 成功 60, p₀=0.3 → p̂=0.3 → Z=0 → 不拒絕 H₀。"
+            }
+          ],
+          "mnemonics": [
+            "「比Z同調」：比例檢定 Z 式與平均檢定類似。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "若 p₀=0.5, n 增大，Z 值分布如何變化？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "10.5",
+          "sectionTitle": "母體變異數的假設檢定",
+          "overview": "檢定 σ₀² 時使用 χ² 統計量：χ² = (n−1)s²/σ₀²，查 χ² 分布臨界值。",
+          "formulas": [
+            "χ² = (n−1)s²/σ₀²"
+          ],
+          "examples": [
+            {
+              "description": "n=10, s²=4, σ₀²=3 → χ²=9×4/3=12，與 χ²₀.₉₅ 比較。"
+            }
+          ],
+          "mnemonics": [
+            "「卡變驗」：卡方檢定變異數。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "解釋左右尾檢定在 χ² 分布中的差異。",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "10.6",
+          "sectionTitle": "樣本數的選擇與檢定力分析",
+          "overview": "討論如何評估檢定力 (power) 及選擇合適 n 以達到期待 β 水準。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "計算在 δ=2, σ=5, α=0.05 下，n 需多大才能 power=0.8。"
+            }
+          ],
+          "mnemonics": [
+            "「力與樣」：檢定力與樣本數互動。"
+          ],
+          "exercises": [
+            {
+              "type": "short-answer",
+              "question": "解釋 Type II 錯誤與檢定力的關係。",
+              "answer": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapterNumber": 11,
+      "chapterTitle": "兩母體的統計估計與假設檢定",
+      "sections": [
+        {
+          "sectionNumber": "11.1",
+          "sectionTitle": "兩個獨立母體平均數差–大樣本",
+          "overview": "已知 σ₁,σ₂，Z = (x̄₁−x̄₂−Δ₀)/√{σ₁²/n₁+σ₂²/n₂}。",
+          "formulas": [
+            "Z = (x̄₁−x̄₂−Δ₀)/√{σ₁²/n₁ + σ₂²/n₂}"
+          ],
+          "examples": [
+            {
+              "description": "比較兩工廠平均壽命差異。"
+            }
+          ],
+          "mnemonics": [
+            "「獨Z差」：獨立樣本大樣本 Z。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "Δ₀=0 時，檢定表示何意義？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "11.2",
+          "sectionTitle": "兩個獨立母體平均數差–小樣本",
+          "overview": "σ₁,σ₂ 未知且可假定等變異，使用 pooled-t 統計量。",
+          "formulas": [
+            "t = (x̄₁−x̄₂)/[s_p√{1/n₁+1/n₂}], s_p² = [(n₁−1)s₁²+(n₂−1)s₂²]/(n₁+n₂−2)"
+          ],
+          "examples": [
+            {
+              "description": "兩班平均分數差異檢定。"
+            }
+          ],
+          "mnemonics": [
+            "「合t檢差」：合併變異、t 檢定。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "df 為何選 n₁+n₂−2？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "11.3",
+          "sectionTitle": "成對母體平均數差的統計推論",
+          "overview": "以配對差 dᵢ 計算平均差 t 檢定：t=(d̄−Δ₀)/(s_d/√n)。",
+          "formulas": [
+            "t = (d̄ − Δ₀)/(s_d/√n)"
+          ],
+          "examples": [
+            {
+              "description": "同一批學生考前後測配對分數檢定。"
+            }
+          ],
+          "mnemonics": [
+            "「配t差」：配對差 t 檢定。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "配對設計有何優勢？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "11.4",
+          "sectionTitle": "兩個母體比例差的統計推論",
+          "overview": "Z=(p̂₁−p̂₂)/√{p̂(1−p̂)(1/n₁+1/n₂)}, p̂ 為合併比例。",
+          "formulas": [
+            "p̂ = (x₁+x₂)/(n₁+n₂)"
+          ],
+          "examples": [
+            {
+              "description": "比較兩家門市顧客滿意率差異。"
+            }
+          ],
+          "mnemonics": [
+            "「合比Z差」：合併比例 Z 檢定差異。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "何時需使用未合併比例？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "11.5",
+          "sectionTitle": "兩個母體變異數比的統計推論",
+          "overview": "F-test：F = s₁²/s₂²，df₁=n₁−1, df₂=n₂−1。",
+          "formulas": [
+            "F = s₁²/s₂²"
+          ],
+          "examples": [
+            {
+              "description": "比較兩機器生產品質變異性。"
+            }
+          ],
+          "mnemonics": [
+            "「F變比」：F 檢定變異數比。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "F 分布偏態特性為何？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "11.6",
+          "sectionTitle": "樣本數的選擇與檢定力",
+          "overview": "延伸單母體至雙母體情況下的檢定力分析。",
+          "formulas": [],
+          "examples": [],
+          "mnemonics": [],
+          "exercises": [
+            {
+              "type": "short-answer",
+              "question": "如何同時考量差異大小與變異估計樣本數？",
+              "answer": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapterNumber": 12,
+      "chapterTitle": "卡方檢定",
+      "sections": [
+        {
+          "sectionNumber": "12.1",
+          "sectionTitle": "類別資料的分類與呈現",
+          "overview": "整理列聯表 (contingency table)，計算觀察值與期望值。",
+          "formulas": [
+            "E_{ij} = (row_i total · col_j total) / grand total"
+          ],
+          "examples": [
+            {
+              "description": "2×3 列聯表中計算每格期望值。"
+            }
+          ],
+          "mnemonics": [
+            "「列乘除總」：期望值公式記憶。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "試列出一 2×2 列聯表並計算期望值。",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "12.2",
+          "sectionTitle": "配合度檢定",
+          "overview": "Goodness-of-fit：χ² = Σ (O−E)²/E，比較單一分類分布。",
+          "formulas": [
+            "χ² = Σ (O_i − E_i)² / E_i"
+          ],
+          "examples": [
+            {
+              "description": "檢測骰子是否均勻：6 格頻數 vs. 期望。"
+            }
+          ],
+          "mnemonics": [
+            "「擬合卡方」：配合度檢定記憶。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "df 為幾？為何？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "12.3",
+          "sectionTitle": "獨立性檢定",
+          "overview": "χ² = Σ (O−E)²/E 檢定兩分類變數是否獨立，df=(r−1)(c−1)。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "檢定性別與吸菸習慣是否獨立。"
+            }
+          ],
+          "mnemonics": [
+            "「獨立卡方」：獨立性 df 計算。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "何謂 Yates 校正？何時需用？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "12.4",
+          "sectionTitle": "齊一性檢定",
+          "overview": "檢定多組母體比例是否相同，同樣用 χ² 公式。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "檢測三家店鋪合格率是否一致。"
+            }
+          ],
+          "mnemonics": [
+            "「齊一卡方」：齊一性檢定。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "比較齊一性檢定與獨立性檢定差異。",
+              "answer": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

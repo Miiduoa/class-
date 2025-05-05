@@ -1,0 +1,576 @@
+{
+  "chapters": [
+    {
+      "chapterNumber": 4,
+      "chapterTitle": "分析資料-以統計測量數來呈現",
+      "sections": [
+        {
+          "sectionNumber": "4.1",
+          "sectionTitle": "中心位置的衡量",
+          "overview": "以平均數、中位數和眾數三種指標，描述資料集中趨勢。比較它們對極端值的敏感度差異。",
+          "formulas": [
+            "平均數 μ = Σxᵢ / n",
+            "中位數：將資料由小到大排序，中間值即為中位數",
+            "眾數：出現頻率最高的數值"
+          ],
+          "examples": [
+            {
+              "description": "資料 = [2, 4, 7, 9, 100]，計算三指標並解釋差異",
+              "steps": [
+                "平均數 = (2+4+7+9+100)/5 = 24.4",
+                "中位數 = 7",
+                "眾數 = 無（各只出現一次）"
+              ]
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch4_4.1_central_tendency.png",
+              "caption": "三指標在同一分布上的標示"
+            }
+          ],
+          "mnemonics": [
+            "「均中眾」：先想平均（均）、再找中間（中）、最後看最多（眾）。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "對於 [5,7,8,9,9,20]，計算平均數、中位數、眾數並解釋何者最能代表該分布？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "4.2",
+          "sectionTitle": "等分位置的衡量",
+          "overview": "利用分位數 (quartiles)、百分位數 (percentiles) 描述資料分布在不同位置的情況。",
+          "formulas": [
+            "第 k 百分位數 = 排序後第 (k/100 × (n+1)) 個數值"
+          ],
+          "examples": [
+            {
+              "description": "計算 [10,20,30,40,50] 的第 25、50、75 百分位數",
+              "steps": [
+                "25th = 第 (0.25×6)=1.5 → 10 + 0.5×(20−10)=15",
+                "50th = 中位數 = 30",
+                "75th = 第 (0.75×6)=4.5 → 40 + 0.5×(50−40)=45"
+              ]
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch4_4.2_percentiles.png",
+              "caption": "百分位數位置示意"
+            }
+          ],
+          "mnemonics": [
+            "「四分不忘百位」：先記 25/50/75，再泛化到任一 k%。"
+          ],
+          "exercises": [
+            {
+              "type": "coding",
+              "language": "Python",
+              "prompt": "撰寫函式 percentile(data, k) 回傳第 k 百分位數。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "4.3",
+          "sectionTitle": "分散度的衡量",
+          "overview": "介紹極差、四分位距、變異數與標準差，並比較它們在不同分布上的意義。",
+          "formulas": [
+            "極差 = max − min",
+            "四分位距 IQR = Q₃ − Q₁",
+            "變異數 σ² = Σ(xᵢ−μ)² / n",
+            "標準差 σ = √σ²"
+          ],
+          "examples": [
+            {
+              "description": "對資料 [3,5,7,9,11]，計算極差、IQR、變異數、標準差。",
+              "steps": [
+                "極差 = 11−3=8",
+                "Q₁=5, Q₃=9 → IQR=4",
+                "變異數 = ((−4)²+...+4²)/5 = 16",
+                "標準差 = 4"
+              ]
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch4_4.3_dispersion.png",
+              "caption": "分散度指標比較圖"
+            }
+          ],
+          "mnemonics": [
+            "「極四變標」：極差→四分位→變異數→標準差（由簡入繁）。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "何者對極端值最不敏感：極差、IQR、變異數、標準差？為何？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "4.4",
+          "sectionTitle": "柴比氏定理與經驗法則",
+          "overview": "Chebyshev 定理適用於任意分布；經驗法則（68–95–99.7%）限定正態分布。",
+          "formulas": [
+            "Chebyshev：至少 (1−1/k²) 的資料落在 μ±kσ",
+            "正態：μ±1σ ≈68%；μ±2σ ≈95%；μ±3σ ≈99.7%"
+          ],
+          "examples": [
+            {
+              "description": "取 k=2，Chebyshev → ≥75% 落在 μ±2σ，與正態分布 95% 比較。"
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch4_4.4_chebyshev_empirical.png",
+              "caption": "兩定理分布示意"
+            }
+          ],
+          "mnemonics": [
+            "「K²前後推」：Chebyshev 用 k²；經驗法則看 1σ/2σ/3σ。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "若資料未知分布，想保證至少 89% 在 μ±3σ，k 為多少？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "4.5",
+          "sectionTitle": "Z 值",
+          "overview": "將數值標準化為 Z 分數：Z=(x−μ)/σ，可比較不同分布下的落點。",
+          "formulas": [
+            "Z = (x − μ)/σ"
+          ],
+          "examples": [
+            {
+              "description": "某人成績 85 分，班級平均 75、標準差 5，Z = (85−75)/5=2。",
+              "interpretation": "高於平均 2 個標準差。"
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch4_4.5_z_score.png",
+              "caption": "Z 值示意與常態曲線"
+            }
+          ],
+          "mnemonics": [
+            "「差除標」：差距 (x−μ) 除上標準差 σ。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "何者 Z 值更極端：Z=−3.2 還是 Z=+2.5？解釋。",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "4.6",
+          "sectionTitle": "盒鬚圖分析法",
+          "overview": "用五數摘要繪製箱型圖 (boxplot)，並找出異常值。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "資料 [4,6,8,10,50] → 箱型圖顯示 50 為離群值。",
+              "steps": [
+                "計算 Q₁=6, Q₃=10, IQR=4",
+                "離群值界限：<Q₁−1.5×IQR 或 >Q₃+1.5×IQR"
+              ]
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch4_4.6_boxplot.png",
+              "caption": "箱型圖範例"
+            }
+          ],
+          "mnemonics": [
+            "「盒鬚一半包」：盒內 50% 資料，鬚外 1.5×IQR 之外為異常。"
+          ],
+          "exercises": [
+            {
+              "type": "coding",
+              "language": "R",
+              "prompt": "用 ggplot2 繪製資料的箱型圖並標示離群點。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "4.7",
+          "sectionTitle": "分組資料中心位置的衡量",
+          "overview": "當資料已分組，利用組中點估算平均數及中位數。",
+          "formulas": [
+            "估計平均數 ≈ Σ(fᵢ·mᵢ) / n，mᵢ 為組中點",
+            "估計中位數：找累積頻率跨 50% 的組，插值計算"
+          ],
+          "examples": [
+            {
+              "description": "分組資料組距 [0–10,10–20,…] 計算估計平均數。"
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch4_4.7_grouped_mean_median.png",
+              "caption": "分組資料平均數／中位數估計"
+            }
+          ],
+          "mnemonics": [
+            "「組中乘頻加總除」：組中點×頻率 → 加總 → 除以 n。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "分組表中若累計頻率到 50% 落於第二組，如何估計中位數？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "4.8",
+          "sectionTitle": "兩組數量資料相關性的衡量",
+          "overview": "利用共變異數與相關係數衡量兩變數線性關係方向與強度。",
+          "formulas": [
+            "共變異數 cov(X,Y)=Σ(xᵢ−μₓ)(yᵢ−μᵧ)/n",
+            "皮爾森相關係數 r = cov(X,Y)/(σₓ·σᵧ)"
+          ],
+          "examples": [
+            {
+              "description": "計算身高 vs. 體重的 r，並解讀正相關或負相關。"
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch4_4.8_correlation.png",
+              "caption": "散佈圖與相關線示意"
+            }
+          ],
+          "mnemonics": [
+            "「共分標」：共變異分上各自標準差。"
+          ],
+          "exercises": [
+            {
+              "type": "coding",
+              "language": "Python",
+              "prompt": "利用 pandas 計算兩欄位資料的皮爾森 r。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapterNumber": 5,
+      "chapterTitle": "機率論",
+      "sections": [
+        {
+          "sectionNumber": "5.1",
+          "sectionTitle": "隨機實驗",
+          "overview": "定義隨機實驗、樣本空間與事件，並區分互斥事件與獨立事件。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "擲兩枚公平硬幣 → 樣本空間 {HH,HT,TH,TT}",
+              "steps": [
+                "定義事件 A: 至少一枚正面 → {HH,HT,TH}",
+                "事件 B: 兩枚同面 → {HH,TT}"
+              ]
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch5_5.1_random_experiment.png",
+              "caption": "樣本空間樹狀圖"
+            }
+          ],
+          "mnemonics": [
+            "「實空事互獨」：隨機實驗→樣本空間→事件→互斥或獨立。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "擲三枚硬幣，事件「恰有兩正面」的機率？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "5.2",
+          "sectionTitle": "機率理論",
+          "overview": "機率公理 (非負性、和為１、可加性) 及其推論規則。",
+          "formulas": [
+            "P(A) ≥ 0；Σ P(ω)=1；若 A∩B=∅，則 P(A∪B)=P(A)+P(B)"
+          ],
+          "examples": [
+            {
+              "description": "驗證兩事件互斥時加法法則。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「非一加」：非負、一和、可加。"
+          ],
+          "exercises": [
+            {
+              "type": "true-false",
+              "question": "若 A⊆B，則 P(A) ≤ P(B)。— 正確或錯誤？",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "5.3",
+          "sectionTitle": "事件機率",
+          "overview": "古典機率、頻率解釋與公理化定義三種觀點比較。",
+          "formulas": [
+            "古典：P(A)=|A|/|Ω|；頻率：limₙ→∞(實驗中 A 發生次數／n)"
+          ],
+          "examples": [
+            {
+              "description": "擲骰子古典機率與長期試驗頻率比較。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「古頻公」：古典、頻率、公理。"
+          ],
+          "exercises": [
+            {
+              "type": "short-answer",
+              "question": "說明公理化定義與古典機率的差異及優劣。",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "5.4",
+          "sectionTitle": "事件性質與事件機率的運算",
+          "overview": "包含補事件、聯集、交集與容斥原理的機率計算。",
+          "formulas": [
+            "P(Aᶜ)=1−P(A)",
+            "P(A∪B)=P(A)+P(B)−P(A∩B)"
+          ],
+          "examples": [
+            {
+              "description": "撲克牌抽一張，計算「黑桃或紅心」的機率。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「補和減交」：補集合、聯集相加減交集。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "若 P(A)=0.3,P(B)=0.5,P(A∩B)=0.2，求 P(A∪B)。",
+              "answer": ""
+            }
+          ]
+        },
+        {
+          "sectionNumber": "5.5",
+          "sectionTitle": "貝氏定理",
+          "overview": "推導後驗機率公式，並以疾病檢測為案例演練。",
+          "formulas": [
+            "P(A|B)=P(B|A)·P(A)/P(B)"
+          ],
+          "examples": [
+            {
+              "description": "疾病篩檢：P(病|陽)=？",
+              "steps": [
+                "已知 P(陽|病), P(病), P(陽|非病), P(非病)",
+                "帶入公式計算"
+              ]
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch5_5.5_bayes.png",
+              "caption": "貝氏定理樹狀圖示意"
+            }
+          ],
+          "mnemonics": [
+            "「後乘前除總」：後驗×先驗／證據。"
+          ],
+          "exercises": [
+            {
+              "type": "coding",
+              "language": "Python",
+              "prompt": "給定 P(A),P(B|A),P(B|¬A)，寫程式計算 P(A|B)。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapterNumber": 6,
+      "chapterTitle": "間斷隨機變數及其常用的機率分配",
+      "sections": [
+        {
+          "sectionNumber": "6.1",
+          "sectionTitle": "隨機變數的意義與種類",
+          "overview": "區分離散（間斷）與連續隨機變數，定義機率質量函數 (PMF) 與機率密度函數 (PDF)。",
+          "formulas": [],
+          "examples": [
+            {
+              "description": "擲骰子 → 離散隨機變數；測量身高 → 連續隨機變數。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「離連 PMF/PDF」：離散→PMF，連續→PDF。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "舉一離散、一連續隨機變數例子並說明其 PMF/PDF。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "6.2",
+          "sectionTitle": "單一間斷隨機變數的機率分配",
+          "overview": "定義 PMF 特性：P(X=x) ≥0、ΣP=1，並介紹分布函數 (CDF)。",
+          "formulas": [
+            "F(x)=P(X≤x)=Σ_{t≤x}P(X=t)"
+          ],
+          "examples": [
+            {
+              "description": "擲公平骰子 PMF 與 CDF 繪製。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「質須和」：質量函數須非負且加總為一。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "寫出 P(X≤3) 的 CDF 如何由 PMF 計算？"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "6.3",
+          "sectionTitle": "二元間斷隨機變數的機率分配",
+          "overview": "以聯合分配、邊際分布與條件分布描述二維離散變數。",
+          "formulas": [
+            "f_{X,Y}(x,y), f_X(x)=Σ_y f_{X,Y}(x,y), f_{Y|X}(y|x)=f_{X,Y}(x,y)/f_X(x)"
+          ],
+          "examples": [
+            {
+              "description": "同時擲兩枚骰子，列出聯合 PMF，計算 X=第一枚點數, Y=第二枚點數。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「聯邊條」：聯合→邊際→條件。"
+          ],
+          "exercises": [
+            {
+              "type": "short-answer",
+              "question": "若 X,Y 獨立，f_{X,Y}(x,y) 如何化簡？"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "6.4",
+          "sectionTitle": "二項機率分配",
+          "overview": "B(n,p) 模型：n 次獨立試驗，成功機率 p，X 為成功次數。",
+          "formulas": [
+            "P(X=k)=C(n,k)pᵏ(1−p)^{n−k}"
+          ],
+          "examples": [
+            {
+              "description": "擲 10 次硬幣，P(恰有 3 次正面) 計算。"
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch6_6.4_binomial.png",
+              "caption": "二項分配質量函數曲線"
+            }
+          ],
+          "mnemonics": [
+            "「Cnp」：組合 C(n,k)、成功 p、失敗 1−p。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "當 n→∞, p→0 且 np=λ 固定時，二項分配近似哪種分布？"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "6.5",
+          "sectionTitle": "Poisson 分配",
+          "overview": "描述稀有事件率 λ 下單位時間／空間的事件計數模型。",
+          "formulas": [
+            "P(X=k)=λᵏ e^{−λ}/k!"
+          ],
+          "examples": [
+            {
+              "description": "某網站平均每分鐘 2 次點擊，計算 0 次與 ≥3 次點擊機率。"
+            }
+          ],
+          "visuals": [
+            {
+              "type": "image",
+              "src": "images/ch6_6.5_poisson.png",
+              "caption": "Poisson PMF 隨 λ 變化"
+            }
+          ],
+          "mnemonics": [
+            "「λᵏ e−λ」：靠 λ 控制高低峰。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "Poisson 分配的期望與變異數皆為何？"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "6.6",
+          "sectionTitle": "超幾何分配",
+          "overview": "從有限母體中取樣而不放回，成功與失敗固定數量時的模型。",
+          "formulas": [
+            "P(X=k)= [C(K,k)·C(N−K,n−k)] / C(N,n)"
+          ],
+          "examples": [
+            {
+              "description": "抽撲克牌 5 張，計算抽到恰有 2 張紅心的機率。"
+            }
+          ],
+          "visuals": [],
+          "mnemonics": [
+            "「超卡計」：卡池大小 N、K 張目標、抽 n 張、取 k 張。"
+          ],
+          "exercises": [
+            {
+              "type": "quiz",
+              "question": "與二項分配比較，超幾何分配何時近似二項？"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

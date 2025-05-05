@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h1 class="h4 mb-0">{{ title }}</h1>
+            <div>
+                <a href="{{ url_for('statistics_content') }}" class="btn btn-light btn-sm">
+                    <i class="bi bi-arrow-left"></i> 返回內容一覽
+                </a>
+            </div>
+        </div>
+        <div class="card-body lecture-content">
+            {{ content|safe }}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    .lecture-content {
+        line-height: 1.6;
+    }
+    .lecture-content h1, 
+    .lecture-content h2, 
+    .lecture-content h3, 
+    .lecture-content h4, 
+    .lecture-content h5, 
+    .lecture-content h6 {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+    .lecture-content p {
+        margin-bottom: 1rem;
+    }
+    .lecture-content ul, 
+    .lecture-content ol {
+        margin-bottom: 1rem;
+        padding-left: 2rem;
+    }
+    .lecture-content img {
+        max-width: 100%;
+        height: auto;
+        margin: 1.5rem 0;
+    }
+    .lecture-content table {
+        width: 100%;
+        margin-bottom: 1rem;
+        border-collapse: collapse;
+    }
+    .lecture-content table th,
+    .lecture-content table td {
+        padding: 0.5rem;
+        border: 1px solid #dee2e6;
+    }
+    .lecture-content table th {
+        background-color: #f8f9fa;
+    }
+    .lecture-content blockquote {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid #6c757d;
+        background-color: #f8f9fa;
+    }
+    .lecture-content code {
+        padding: 0.2rem 0.4rem;
+        background-color: #f8f9fa;
+        border-radius: 0.2rem;
+    }
+    .lecture-content pre {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background-color: #f8f9fa;
+        border-radius: 0.3rem;
+        overflow-x: auto;
+    }
+</style>
+{% endblock %} 

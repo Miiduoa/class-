@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>統計學講義</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        h2 {
+            color: #2c3e50;
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 30px;
+            border-left: 5px solid #3498db;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+            padding: 8px 0;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        .chapter-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .section-content {
+            margin-bottom: 20px;
+        }
+        .examples, .mnemonics, .exercises {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .examples {
+            background-color: #e8f4fc;
+            border-left: 5px solid #3498db;
+        }
+        .mnemonics {
+            background-color: #fcf3cf;
+            border-left: 5px solid #f1c40f;
+        }
+        .exercises {
+            background-color: #e8f8f5;
+            border-left: 5px solid #2ecc71;
+        }
+        .visualization-block {
+            background-color: #f0f4f8;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .visualization-block img {
+            max-width: 100%;
+            height: auto;
+            margin: 10px auto;
+        }
+        .visualization-placeholder {
+            background-color: #f0f4f8;
+            border: 1px dashed #d0d7de;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+            color: #7f8c8d;
+        }
+        .exercise {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #ccc;
+        }
+        .question {
+            font-weight: bold;
+        }
+        .answer {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+        .toc {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+        .toc h2 {
+            background: none;
+            border-left: none;
+            margin-top: 0;
+            padding-left: 0;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin-bottom: 5px;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #3498db;
+        }
+        .toc .section-link {
+            padding-left: 20px;
+            font-size: 0.9em;
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        .back-to-top:hover {
+            opacity: 1;
+            color: white;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .toc {
+                padding: 10px;
+            }
+        }
+        .formula {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Cambria Math', Georgia, serif;
+            overflow-x: auto;
+        }
+    </style>
+  <link rel="stylesheet" href="static/css/statistics.css">
+</head>
+<body>
+    <a href="#top" class="back-to-top" title="回到頂部">↑</a>
+    <div class="container" id="top">
+<h1>大學統計學</h1>
+<div class="toc">
+<h2>目錄</h2>
+<ul>
+<li><a href="#chapter-9">第9章: 假設檢定的基本概念</a>
+<ul>
+<li class="section-link"><a href="#section-9.1">9.1 統計假設與檢定邏輯</a></li>
+<li class="section-link"><a href="#section-9.2">9.2 第一型與第二型錯誤</a></li>
+<li class="section-link"><a href="#section-9.3">9.3 顯著水準與p值</a></li>
+<li class="section-link"><a href="#section-9.4">9.4 統計檢定力與樣本大小</a></li>
+<li class="section-link"><a href="#section-9.5">9.5 單尾與雙尾檢定</a></li>
+<li class="section-link"><a href="#section-9.6">9.6 假設檢定的步驟</a></li>
+<li class="section-link"><a href="#section-9.7">9.7 假設檢定的常見誤解</a></li>
+</ul></li>
+</ul>
+</div>
+<h2 id="chapter-9" class="chapter-title">第9章: 假設檢定的基本概念</h2>
+<div class="chapter-overview mb-4">本章介紹假設檢定的基本概念的核心概念與應用，幫助學生掌握統計學的基礎知識並應用於實際問題分析。</div>
+<h3 id="section-9.1">9.1 統計假設與檢定邏輯</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在統計學中，統計假設與檢定邏輯是進行假設檢定的基礎。統計假設通常分為虛無假設（H0）和對立假設（H1）。虛無假設是我們要進行檢定的假設，通常表示沒有變化或效應；對立假設則是相對的假設，表示有變化或效應。在進行假設檢定時，我們會根據樣本資料來判斷是否有足夠的證據來拒絕虛無假設。</p><p>在檢定過程中，我們會設定一個顯著水準（α），通常取0.05或0.01，來代表我們願意接受犯第一類錯誤的機率。第一類錯誤是當我們拒絕了虛無假設，但事實上虛無假設是正確的情況。另外，我們也會計算出一個檢定統計量，根據這個統計量的取值，來判斷是否拒絕虛無假設。</p><p>檢定的步驟包括：確定虛無假設和對立假設、設定顯著水準、計算檢定統計量、做出決策是否拒絕虛無假設。當檢定統計量的值落在拒絕域內時，我們就可以拒絕虛無假設，反之，則無法拒絕虛無假設。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>例如，假設一家公司聲稱新推出的廣告能夠提高銷售量。虛無假設可以是「新廣告對銷售量沒有影響」，對立假設則是「新廣告能夠提高銷售量」。透過搜集銷售數據，計算相應的檢定統計量，可以判斷是否有足夠的證據拒絕虛無假設。</li>
+<li>另一個例子是醫學研究中，研究人員想要檢定某種新藥物對疾病的療效。虛無假設可以是「新藥物對疾病無效」，對立假設則是「新藥物對疾病有療效」。進行臨床試驗後，通過檢定統計量的計算，可以判斷是否有足夠的證據支持新藥物的療效。</li>
+<li>第三個例子是市場研究中，想要檢定某項產品在不同年齡層之間的受歡迎程度。虛無假設可以是「不同年齡層對產品的喜好沒有差異」，對立假設則是「不同年齡層對產品的喜好有差異」。透過消費者調查資料，可以進行假設檢定以判斷不同年齡層對產品的喜好是否有顯著差異。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住虛無假設通常代表沒有效應或無變化，對立假設則代表有效應或有變化。</li>
+<li>明確設定顯著水準能夠幫助你控制犯錯的機率，通常取0.05或0.01。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個研究想要檢定一種新的教學方法是否能夠提高學生的成績表現。請設定虛無假設和對立假設。</div>
+<div class="answer">答案: 虛無假設：新教學方法不會提高學生成績表現；對立假設：新教學方法能夠提高學生成績表現。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一項研究假設市場上兩個品牌的知名度沒有差異。請設定虛無假設和對立假設。</div>
+<div class="answer">答案: 虛無假設：兩個品牌的知名度沒有差異；對立假設：兩個品牌的知名度有差異。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 某公司聲稱新推出的產品可以節省用戶每月的開支。請設定虛無假設和對立假設。</div>
+<div class="answer">答案: 虛無假設：新產品無法節省用戶每月開支；對立假設：新產品可以節省用戶每月開支。</div>
+</div>
+</div>
+<h3 id="section-9.2">9.2 第一型與第二型錯誤</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在假設檢定中，我們會面臨兩種類型的錯誤：第一型錯誤和第二型錯誤。第一型錯誤是當我們拒絕一個實際上是真實的虛無假設時所犯的錯誤，也就是誤認為有統計上的顯著差異，但實際上並不存在。而第二型錯誤則是當我們接受一個實際上是虛假的虛無假設時所犯的錯誤，也就是誤認為沒有統計上的顯著差異，但其實存在。</p><p>在統計學中，我們通常設定一個顯著水準（通常為0.05），如果假設檢定的 p 值小於這個水準，我們就會拒絕虛無假設。但要注意的是，即使 p 值小於0.05，也不代表一定不存在第一型錯誤，這只代表發生第一型錯誤的機率小於0.05。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一家製藥公司聲稱他們的新藥能夠降低患者的血壓。進行實驗後，統計結果顯示 p 值為0.03，小於顯著水準0.05，製藥公司宣稱他們的藥物有效。然而，事後發現實驗中存在配對錯誤，因此原本拒絕的虛無假設實際上是真實的，這是一個第一型錯誤。</li>
+<li>一間公司進行廣告效果測試，結果顯示 p 值為0.08，大於顯著水準0.05，公司決定不改變廣告策略。然而，事後發現實際上新廣告策略確實有顯著效果，這是一個第二型錯誤。</li>
+<li>一位研究者進行實驗，發現 p 值為0.02，認為結果具有統計學上的顯著差異。但後來進行更多實驗後發現 p 值在0.06，表示第一次的結果可能是第一型錯誤。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>第一型錯誤（Type I Error）的「I」可以幫助記住，即錯誤被拒絕。</li>
+<li>第二型錯誤（Type II Error）的「II」可以幫助記住，即錯誤被接受。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 什麼是第一型錯誤？它在統計學中代表什麼意義？</div>
+<div class="answer">答案: 第一型錯誤是指拒絕一個實際上是真實的虛無假設的情況。在統計學中，它代表誤認為有統計上的顯著差異，但實際上並不存在。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 什麼是第二型錯誤？它在統計學中代表什麼意義？</div>
+<div class="answer">答案: 第二型錯誤是指接受一個實際上是虛假的虛無假設的情況。在統計學中，它代表誤認為沒有統計上的顯著差異，但其實存在。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 解釋 p 值小於顯著水準0.05 時可能產生的錯誤類型。</div>
+<div class="answer">答案: 當 p 值小於顯著水準0.05時，可能產生第一型錯誤，即誤認為有統計上的顯著差異，但實際上並不存在。</div>
+</div>
+</div>
+<h3 id="section-9.3">9.3 顯著水準與p值</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>顯著水準（Significance Level）和p值（p-value）是統計學中常用來判斷結果是否具有統計學意義的兩個重要概念。顯著水準通常以α表示，代表了在假設檢定中所容許的錯誤機率。p值則是在給定樣本資料下，計算得到的結果或更極端結果出現的概率。當p值小於顯著水準α時，我們通常認為有足夠的證據拒絕虛無假設，接受對立假設；反之，當p值大於α時，我們無法拒絕虛無假設。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一個研究想要檢驗一種新藥對於降低血壓的效果是否顯著。在實驗中，對照組和實驗組的血壓值進行了測量，進行獨立樣本t檢定後得到p值為0.03，顯著水準設定為0.05。因為p值小於0.05，我們可以認為這種新藥對於降低血壓有顯著效果。</li>
+<li>一個公司想要了解廣告宣傳對於銷售量是否有影響。進行了廣告前後銷售量的比較，所得的p值為0.20，顯著水準為0.05。由於p值大於0.05，我們無法拒絕虛無假設，認為廣告宣傳對於銷售量沒有顯著影響。</li>
+<li>一個研究小組想要檢驗某種新技術的成功率是否高於50%。進行了單樣本比例檢定後得到p值為0.002，顯著水準為0.01。由於p值小於0.01，我們可以認為這種新技術的成功率高於50%。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>顯著水準α通常設定在0.05或0.01，記憶時可以將這些數字和「顯著」這個詞聯想起來，表示了判斷結果是否「顯著」。</li>
+<li>p值越小代表結果越「顯著」，可以將p值小於顯著水準時的判斷記憶為「拒絕虛無」。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 在一個實驗中，p值為0.008，顯著水準為0.05。根據這個結果，應該拒絕還是接受虛無假設？</div>
+<div class="answer">答案: 拒絕虛無假設。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 如果一個研究中，p值為0.07，顯著水準為0.10，應該如何解釋結果？</div>
+<div class="answer">答案: 無法拒絕虛無假設，結果不具有統計學意義。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 當p值等於顯著水準時，應該如何判斷結果？</div>
+<div class="answer">答案: 若p值等於顯著水準，則判斷結果邊際具有統計學意義，可以考慮增加樣本數量以獲得更清晰的結果。</div>
+</div>
+</div>
+<h3 id="section-9.4">9.4 統計檢定力與樣本大小</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>統計檢定力是指在實際上存在差異時，統計檢定能夠正確地拒絕虛無假設的能力。檢定力取決於多個因素，其中一個關鍵因素是樣本大小。樣本大小的增加可以提高統計檢定的能力，因為隨著樣本大小的增加，對母體參數的估計也更加精確，進而減少誤差，提高檢定力。當樣本大小不足時，即使真實效應存在，也可能無法得出統計顯著結果，這就是檢定力不足的情況。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>在一個醫藥公司進行新藥療效測試時，如果樣本大小太小，即使新藥真的有顯著效果，也可能無法通過統計檢定來證明這一點。</li>
+<li>在市場調查中，如果調查樣本過小，可能無法得出具有統計學意義的結論，影響企業的決策。</li>
+<li>在政府政策評估中，如果樣本數不足，可能無法確定政策的實際效果，導致決策的不確定性。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住樣本大小對統計檢定力的影響：樣本大小越大，檢定力越強。</li>
+<li>想像樣本大小就像放大鏡，可以讓你更清楚地看到真實效應，提高判斷力。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個實驗需要檢定一種新藥的療效，如果樣本大小只有20人，那麼這個實驗的檢定力會是高還是低？為什麼？</div>
+<div class="answer">答案: 低，因為樣本大小太小，無法提供足夠的統計力量來檢測效應。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 如果一個市場調查中有1000位受訪者，而另一個市場調查只有100位受訪者，哪個調查的結果更可靠？為什麼？</div>
+<div class="answer">答案: 1000位受訪者的市場調查更可靠，因為較大的樣本大小提供了更高的統計檢定力。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 當進行一個實驗時，研究者應該如何考慮樣本大小以確保統計檢定力足夠？</div>
+<div class="answer">答案: 研究者應該通過進行樣本大小估算，確保樣本大小能夠提供足夠的統計檢定力，通常可以通過統計軟件或檢定力分析來進行估算。</div>
+</div>
+</div>
+<h3 id="section-9.5">9.5 單尾與雙尾檢定</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在假設檢定中，我們經常會遇到單尾檢定和雙尾檢定。單尾檢定是指在統計假設檢定中，對於研究問題只關注一個方向的假設檢定，而雙尾檢定則是關注兩個方向的假設檢定。在進行假設檢定時，選擇使用單尾檢定還是雙尾檢定取決於研究者對研究問題的假設和研究目的。</p><p>在單尾檢定中，我們通常會檢驗假設中的一個方向，例如檢驗一個新藥是否比現有藥物治療效果更好。我們將假設分為零假設（H0）和對立假設（H1），單尾檢定中的對立假設通常會指明方向，比如大於、小於或不等於某個值。當我們選擇單尾檢定時，統計檢定的臨界值會集中在分布的一側，以便檢定我們感興趣的方向。</p><p>相對地，雙尾檢定則是檢驗假設中的兩個方向，例如檢驗一個新藥是否對病人的狀態產生任何影響。在雙尾檢定中，對立假設通常會指明不等於某個值，而非單一的方向。統計檢定的臨界值會分佈在分布的兩側，以考慮到兩個可能的極端情況。</p><p>選擇使用單尾檢定還是雙尾檢定需要根據研究問題的具體情況來決定。單尾檢定通常用於研究者對研究問題有預測或假設方向的情況，而雙尾檢定則更加保守，考慮到兩個方向的可能性。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>單尾檢定：一個廣告公司想要檢驗一個新廣告策略是否可以提高產品銷售量，對立假設為新廣告策略的銷售量大於現有廣告策略的銷售量。</li>
+<li>雙尾檢定：一個製藥公司想要檢驗一種新藥物對患者的治療效果，對立假設為新藥物對患者的症狀有影響，不限定具體的方向。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>單尾檢定是關注單一方向的檢定，對立假設通常指向一個具體的方向。</li>
+<li>雙尾檢定是同時關注兩個方向的檢定，對立假設通常指向不等於某個值。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個製造商聲稱一種新型汽車引擎比現有的引擎效率更高，這個假設應該使用單尾檢定還是雙尾檢定？</div>
+<div class="answer">答案: 單尾檢定，因為對立假設是新型引擎效率高於現有引擎。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個農民想要檢驗一種新的肥料是否對作物產量產生影響，這個假設應該使用單尾檢定還是雙尾檢定？</div>
+<div class="answer">答案: 雙尾檢定，因為對立假設應該考慮肥料對產量的任何影響。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個醫院想要檢驗新的手術技術是否可以縮短患者的康復時間，這個假設應該使用單尾檢定還是雙尾檢定？</div>
+<div class="answer">答案: 單尾檢定，因為對立假設是新手術技術可以縮短康復時間。</div>
+</div>
+</div>
+<h3 id="section-9.6">9.6 假設檢定的步驟</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>假設檢定是統計學中用來判斷某個假設是否成立的方法。在進行假設檢定時，我們會提出兩個互相對立的假設，分別為「虛無假設」和「對立假設」。接著，透過樣本數據的收集和分析，我們可以做出對虛無假設的判斷，判斷虛無假設是否應該被拒絕。假設檢定的步驟主要包括確定虛無假設和對立假設、選擇適當的統計檢定方法、設定顯著水準、計算檢定統計量、做出結論等。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一家公司聲稱新推出的廣告能夠增加產品銷量，市場部門希望使用假設檢定方法來驗證這個主張。在進行假設檢定時，虛無假設可以是「新廣告對銷量無影響」，對立假設是「新廣告對銷量有正向影響」。</li>
+<li>一位研究人員想要了解某種治療方法是否比現有方法更有效。他可以設定虛無假設為「新治療方法無效」，對立假設為「新治療方法比現有方法更有效」。</li>
+<li>一位政治分析師希望研究某個候選人在不同年齡層中的支持率是否有所不同。他可以設定虛無假設為「候選人在不同年齡層中的支持率相同」，對立假設為「候選人在不同年齡層中的支持率不同」。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住虛無假設通常是我們想要進行驗證的假設，而對立假設是與之對立的假設。</li>
+<li>熟悉常見的統計檢定方法及其適用場景，有助於選擇正確的檢定方法。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一位製藥公司聲稱他們新研發的藥物可以降低患者的血壓，請設定虛無假設和對立假設。</div>
+<div class="answer">答案: 虛無假設可以是「新藥物對降低血壓無效」，對立假設可以是「新藥物可以降低患者的血壓」。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一位學者想要研究大學生的學習成績是否受到睡眠時間的影響，請設定虛無假設和對立假設。</div>
+<div class="answer">答案: 虛無假設可以是「學習成績與睡眠時間無關」，對立假設可以是「學習成績受睡眠時間影響」。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一間餐廳聲稱他們的新菜單可以吸引更多顧客，請設定虛無假設和對立假設。</div>
+<div class="answer">答案: 虛無假設可以是「新菜單對吸引顧客無效」，對立假設可以是「新菜單可以吸引更多顧客」。</div>
+</div>
+</div>
+<h3 id="section-9.7">9.7 假設檢定的常見誤解</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在進行假設檢定時，常見的誤解包括對「顯著性水準」的誤解、混淆「統計上的顯著性」和「實際重要性」、以及對「接受零假設就等於證明零假設正確」的錯誤理解。</p><p>首先，顯著性水準代表了當我們認為一個結果是由於隨機變異而非真實效應造成的機會，通常設定為0.05或0.01。許多人誤解為顯著性水準代表了結果的重要性，但事實上它僅表示我們拒絕零假設的機會。另一個常見的誤解是將統計上的顯著性與實際重要性混淆。即使結果在統計上是顯著的，也不代表這個結果在現實中是有意義或重要的。最後，接受零假設只能表明我們沒有足夠證據拒絕零假設，並不等同於證明零假設是正確的。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一家公司進行廣告投放實驗，結果顯示新廣告與舊廣告相比有統計上的明顯差異，但這並不代表新廣告一定比舊廣告更有效。</li>
+<li>在藥物療效試驗中，統計上可以顯示藥物對病人有影響，但這並不代表這個藥物就是最佳治療方法。</li>
+<li>一項研究顯示抽煙與心臟病之間沒有統計上的顯著相關性，但這並不代表抽煙對心臟健康沒有影響。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>將顯著性水準想像成一道門檻，只有超過門檻值才能進入「拒絕零假設」的領域。</li>
+<li>始終記住統計上的顯著性只是其中一環，實際重要性才是我們真正關心的。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 什麼是顯著性水準？它和結果的重要性有什麼區別？</div>
+<div class="answer">答案: 顯著性水準代表拒絕零假設的機會，並不代表結果的重要性。結果的重要性需要進一步考慮現實意義。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 解釋統計上的顯著性和實際重要性之間的區別。</div>
+<div class="answer">答案: 統計上的顯著性指的是結果在樣本中的機率分佈情況，而實際重要性則考慮結果對研究</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 接受零假設是否等同於證明零假設為真？</div>
+<div class="answer">答案: 不是。接受零假設只能表明我們沒有足夠的證據拒絕零假設，並不能證明零假設為真。</div>
+</div>
+</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            }
+        };
+        
+        // 添加平滑滾動
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // 添加回到頂部按鈕顯示/隱藏功能
+        window.addEventListener('scroll', function() {
+            var backToTop = document.querySelector('.back-to-top');
+            if (window.pageYOffset > 300) {
+                backToTop.style.display = 'block';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        });
+    </script>
+  <script src="static/js/statistics.js"></script>
+</body>
+</html>

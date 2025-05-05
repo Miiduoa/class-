@@ -1,0 +1,402 @@
+{% extends "base.html" %}
+
+{% block title %}AI 練習題生成 - 統計學習平台{% endblock %}
+
+{% block hero %}
+<div class="hero" style="padding: var(--space-lg) 0;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-2">
+                        <li class="breadcrumb-item"><a href="{{ url_for('home') }}" class="text-white opacity-75">首頁</a></li>
+                        <li class="breadcrumb-item"><a href="#" class="text-white opacity-75">AI 助手</a></li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">練習題生成</li>
+                    </ol>
+                </nav>
+                <h1 class="mb-3">AI 練習題生成助手</h1>
+                <p class="lead mb-0">根據您選擇的統計學主題，生成量身定制的練習題，幫助您鞏固知識。</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card ai-assistant-card mb-4">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-3" style="width: 48px; height: 48px;">
+                        <i class="bi bi-pencil-square text-white fs-4"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0">生成練習題</h3>
+                        <p class="text-muted mb-0">自定義主題與難度等級</p>
+                    </div>
+                </div>
+                
+                <form id="practice-form">
+                    <div class="mb-4">
+                        <label for="topic" class="form-label">統計學主題</label>
+                        <input type="text" class="form-control form-control-lg" id="topic" name="topic" 
+                               placeholder="例如：標準差、假設檢定、迴歸分析..." required>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="difficulty" class="form-label">難度級別</label>
+                            <select class="form-select" id="difficulty" name="difficulty">
+                                <option value="beginner">初學者 (基礎題型)</option>
+                                <option value="intermediate" selected>中級 (綜合應用)</option>
+                                <option value="advanced">高級 (進階分析)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="number" class="form-label">題目數量</label>
+                            <select class="form-select" id="number" name="number">
+                                <option value="1">1 題</option>
+                                <option value="3" selected>3 題</option>
+                                <option value="5">5 題</option>
+                                <option value="10">10 題</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" id="include_answers" name="include_answers" checked>
+                        <label class="form-check-label" for="include_answers">
+                            包含詳細解答
+                        </label>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-gear me-2"></i>生成練習題
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div id="loading" style="display: none;" class="text-center my-5">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">載入中...</span>
+            </div>
+            <p class="lead mt-3">正在生成練習題，請稍等...</p>
+        </div>
+        
+        <div id="result-card" class="card mb-4" style="display: none;">
+            <div class="card-header bg-primary text-white py-3">
+                <h4 id="practice-title" class="mb-0"></h4>
+            </div>
+            <div class="card-body p-4">
+                <div id="practice-content" class="markdown-content"></div>
+                
+                <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                    <button class="btn btn-outline-primary" id="new-practice">
+                        <i class="bi bi-arrow-left me-2"></i>新生成
+                    </button>
+                    <div>
+                        <button class="btn btn-outline-secondary me-2" id="copy-result">
+                            <i class="bi bi-clipboard me-2"></i>複製
+                        </button>
+                        <button class="btn btn-primary" id="download-pdf">
+                            <i class="bi bi-file-earmark-pdf me-2"></i>下載 PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="alert alert-danger" id="error-message" style="display: none;">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span id="error-text">發生錯誤，請稍後再試。</span>
+        </div>
+        
+        <!-- 熱門主題 -->
+        <div class="card mt-5">
+            <div class="card-body">
+                <h4 class="mb-4">熱門練習主題</h4>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <a href="#" class="text-decoration-none" onclick="searchTopic('敘述統計'); return false;">
+                            <div class="card bg-light border-0 h-100">
+                                <div class="card-body text-center py-3">
+                                    <i class="bi bi-bar-chart text-primary fs-4 mb-2"></i>
+                                    <p class="mb-0">敘述統計</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="#" class="text-decoration-none" onclick="searchTopic('假設檢定'); return false;">
+                            <div class="card bg-light border-0 h-100">
+                                <div class="card-body text-center py-3">
+                                    <i class="bi bi-check-square text-primary fs-4 mb-2"></i>
+                                    <p class="mb-0">假設檢定</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="#" class="text-decoration-none" onclick="searchTopic('迴歸分析'); return false;">
+                            <div class="card bg-light border-0 h-100">
+                                <div class="card-body text-center py-3">
+                                    <i class="bi bi-graph-up text-primary fs-4 mb-2"></i>
+                                    <p class="mb-0">迴歸分析</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="#" class="text-decoration-none" onclick="searchTopic('變異數分析'); return false;">
+                            <div class="card bg-light border-0 h-100">
+                                <div class="card-body text-center py-3">
+                                    <i class="bi bi-table text-primary fs-4 mb-2"></i>
+                                    <p class="mb-0">變異數分析</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="#" class="text-decoration-none" onclick="searchTopic('機率分布'); return false;">
+                            <div class="card bg-light border-0 h-100">
+                                <div class="card-body text-center py-3">
+                                    <i class="bi bi-bell-curve text-primary fs-4 mb-2"></i>
+                                    <p class="mb-0">機率分布</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="#" class="text-decoration-none" onclick="searchTopic('抽樣方法'); return false;">
+                            <div class="card bg-light border-0 h-100">
+                                <div class="card-body text-center py-3">
+                                    <i class="bi bi-calendar-date text-primary fs-4 mb-2"></i>
+                                    <p class="mb-0">抽樣方法</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('practice-form');
+    const resultCard = document.getElementById('result-card');
+    const loading = document.getElementById('loading');
+    const errorMessage = document.getElementById('error-message');
+    const practiceTitle = document.getElementById('practice-title');
+    const practiceContent = document.getElementById('practice-content');
+    const copyButton = document.getElementById('copy-result');
+    const newPracticeButton = document.getElementById('new-practice');
+    const downloadButton = document.getElementById('download-pdf');
+    
+    // 綁定表單提交事件
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // 獲取表單數據
+        const topic = document.getElementById('topic').value.trim();
+        
+        if (!topic) {
+            showError('請輸入練習題主題');
+            return;
+        }
+        
+        // 隱藏結果和錯誤，顯示加載
+        resultCard.style.display = 'none';
+        errorMessage.style.display = 'none';
+        loading.style.display = 'block';
+        
+        const formData = new FormData(form);
+        
+        // 發送AJAX請求
+        fetch('/ai/practice', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('網絡請求失敗');
+            }
+            return response.json();
+        })
+        .then(data => {
+            loading.style.display = 'none';
+            
+            if (data.error) {
+                showError(data.error);
+                return;
+            }
+            
+            // 顯示結果
+            resultCard.style.display = 'block';
+            
+            const topicDisplay = formData.get('topic');
+            const difficultyText = getDifficultyText(formData.get('difficulty'));
+            const numberText = formData.get('number') + ' 題';
+            practiceTitle.innerText = `${topicDisplay} (${difficultyText}) - ${numberText}`;
+            
+            // 格式化並顯示內容
+            const formattedQuestions = formatQuestions(data.questions);
+            practiceContent.innerHTML = formattedQuestions;
+            
+            // 滾動到結果區域
+            resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        })
+        .catch(error => {
+            loading.style.display = 'none';
+            console.error('Error:', error);
+            showError('請求失敗，請稍後再試');
+        });
+    });
+    
+    // 顯示錯誤訊息
+    function showError(message) {
+        errorMessage.style.display = 'block';
+        document.getElementById('error-text').innerText = message;
+    }
+    
+    // 獲取難度文本
+    function getDifficultyText(difficulty) {
+        switch(difficulty) {
+            case 'beginner':
+                return '初學者';
+            case 'advanced':
+                return '高級';
+            case 'intermediate':
+            default:
+                return '中級';
+        }
+    }
+    
+    // 格式化練習題內容
+    function formatQuestions(questions) {
+        let html = '';
+        
+        if (!Array.isArray(questions)) {
+            html = `<div class="alert alert-info">無法生成練習題，請嘗試另一個主題。</div>`;
+            return html;
+        }
+        
+        questions.forEach((question, index) => {
+            html += `
+            <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">問題 ${index + 1}</h5>
+                </div>
+                <div class="card-body">
+                    <p>${question.question.replace(/\n/g, '<br>')}</p>
+                    
+                    ${question.options ? formatOptions(question.options) : ''}
+                    
+                    <div class="mt-3 pt-3 border-top">
+                        <button class="btn btn-sm btn-outline-primary toggle-answer" data-bs-toggle="collapse" data-bs-target="#answer${index}">
+                            顯示答案
+                        </button>
+                        <div class="collapse mt-3" id="answer${index}">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-2 text-muted">答案：</h6>
+                                    <p>${question.answer.replace(/\n/g, '<br>')}</p>
+                                    
+                                    ${question.explanation ? `
+                                        <h6 class="card-subtitle mb-2 text-muted">解釋：</h6>
+                                        <p>${question.explanation.replace(/\n/g, '<br>')}</p>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+        });
+        
+        return html;
+    }
+    
+    // 格式化選項
+    function formatOptions(options) {
+        if (!options || !Array.isArray(options) || options.length === 0) {
+            return '';
+        }
+        
+        let html = '<div class="mt-3"><strong>選項：</strong>';
+        html += '<div class="list-group mt-2">';
+        
+        options.forEach((option, index) => {
+            const optionLabel = String.fromCharCode(65 + index); // A, B, C, ...
+            html += `
+            <div class="list-group-item list-group-item-action border-0 bg-light mb-2 rounded">
+                <div class="d-flex w-100 align-items-center">
+                    <span class="badge bg-primary rounded-circle me-3">${optionLabel}</span>
+                    <span>${option}</span>
+                </div>
+            </div>
+            `;
+        });
+        
+        html += '</div></div>';
+        return html;
+    }
+    
+    // 新生成按鈕
+    newPracticeButton.addEventListener('click', function() {
+        resultCard.style.display = 'none';
+        form.reset();
+        document.getElementById('topic').focus();
+    });
+    
+    // 複製內容按鈕
+    copyButton.addEventListener('click', function() {
+        const title = practiceTitle.innerText;
+        const content = practiceContent.innerText;
+        
+        navigator.clipboard.writeText(`${title}\n\n${content}`).then(
+            function() {
+                const originalText = copyButton.innerHTML;
+                copyButton.innerHTML = '<i class="bi bi-check me-2"></i>已複製';
+                setTimeout(() => {
+                    copyButton.innerHTML = originalText;
+                }, 2000);
+            }
+        );
+    });
+    
+    // 下載PDF按鈕
+    downloadButton.addEventListener('click', function() {
+        alert('PDF下載功能將在未來版本中推出');
+    });
+    
+    // 設置答案顯示切換事件
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('toggle-answer')) {
+            const button = e.target;
+            const isCollapsed = button.getAttribute('aria-expanded') !== 'true';
+            
+            if (isCollapsed) {
+                button.textContent = '隱藏答案';
+            } else {
+                button.textContent = '顯示答案';
+            }
+        }
+    });
+});
+
+// 搜索預設主題
+function searchTopic(topic) {
+    document.getElementById('topic').value = topic;
+    document.getElementById('practice-form').dispatchEvent(new Event('submit'));
+}
+</script>
+{% endblock %}

@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>統計學講義</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        h2 {
+            color: #2c3e50;
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 30px;
+            border-left: 5px solid #3498db;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+            padding: 8px 0;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        .chapter-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .section-content {
+            margin-bottom: 20px;
+        }
+        .examples, .mnemonics, .exercises {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .examples {
+            background-color: #e8f4fc;
+            border-left: 5px solid #3498db;
+        }
+        .mnemonics {
+            background-color: #fcf3cf;
+            border-left: 5px solid #f1c40f;
+        }
+        .exercises {
+            background-color: #e8f8f5;
+            border-left: 5px solid #2ecc71;
+        }
+        .visualization-block {
+            background-color: #f0f4f8;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .visualization-block img {
+            max-width: 100%;
+            height: auto;
+            margin: 10px auto;
+        }
+        .visualization-placeholder {
+            background-color: #f0f4f8;
+            border: 1px dashed #d0d7de;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+            color: #7f8c8d;
+        }
+        .exercise {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #ccc;
+        }
+        .question {
+            font-weight: bold;
+        }
+        .answer {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+        .toc {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+        .toc h2 {
+            background: none;
+            border-left: none;
+            margin-top: 0;
+            padding-left: 0;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin-bottom: 5px;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #3498db;
+        }
+        .toc .section-link {
+            padding-left: 20px;
+            font-size: 0.9em;
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        .back-to-top:hover {
+            opacity: 1;
+            color: white;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .toc {
+                padding: 10px;
+            }
+        }
+        .formula {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Cambria Math', Georgia, serif;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <a href="#top" class="back-to-top" title="回到頂部">↑</a>
+    <div class="container" id="top">
+<h1>大學統計學</h1>
+<div class="toc">
+<h2>目錄</h2>
+<ul>
+<li><a href="#chapter-10">第10章: 單一母體的參數檢定</a>
+<ul>
+<li class="section-link"><a href="#section-10.1">10.1 母體平均數的Z檢定</a></li>
+<li class="section-link"><a href="#section-10.2">10.2 母體平均數的t檢定</a></li>
+<li class="section-link"><a href="#section-10.3">10.3 母體比例的檢定</a></li>
+<li class="section-link"><a href="#section-10.4">10.4 母體變異數的卡方檢定</a></li>
+<li class="section-link"><a href="#section-10.5">10.5 檢定結果的詮釋</a></li>
+<li class="section-link"><a href="#section-10.6">10.6 實務應用案例</a></li>
+<li class="section-link"><a href="#section-10.7">10.7 使用統計軟體進行參數檢定</a></li>
+</ul></li>
+</ul>
+</div>
+<h2 id="chapter-10" class="chapter-title">第10章: 單一母體的參數檢定</h2>
+<div class="chapter-overview mb-4">本章介紹單一母體的參數檢定的核心概念與應用，幫助學生掌握統計學的基礎知識並應用於實際問題分析。</div>
+<h3 id="section-10.1">10.1 母體平均數的Z檢定</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>母體平均數的Z檢定是統計學中用來判斷一個樣本平均數是否來自已知母體平均數的檢定方法之一。在進行Z檢定時，我們需要設定虛無假設和對立假設。虛無假設通常是關於母體平均數的某個具體數值，對立假設則是虛無假設的否定。接著，計算樣本平均數與母體平均數之間的差異，並將其標準化為Z分數，最後通過Z分數的臨界值來判斷虛無假設是否應該被拒絕。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一家食品公司聲稱他們的巧克力每包平均含有50克。為了驗證這一說法，從生產線上隨機抽取30包巧克力進行重量測量，得到樣本平均重量為49.6克，標準差為2克。進行母體平均數的Z檢定，以確定該公司的聲稱是否正確。</li>
+<li>一個製藥公司宣稱其生產的退燒藥平均15分鐘內可以有效降低體溫1度。為了測試這一說法，隨機選取了20位發燒患者，每位患者服用藥物後體溫下降的情況進行記錄，得到樣本平均下降幅度為0.8度，標準差為0.2度。透過母體平均數的Z檢定，來評估這個宣稱的可信度。</li>
+<li>一所學校聲稱其學生的平均成績在90分以上。從該校抽取了一組學生成績資料，進行母體平均數的Z檢定，以驗證學校的宣稱是否成立。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住虛無假設和對立假設的設定方式，這有助於順利進行Z檢定。</li>
+<li>熟練掌握Z分數的計算方法，以確保在檢定過程中的準確性。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個玩具公司聲稱他們生產的玩具每個平均重量為100克。從一個樣本中抽取了10個玩具進行測量，得到樣本平均重量為98克，標準差為5克。進行母體平均數的Z檢定，顯著水準設定為0.05，請判斷玩具公司的宣稱是否正確。</div>
+<div class="answer">答案: 虛無假設：玩具平均重量為100克；對立假設：玩具平均重量不為100克。計算Z值後，查表得到臨界值為1.96，因此若計算出的Z值超過1.96或小於-1.96，則拒絕虛無假設。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一家餐廳聲稱他們的每道菜的準備時間平均為20分鐘。為了檢驗這一說法，從餐廳點了15道菜，記錄了每道菜的準備時間，樣本平均準備時間為18分鐘，標準差為3分鐘。進行母體平均數的Z檢定，顯著水準設定為0.01，評估餐廳的宣稱是否正確。</div>
+<div class="answer">答案: 虛無假設：菜的準備時間平均為20分鐘；對立假設：菜的準備時間平均不為20分鐘。計算Z值後，查表得到臨界值為2.33，若計算出的Z值超過2.33或小於-2.33，則拒絕虛無假設。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個汽車廠商聲稱他們生產的汽車平均每加侖可行駛40英里。從抽樣數據得知，樣本汽車平均每加侖只能行駛38英里，標準差為3英里。進行母體平均數的Z檢定，顯著水準設定為0.05，確認廠商的宣稱是否正確。</div>
+<div class="answer">答案: 虛無假設：汽車每加侖可行駛40英里；對立假設：汽車每加侖不可行駛40英里。計算Z值後，查表得到臨界值為1.96，若計算出的Z值超過1.96或小於-1.96，則拒絕虛無假設。</div>
+</div>
+</div>
+<h3 id="section-10.2">10.2 母體平均數的t檢定</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>母體平均數的t檢定是統計學中常用的一種假設檢定方法，用於判斷樣本平均數是否與假設的母體平均數有顯著差異。當母體標準差未知，樣本數較小，且母體呈現近似常態分佈時，t檢定是一個有效的工具。t檢定的原理是計算 t 值，並將其與 t 分佈的臨界值進行比較，以判斷樣本平均數是否與假設的母體平均數有顯著差異。</p><p>在進行母體平均數的t檢定時，需要先設定虛無假設（H0）和對立假設（H1）。虛無假設通常是指樣本平均數與母體平均數沒有顯著差異，對立假設則是指有顯著差異。接著，計算 t 值，公式為：\[ t = \frac{\bar{X} - \mu}{s/\sqrt{n}} \]其中 \(\bar{X}\) 為樣本平均數，\(\mu\) 為假設的母體平均數，\(s\) 為樣本標準差，\(n\) 為樣本數。</p><p>最後，計算出的 t 值將與 t 分佈表中對應自由度的臨界值進行比較。如果計算出的 t 值大於臨界值，則拒絕虛無假設，認為樣本平均數與母體平均數有顯著差異；反之則接受虛無假設。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一個藥廠聲稱他們生產的藥物每粒的平均重量應該是5克。從一個樣本中取得了30粒藥物的重量資料，平均為4.8克，標準差為0.2克。現在要進行母體平均數的t檢定，以確定是否有足夠證據支持藥廠的聲明。</li>
+<li>一家公司宣稱他們新開發的產品平均使用壽命為5000小時。進行了一項測試，樣本大小為20，平均使用壽命為4800小時，標準差為200小時。現在需要進行母體平均數的t檢定，以確定公司的聲明是否正確。</li>
+<li>一所學校聲稱他們學生的平均身高為170公分。從一個樣本中抽取了40名學生的身高資料，平均為168公分，標準差為5公分。現在要進行母體平均數的t檢定，以驗證學校的聲明。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住 t 檢定的公式：\[ t = \frac{\bar{X} - \mu}{s/\sqrt{n}} \]</li>
+<li>熟悉 t 分佈表，理解自由度對 t 值的影響。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個研究假設某鎮上的居民每月平均用水量為30立方米，從一個樣本中取得了20位居民的用水量資料，平均為28立方米，標準差為4立方米。進行母體平均數的t檢定，計算 t 值。</div>
+<div class="answer">答案: 計算得出 t 值為 -2.24。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一家零售商聲稱他們店內的平均每日營業額為5000元。從最近30天的銷售數據中取得了每日營業額的資料，平均為4800元，標準差為600元。進行母體平均數的t檢定，判斷是否可以接受零售商的聲明。</div>
+<div class="answer">答案: 計算得出 t 值為 -3.33，拒絕虛無假設，認為每日營業額與聲稱的平均值有顯著差異。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個研究假設某藥廠生產的藥物每瓶含有1000毫克的成分。從20瓶藥物中測試了成分含量，平均為980毫克，標準差為30毫克。進行母體平均數的t檢定，判斷是否可以接受藥廠的聲明。</div>
+<div class="answer">答案: 計算得出 t 值為 -2.94，拒絕虛無假設，認為成分含量與聲稱的平均值有顯著差異。</div>
+</div>
+</div>
+<h3 id="section-10.3">10.3 母體比例的檢定</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>母體比例的檢定是統計學中用來判斷一個母體參數（比例）是否等於某一特定值的方法。在進行母體比例的檢定時，我們會利用樣本資料來對母體參數進行假設檢定。通常，我們會設定兩個假設：虛無假設（H0）和對立假設（Ha）。虛無假設通常是我們想要檢定的參數值，而對立假設則是與虛無假設相對的假設。透過計算樣本資料的統計量，我們可以做出對虛無假設的結論，從而了解母體參數是否等於我們所設定的值。</p><p>在母體比例的檢定中，最常使用的統計量是樣本比例（sample proportion），計算方式為樣本中具有某特定特徵的個體數除以總樣本數。而在進行檢定時，我們通常會使用 z 檢定或卡方檢定，依據樣本數據的特性和應用情境來選擇適合的方法。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>在一項市場調查中，研究人員想要檢定某產品的滿意度比例是否超過50%。他們隨機調查了1000位消費者，發現有560位表示對該產品感到滿意。透過母體比例的檢定，他們可以判斷這個產品的滿意度是否高於一半。</li>
+<li>一家公司想要了解員工對新工時制度的接受程度，他們抽樣了200位員工進行調查，發現有120位員工支持新制度。透過母體比例的檢定，公司可以確認新工時制度的支持比例是否達到他們所期望的水準。</li>
+<li>在一個政治民調中，研究人員調查了500位選民中對某政黨的支持情況，發現有250位表示支持該政黨。透過母體比例的檢定，他們可以判斷該政黨的支持率是否達到一半以上。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住在母體比例的檢定中，虛無假設通常是我們要檢定的比例值，而對立假設則是與之相對的假設。</li>
+<li>理解樣本比例的計算方法對於進行母體比例的檢定非常重要，需熟練掌握。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一位研究人員想要檢定某項產品的缺陷率是否低於5%。他抽樣了200個產品進行檢查，發現有8個產品存在缺陷。請進行母體比例的檢定。</div>
+<div class="answer">答案: 虛無假設 H0: p >= 0.05, 對立假設 Ha: p < 0.05。計算樣本比例為 8/200 = 0.04，計算 z 值後進行假設檢定。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一家公司想要檢定員工對新的工時制度的支持率是否高於60%。抽樣了300位員工中，有180位員工支持新工時制度。請進行母體比例的檢定。</div>
+<div class="answer">答案: 虛無假設 H0: p <= 0.60, 對立假設 Ha: p > 0.60。計算樣本比例為 180/300 = 0.60，計算 z 值後進行假設檢定。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 在一次選舉中，候選人希望檢定自己的支持率是否高於40%。調查了500位選民後，有210位表示支持該候選人。請進行母體比例的檢定。</div>
+<div class="answer">答案: 虛無假設 H0: p <= 0.40, 對立假設 Ha: p > 0.40。計算樣本比例為 210/500 = 0.42，計算 z 值後進行假設檢定。</div>
+</div>
+</div>
+<h3 id="section-10.4">10.4 母體變異數的卡方檢定</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>母體變異數的卡方檢定是統計學中常用的假設檢定方法，用於比較一個樣本的變異數是否與提出的假設變異數相同。在進行卡方檢定時，我們會計算樣本變異數與假設變異數之間的差異，並將其轉換為卡方統計量，然後參照自由度為自由度的卡方分佈表，找出對應的臨界值，以判斷是否拒絕虛無假設。</p><p>進行母體變異數的卡方檢定時，我們提出的虛無假設通常是兩個或多個母體的變異數相等，而對立假設則是至少有一個母體的變異數不相等。如果卡方檢定的結果顯示拒絕虛無假設，則可以得出結論：至少有一個母體的變異數與其他母體的變異數不同。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一個研究人員想要比較三個不同教學方法對學生成績變異性的影響。他收集了三組學生成績數據，並使用母體變異數的卡方檢定來確定這三個方法的變異數是否相等。</li>
+<li>一家製造公司希望確定三條生產線的生產效率是否存在顯著差異，於是對三條生產線進行了生產效率的測試，並利用母體變異數的卡方檢定來進行比較。</li>
+<li>一個研究小組想要檢驗三種不同的藥物對某一疾病治療效果的差異，他們使用母體變異數的卡方檢定方法來確定這三種藥物的治療效果是否有顯著區別。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住卡方檢定的目的是為了比較母體變異數是否相等，可以將卡方統計量的計算公式和卡方分佈表的應用狀況牢記在心中。</li>
+<li>理解卡方檢定的核心邏輯，即通過計算樣本變異數與假設變異數之間的差異來判斷母體變異數是否相等，進而做出統計推論。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一位研究者想要比較三組不同投資組合的風險，他收集了每組投資組合的每月收益率數據，請利用母體變異數的卡方檢定方法進行假設檢定。</div>
+<div class="answer">答案: 準備三組投資組合的每月收益率數據，計算每組的變異數，建立虛無假設和對立假設，計算卡方統計量，並根據卡方分佈表得出結論。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一位研究者收集了兩個不同品牌的手機的銷售數據，想要檢定這兩個品牌的銷售量的變異數是否存在差異，請進行母體變異數的卡方檢定。</div>
+<div class="answer">答案: 計算兩個品牌的銷售數據的變異數，設定虛無假設和對立假設，計算卡方統計量，查找卡方分佈表，判斷是否拒絕虛無假設。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一位研究者想要比較兩個不同品種小麥的產量穩定性，他收集了兩個品種小麥的產量數據，請利用母體變異數的卡方檢定方法進行假設檢定。</div>
+<div class="answer">答案: 計算兩個品種小麥的產量數據的變異數，設定虛無假設和對立假設，計算卡方統計量，查找卡方分佈表，判斷是否拒絕虛無假設。</div>
+</div>
+</div>
+<h3 id="section-10.5">10.5 檢定結果的詮釋</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>檢定結果的詮釋在統計學中扮演著至關重要的角色，它能夠幫助我們做出對於母體參數是否符合某個假設的決定。當進行假設檢定後，我們會得到一個檢定結果，通常以統計量和p值的形式呈現。對這些結果進行詮釋時，我們需要關注的是p值的大小以及是否小於顯著水準（通常是0.05）。若p值小於顯著水準，我們就有足夠的證據拒絕虛無假設，否則我們無法拒絕虛無假設。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一家公司聲稱其新研發的產品平均壽命超過1000小時，進行統計檢定後得到p值為0.02。由於p值小於0.05，我們可以拒絕虛無假設，即認為這個產品的平均壽命確實超過1000小時。</li>
+<li>一項研究假設某藥物對治療特定疾病有效，但檢定結果顯示p值為0.15，大於0.05。因此，我們無法拒絕虛無假設，無法確定這個藥物對該疾病的療效。</li>
+<li>一份民意調查想瞭解市長的支持率是否高於50%，進行統計檢定後得到p值為0.06。由於p值大於0.05，我們無法拒絕虛無假設，認為市長的支持率未必高於50%。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住p值與顯著水準的比較：比較p值與顯著水準，p值小於顯著水準時，拒絕虛無假設；p值大於顯著水準時，接受虛無假設。</li>
+<li>注意統計量的方向：當統計量是單尾檢定時，要特別留意統計量的方向對於結論的影響。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一項研究假設某新藥的效果優於現有藥物，進行統計檢定後得到p值為0.03，顯著水準為0.05。根據檢定結果，應該拒絕還是接受虛無假設？</div>
+<div class="answer">答案: 拒絕虛無假設，因為p值小於顯著水準。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一份報告聲稱全球平均溫度上升幅度大於0.5°C，進行統計檢定後得到p值為0.08。根據檢定結果，應該拒絕還是接受虛無假設？</div>
+<div class="answer">答案: 接受虛無假設，因為p值大於顯著水準。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一間學校聲稱全校師生對新教學方法的滿意度高於70%，進行統計檢定後得到p值為0.002。根據檢定結果，應該拒絕還是接受虛無假設？</div>
+<div class="answer">答案: 拒絕虛無假設，因為p值小於顯著水準。</div>
+</div>
+</div>
+<h3 id="section-10.6">10.6 實務應用案例</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在統計學中，單一母體的參數檢定是一種假設檢定方法，用於確定一個母體參數的真實值是否等於某個特定值。這種檢定通常涉及到對母體平均數或比例的假設進行檢驗。在進行單一母體的參數檢定時，我們首先設定虛無假設和對立假設，然後利用樣本數據計算統計量，進行假設檢定，最終根據結果做出結論。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一家食品公司聲稱他們的新產品每罐的平均重量為200克，為了驗證這個聲明，從生產線上抽取了一些罐頭進行重量檢測，然後利用單一母體的參數檢定方法來確定罐頭的平均重量是否等於200克。</li>
+<li>一家政府機構想要確定某一城市成年人口中吸煙者的比例是否高於30%，為此他們進行了一項調查，然後利用單一母體的參數檢定來進行統計分析。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>設定虛無假設和對立假設時，可以使用「H0」代表虛無假設，「H1」代表對立假設，這有助於區分兩者。</li>
+<li>在計算統計量時，可以使用統計軟件或計算公式來確保準確性。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一家公司聲稱他們的新產品可以使顧客減重，平均減重效果為5公斤。從一組10位參與者中隨機選取了樣本，樣本平均減重效果為4.2公斤，標準差為1.5公斤，顯著水準為0.05。請根據這些資訊進行單一母體的參數檢定。</div>
+<div class="answer">答案: 虛無假設：新產品平均減重效果為5公斤；對立假設：新產品平均減重效果不等於5公斤。計算統計量後，比較P值和顯著水準，做出結論。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一間學校聲稱他們的學生平均每週運動時間為5小時。隨機選取了30名學生，他們的平均每週運動時間為4.8小時，標準差為1.2小時，顯著水準為0.01。進行單一母體的參數檢定。</div>
+<div class="answer">答案: 虛無假設：學生平均每週運動時間為5小時；對立假設：學生平均每週運動時間不等於5小時。計算統計量後，比較P值和顯著水準，做出結論。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個研究小組聲稱他們開發的新藥可以降低患者體溫，平均降溫效果為1.5攝氏度。從一組20名患者中隨機選取了樣本，樣本平均降溫效果為1.2攝氏度，標準差為0.3攝氏度，顯著水準為0.05。進行單一母體的參數檢定。</div>
+<div class="answer">答案: 虛無假設：新藥平均降溫效果為1.5攝氏度；對立假設：新藥平均降溫效果不等於1.5攝氏度。計算統計量後，比較P值和顯著水準，做出結論。</div>
+</div>
+</div>
+<h3 id="section-10.7">10.7 使用統計軟體進行參數檢定</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在統計學中，使用統計軟體進行參數檢定是一個常見的作業。參數檢定是指利用樣本資料對母體參數進行假設檢定，以判斷假設的參數值是否能夠合理地描述母體的情況。在實際應用中，統計軟體能夠幫助我們進行假設檢定的計算，節省了人工計算的時間並降低了出錯的可能性。</p><p>使用統計軟體進行參數檢定的步驟通常包括：輸入樣本資料、設定假設檢定的參數、選擇適當的統計檢定方法、進行假設檢定、獲得結果並進行解釋。統計軟體會根據使用者的輸入自動計算檢定統計量，並給出結果的顯著性檢定結果，幫助我們做出是否拒絕虛無假設的結論。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>例如，假設我們想要檢定某種新藥對於治療某種疾病的效果，我們可以使用統計軟體輸入兩組受試者的數據，然後進行獨立樣本 t 檢定，以確定兩組之間是否存在顯著差異。</li>
+<li>另一個例子是想要檢定某廠商宣稱的產品平均壽命是否達到了設定的數值，我們可以使用統計軟體進行單樣本 t 檢定，以確認實際平均壽命是否符合廠商所聲明的數值。</li>
+<li>最後，若要檢定兩個不同廣告宣傳方式對於銷售額是否有影響，我們可以使用統計軟體進行配對樣本 t 檢定，以確定兩種廣告宣傳方式在銷售額上的效果是否有統計學上的差異。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>在使用統計軟體進行參數檢定時，要確保輸入的資料格式正確，以避免計算錯誤。</li>
+<li>熟悉統計軟體中各種參數檢定方法的使用方法和限制，可以幫助提高操作效率。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 某研究想要檢定兩種不同教學方法對學生成績是否有影響，請使用統計軟體進行獨立樣本 t 檢定。假設研究結果顯示 p 值為0.03，你會如何解釋這個結果？</div>
+<div class="answer">答案: 結果顯示 p 值為0.03，低於一般顯著性水準0.05，代表在統計學上我們擁有足夠的證據拒絕虛無假設，即兩種教學方法對學生成績的影響是不同的。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 某公司聲稱其新產品的平均使用壽命為1000小時，你想要進行單樣本 t 檢定以驗證這個聲明。請使用統計軟體進行該檢定，並解釋結果。</div>
+<div class="answer">答案: 使用統計軟體進行單樣本 t 檢定後，若得到顯著性水準小於0.05的 p 值，則表示我們有足夠的證據拒絕虛無假設，即新產品的平均使用壽命可能不符合公司聲稱的數值。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 你想要比較兩組樣本的平均值是否有統計學上的差異，應該使用哪種統計檢定方法？請解釋其原因。</div>
+<div class="answer">答案: 若想要比較兩組樣本的平均值是否有統計學上的差異，應該使用獨立樣本 t 檢定，因為這種方法適用於比較兩組獨立樣本的平均值是否存在統計學上的顯著差異。</div>
+</div>
+</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            }
+        };
+        
+        // 添加平滑滾動
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // 添加回到頂部按鈕顯示/隱藏功能
+        window.addEventListener('scroll', function() {
+            var backToTop = document.querySelector('.back-to-top');
+            if (window.pageYOffset > 300) {
+                backToTop.style.display = 'block';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

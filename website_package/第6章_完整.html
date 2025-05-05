@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>統計學講義</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        h2 {
+            color: #2c3e50;
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 30px;
+            border-left: 5px solid #3498db;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+            padding: 8px 0;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        .chapter-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .section-content {
+            margin-bottom: 20px;
+        }
+        .examples, .mnemonics, .exercises {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .examples {
+            background-color: #e8f4fc;
+            border-left: 5px solid #3498db;
+        }
+        .mnemonics {
+            background-color: #fcf3cf;
+            border-left: 5px solid #f1c40f;
+        }
+        .exercises {
+            background-color: #e8f8f5;
+            border-left: 5px solid #2ecc71;
+        }
+        .visualization-block {
+            background-color: #f0f4f8;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .visualization-block img {
+            max-width: 100%;
+            height: auto;
+            margin: 10px auto;
+        }
+        .visualization-placeholder {
+            background-color: #f0f4f8;
+            border: 1px dashed #d0d7de;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+            color: #7f8c8d;
+        }
+        .exercise {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #ccc;
+        }
+        .question {
+            font-weight: bold;
+        }
+        .answer {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+        .toc {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+        .toc h2 {
+            background: none;
+            border-left: none;
+            margin-top: 0;
+            padding-left: 0;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin-bottom: 5px;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #3498db;
+        }
+        .toc .section-link {
+            padding-left: 20px;
+            font-size: 0.9em;
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        .back-to-top:hover {
+            opacity: 1;
+            color: white;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .toc {
+                padding: 10px;
+            }
+        }
+        .formula {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Cambria Math', Georgia, serif;
+            overflow-x: auto;
+        }
+    </style>
+  <link rel="stylesheet" href="static/css/statistics.css">
+</head>
+<body>
+    <a href="#top" class="back-to-top" title="回到頂部">↑</a>
+    <div class="container" id="top">
+<h1>大學統計學</h1>
+<div class="toc">
+<h2>目錄</h2>
+<ul>
+<li><a href="#chapter-6">第6章: 連續機率分配</a>
+<ul>
+<li class="section-link"><a href="#section-6.1">6.1 常態分配</a></li>
+<li class="section-link"><a href="#section-6.2">6.2 標準常態分配與Z轉換</a></li>
+<li class="section-link"><a href="#section-6.3">6.3 指數分配</a></li>
+<li class="section-link"><a href="#section-6.4">6.4 均勻分配</a></li>
+<li class="section-link"><a href="#section-6.5">6.5 卡方分配</a></li>
+<li class="section-link"><a href="#section-6.6">6.6 t分配</a></li>
+<li class="section-link"><a href="#section-6.7">6.7 F分配</a></li>
+</ul></li>
+</ul>
+</div>
+<h2 id="chapter-6" class="chapter-title">第6章: 連續機率分配</h2>
+<div class="chapter-overview mb-4">本章介紹連續機率分配的核心概念與應用，幫助學生掌握統計學的基礎知識並應用於實際問題分析。</div>
+<h3 id="section-6.1">6.1 常態分配</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>常態分配（Normal Distribution）是統計學中一種重要的連續型機率分配，其特性為對稱、單峰、集中在平均值周圍並且具有尾巴較長的形狀。常態分配的機率密度函數可由兩個參數來描述，平均值μ和標準差σ。一個常態分配以N(μ, σ^2)表示，其中μ代表平均值，σ^2代表變異數。</p><p>對於常態分配而言，68-95-99.7法則是一個重要的性質，它指出在一個常態分配中，大約有68%的資料落在平均值加減一個標準差的範圍內，約95%的資料落在兩個標準差範圍內，而大約有99.7%的資料落在三個標準差範圍內。這個法則在實際應用中常常被用來快速評估資料的分佈情況。</p><p>常態分配在各個領域都有廣泛的應用，例如金融學中的股票價格變動、人口統計學中的身高體重分佈、製造業中的產品尺寸控制等。因為其穩定、易於計算和理解的特性，常態分配成為統計學中一個重要的基礎概念。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>在一個考試的成績分佈中，假設成績呈常態分佈，平均數為80分，標準差為10分。如果要計算有多少比例的學生考了超過90分，可以利用常態分配的特性來估計。</li>
+<li>在製造業中，假設一種產品的長度符合常態分配，平均長度為100厘米，標準差為5厘米。若要設定產品長度的範圍，可以利用常態分配的性質來確定規格範圍。</li>
+<li>在金融領域中，股票的日收益率常常被假設為常態分配，投資者可以利用這個假設來評估風險和報酬。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>常態分配的曲線形狀就像一座山峰，中間高，兩側低，可以幫助記憶其對稱性。</li>
+<li>68-95-99.7法則可以通過記住數字68、95和99.7來快速回憶常態分配中各個範圍的覆蓋比例。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 若一個常態分配的平均值為50，標準差為8，計算資料落在(42, 58)這個區間的機率是多少？</div>
+<div class="answer">答案: 使用常態分配的機率密度函數計算，P(42 < X < 58) = P(Z < 1) - P(Z < -1) ≈ 0.6826。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 如果一個常態分配的平均值為120，標準差為15，在這個分配中，有多少比例的資料落在(105, 135)這個區間內？</div>
+<div class="answer">答案: 計算P(105 < X < 135) = P(Z < 1) - P(Z < -1) ≈ 0.6826。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 若一個常態分配的平均值為0，標準差為10，計算資料落在(-10, 10)這個區間的機率是多少？</div>
+<div class="answer">答案: 計算P(-10 < X < 10) = P(Z < 1) - P(Z < -1) ≈ 0.6826。</div>
+</div>
+</div>
+<h3 id="section-6.2">6.2 標準常態分配與Z轉換</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>標準常態分配是統計學中一個重要的概念，它是一種特殊的常態分配，其平均數為0，標準差為1。標準常態分配的機率密度函數呈現對稱的鐘形曲線，並且其下方面積總和為1。Z轉換是將一個常態分佈的隨機變量轉換為標準常態分配的過程，通過將原始數據減去平均值後再除以標準差來實現。</p><p>應用中，我們可以利用標準常態分配計算出一個隨機變量落在某個區間的機率，或者計算出某個數據點在標準常態分配中的位置。Z轉換的主要作用在於標準化數據，使得不同常態分配之間的比較更為容易。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一個考試成績服從常態分配，平均分為80，標準差為10。如果要計算一個學生考了85分的機率，可以利用Z轉換將85減去平均值80再除以標準差10，得到Z值，然後查找標準常態分配表找到對應的機率。</li>
+<li>一個工廠生產的產品長度服從常態分配，平均長度為30厘米，標準差為5厘米。如果要計算一個產品長度小於25厘米的機率，也可以利用Z轉換來解決。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住標準常態分配的平均數是0，標準差是1，這樣在計算Z值時更容易進行標準化。</li>
+<li>理解Z轉換的核心思想是將原始數據標準化，使得可以與標準常態分配進行比較。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個銷售員的每日銷售量服從常態分配，平均銷售量為1000元，標準差為200元。如果要計算一天銷售量在1200元以上的機率，應該如何計算？</div>
+<div class="answer">答案: 先計算Z值：(1200 - 1000) / 200 = 1，然後查找標準常態分配表找到Z值為1對應的機率。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個投資組合的年化收益率服從常態分配，平均收益率為8%，標準差為2%。如果要計算收益率大於10%的機率，應該如何計算？</div>
+<div class="answer">答案: 先計算Z值：(10 - 8) / 2 = 1，然後查找標準常態分配表找到Z值為1對應的機率。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個體重資料集服從常態分配，平均體重為70公斤，標準差為5公斤。如果要計算體重小於60公斤的機率，應該如何計算？</div>
+<div class="answer">答案: 先計算Z值：(60 - 70) / 5 = -2，然後查找標準常態分配表找到Z值為-2對應的機率。</div>
+</div>
+</div>
+<h3 id="section-6.3">6.3 指數分配</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>指數分配是描述事件發生時間間隔的機率分配，通常應用在連續隨機變量的建模中。在指數分配中，隨機變量的取值範圍為正實數，並且其概率密度函數具有單調遞減的特性。指數分配的概率密度函數為 f(x) = λe^{-λx}，其中 λ 為參數，代表事件發生的速率。指數分配的期望值為 1/λ，表示事件平均發生的時間間隔。</p><p>指數分配常用於描述無記憶性的隨機過程，例如等待時間或服務時間的分配。無記憶性意味著事件的發生機率不受先前事件的影響，每個時間段內事件發生的機率是恆定的。這種性質使得指數分配在模擬服務系統、網絡通訊等領域中得到廣泛應用。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>服務系統：假設一家快遞公司平均每 10 分鐘有一個包裹到達分部，此時可以使用指數分配來模擬包裹到達的時間間隔。</li>
+<li>電子設備壽命：某品牌手機的平均使用壽命為 5 年，則可以使用指數分配來估計手機故障的時間間隔。</li>
+<li>網絡封包傳輸時間：網絡封包的傳輸時間間隔也可以使用指數分配來進行建模。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住指數分配的概率密度函數形式：f(x) = λe^{-λx}，其中 λ 為速率參數。</li>
+<li>想像指數分配的概率密度函數是一條遞減的曲線，表示事件發生的機率隨著時間增加而遞減。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個電梯平均每 30 秒到達一次，請計算在 2 分鐘內電梯到達的機率。</div>
+<div class="answer">答案: 將 λ = 1/30，計算 P(X ≤ 120) = 1 - e^{-120/30} ≈ 0.8647。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 某服務中心平均每小時接到 5 個客戶，請計算兩個客戶到達之間的平均時間。</div>
+<div class="answer">答案: 將 λ = 5/60，計算期望值 E(X) = 1/(5/60) = 12 分鐘。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個網站平均每 20 分鐘接收一次訪問請求，請計算在 40 分鐘內沒有任何訪問請求的機率。</div>
+<div class="answer">答案: 將 λ = 1/20，計算 P(X > 40) = e^{-40/20} ≈ 0.1353。</div>
+</div>
+</div>
+<h3 id="section-6.4">6.4 均勻分配</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>均勻分配是一種機率分配，表示在一個有限範圍內的所有數值具有相同的機會被選中。在均勻分配中，每個數值的機率密度函數是常數，而在指定範圍外為零。這種分配的特點是每個數值的機率是相等的，不會偏向於某些值。均勻分配通常在連續型隨機變數中應用，例如從一個連續範圍內抽取數值的情況。</p><p>在均勻分配中，機率密度函數通常表示為 f(x) = 1/(b-a)，其中 a 和 b 分別代表範圍的下限和上限。這意味著在範圍內的所有數值具有相同的機會被選中，而範圍外的機會為零。均勻分配也常用於模擬隨機變數的情況，例如擲骰子或從連續範圍中選取數值等。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一個餐廳每天訂購的食材數量，假設在 50 到 100 公斤之間均勻分佈，則可以使用均勻分配來計算某一天訂購的食材數量落在特定範圍內的機率。</li>
+<li>網站每小時的訪客人數，在 0 到 500 人之間均勻分佈，可以利用均勻分配來預測下一小時訪客人數在某個範圍內的機率。</li>
+<li>某個城市每月降雨量在 50 到 200 毫米之間均勻分佈，可以利用均勻分配來估計下個月降雨量在特定範圍內的機率。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住均勻分配的特點是範圍內所有數值具有相同的機會被選中，可以想像成一個長條形的範圍，其中每個數值都有相同的寬度。</li>
+<li>畫出均勻分配的機率密度函數圖形，可以幫助理解每個數值的機率密度是如何分佈的，以及範圍內外機率的特點。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個擲骰子的隨機變數 X，其範圍在 1 到 6 之間，請計算 X 等於 4 或 5 的機率。</div>
+<div class="answer">答案: 由於均勻分配中每個數值的機率相等，所以 P(X=4或5) = P(X=4) + P(X=5) = 1/6 + 1/6 = 1/3。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個隨機變數 Y 的範圍在 20 到 50 之間，請計算 Y 小於 30 的機率。</div>
+<div class="answer">答案: 根據均勻分配的特點，Y 小於 30 的機率為 P(Y<30) = (30-20)/(50-20) = 10/30 = 1/3。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 某項產品的瑕疵率在 0 到 0.1 之間均勻分佈，請計算瑕疵率小於 0.05 的機率。</div>
+<div class="answer">答案: 瑕疵率小於 0.05 的機率為 P(瑕疵率<0.05) = (0.05-0)/(0.1-0) = 0.05/0.1 = 0.5。</div>
+</div>
+</div>
+<h3 id="section-6.5">6.5 卡方分配</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>卡方分配（Chi-Square Distribution）是一種連續機率分配，常用於統計推論中的假設檢定和建模。卡方分配的應用範圍廣泛，特別是在分析類別變數之間的關係時很有用。當研究者想要確定觀察到的數據是否符合某種理論分配時，卡方分配是一個常見的工具。</p><p>在卡方分配中，卡方值的大小取決於自由度的數量，而自由度通常是通過觀察值的個數減去參數的數量來計算的。卡方分配的曲線呈右偏態，且只取非負值。卡方分配的平均值等於自由度，方差則是兩倍的自由度。</p><p>卡方分配主要應用於以下兩種情況：一是對觀察值與期望值之間的差異進行檢定，例如卡方檢定；二是用於擬合模型和評估模型的適配度，例如在拟合度检验中。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>假設我們對一個骰子進行了60次投擲，並記錄了每個點數出現的次數，我們可以使用卡方分配來檢定這組觀察值是否符合均勻分布的期望。</li>
+<li>在醫學研究中，研究者可能使用卡方分配來評估某種治療方法的有效性，比較實際觀察到的治療效果與預期效果之間的差異。</li>
+<li>在市場調查中，可以使用卡方分配來檢定不同廣告宣傳方式對消費者購買行為的影響是否存在顯著差異。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住卡方分配的形狀：右偏態的曲線，只取非負值。</li>
+<li>自由度的計算方法：觀察值的個數減去參數的數量。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個骰子被投擲了100次，每個點數出現的次數如下：1出現15次、2出現25次、3出現20次、4出現18次、5出現12次、6出現10次。請使用卡方分配檢定這組觀察值是否符合均勻分布的期望。</div>
+<div class="answer">答案: 計算卡方值，自由度為5，比較卡方值和臨界值，進行假設檢定。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一項研究中，對兩種不同的營養補充品對於體重減輕效果進行了實驗，結果顯示兩組受試者的體重減輕效果不同。請使用卡方分配檢定這兩組資料之間的差異是否顯著。</div>
+<div class="answer">答案: 計算卡方值，自由度為1，比較卡方值和臨界值，進行假設檢定。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一家公司進行了市場調查，比較了兩種不同的廣告宣傳方式對於產品銷量的影響。請使用卡方分配檢定這兩種宣傳方式對銷量是否存在顯著差異。</div>
+<div class="answer">答案: 計算卡方值，自由度根據資料的維度而定，比較卡方值和臨界值，進行假設檢定。</div>
+</div>
+</div>
+<h3 id="section-6.6">6.6 t分配</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>t分配是統計學中常用的機率分配之一，用於處理樣本數量較小、母體標準差未知的情況。t分配是由學生（Student）所提出，用來估計樣本平均數和母體平均數之間的差異。在實際應用中，t分配常用於計算信心區間、假設檢定以及進行統計推論。</p><p>t分配的形狀取決於自由度，自由度越大，t分配趨近於標準常態分配。當自由度增加時，t分配的峰度逐漸減小，分佈越趨近於常態分配。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>在一項研究中，我們想知道某種新藥對患者的療效。我們隨機選取了30名患者，給予他們新藥進行治療，然後記錄他們的反應時間。我們可以使用t分配來計算這30名患者的平均反應時間的信心區間，進而對藥效進行估計。</li>
+<li>一家公司想知道員工每週平均加班時間是否超過8小時。他們隨機選取了20名員工，記錄了他們每週的加班時間。利用t分配，可以進行假設檢定，檢驗平均加班時間是否顯著高於8小時。</li>
+<li>一位研究人員想了解某種產品的尺寸是否符合規格。他隨機抽取了10個產品，測量它們的尺寸，並使用t分配計算這10個產品尺寸的平均值的信心區間，以判斷是否符合規格。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>自由度越大，t分配趨近於常態分配，形狀越接近鐘形。</li>
+<li>t分配常用於小樣本、母體標準差未知的情況下進行統計推論。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 若一個t分配有15個自由度，計算其第90百分位數。</div>
+<div class="answer">答案: 第90百分位數為1.645。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 若一個t分配有25個自由度，計算其第25百分位數。</div>
+<div class="answer">答案: 第25百分位數為-0.711。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個t分配有8個自由度，計算其標準差。</div>
+<div class="answer">答案: 標準差為1.443。</div>
+</div>
+</div>
+<h3 id="section-6.7">6.7 F分配</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>F分配是一種連續機率分配，用於比較兩個變異數或標準差的估計值的差異是否來自相同的母體。F分配的形狀取決於兩個自由度參數，通常表示為$F_{df_1, df_2}$，其中$df_1$和$df_2$分別是分子自由度和分母自由度。分子自由度是變異數較大的樣本的自由度，而分母自由度是變異數較小的樣本的自由度。</p><p>F分配的機率密度函數為：
+$f(x) = \frac{{\Gamma\left(\frac{{df_1 + df_2}{2}\right)}}{{\Gamma\left(\frac{{df_1}}{2}\right)\Gamma\left(\frac{{df_2}}{2}\right)}} \left(\frac{{df_1}}{{df_2}}\right)^{\frac{{df_1}}{2}} x^{\frac{{df_1}}{2} - 1} \left(1 + \frac{{df_1}}{{df_2}}x\right)^{-\frac{{df_1 + df_2}}{2}}$
+其中，$\Gamma$表示伽瑪函數。</p><p>在統計學中，F分配常被用於方差分析、迴歸分析和信賴區間的計算等。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一個研究人員想要比較兩種不同肥料對植物生長的影響，分別在兩個不同的田地中種植了兩組植物，測量兩組植物的生長高度，使用F分配檢定兩種肥料對植物生長的影響是否有統計顯著性。</li>
+<li>一個製造公司想要檢定兩條生產線的產品變異數是否相同，使用F分配來判斷兩條生產線的品質差異是否顯著。</li>
+<li>在迴歸分析中，使用F分配來評估迴歸模型的整體顯著性，確定自變數對因變數的影響是否統計上顯著。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住F分配的機率密度函數，可以幫助理解F分配的形狀和特性。</li>
+<li>理解F分配的用途和應用場景，有助於記憶如何選擇使用F分配進行統計檢定。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 在一個實驗中，給予兩組受試者不同的處理，分別測得兩組受試者的反應時間，分別為$df_1=3$和$df_2=5$，計算F統計量為5.2，請計算對應的p值。</div>
+<div class="answer">答案: p值為0.026。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 在一個研究中，兩個觀察組的變異數分別為10和15，對應的自由度分別為$df_1=8$和$df_2=12$，請計算F統計量。</div>
+<div class="answer">答案: F統計量為0.6667。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 若一個假設檢定中F統計量為3.5，分子自由度為3，分母自由度為10，請判斷對應的p值。</div>
+<div class="answer">答案: p值為0.063。</div>
+</div>
+</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            }
+        };
+        
+        // 添加平滑滾動
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // 添加回到頂部按鈕顯示/隱藏功能
+        window.addEventListener('scroll', function() {
+            var backToTop = document.querySelector('.back-to-top');
+            if (window.pageYOffset > 300) {
+                backToTop.style.display = 'block';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        });
+    </script>
+  <script src="static/js/statistics.js"></script>
+</body>
+</html>

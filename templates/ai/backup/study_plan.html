@@ -1,0 +1,533 @@
+{% extends "base.html" %}
+
+{% block title %}ChatGPT學習計劃生成{% endblock %}
+
+{% block extra_css %}
+<style>
+    .markdown-content {
+        line-height: 1.8;
+    }
+    .markdown-content h1, 
+    .markdown-content h2, 
+    .markdown-content h3, 
+    .markdown-content h4 {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    .markdown-content p {
+        margin-bottom: 1rem;
+    }
+    .markdown-content ul, 
+    .markdown-content ol {
+        margin-bottom: 1rem;
+        padding-left: 2rem;
+    }
+    .markdown-content li {
+        margin-bottom: 0.5rem;
+    }
+    .markdown-content strong {
+        font-weight: 600;
+        color: var(--primary-blue);
+    }
+    .pulse-animation {
+        animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(45, 95, 181, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(45, 95, 181, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(45, 95, 181, 0); }
+    }
+    .week-card {
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 2rem;
+        overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+    .week-header {
+        background: linear-gradient(135deg, var(--primary-blue), var(--secondary-teal));
+        color: white;
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+    }
+    .week-content {
+        padding: 1.5rem;
+        background-color: var(--neutral-white);
+    }
+    .topic-tag {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 2rem;
+        font-size: 0.85rem;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+        background-color: rgba(45, 95, 181, 0.1);
+        color: var(--primary-blue);
+    }
+    .plan-section {
+        margin-bottom: 1.5rem;
+    }
+    .plan-section-title {
+        font-weight: 600;
+        color: var(--secondary-teal);
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('home') }}">首頁</a></li>
+                    <li class="breadcrumb-item"><a href="#">AI助手</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">學習計劃</li>
+                </ol>
+            </nav>
+            
+            <div class="card mb-4 shadow-sm border-0">
+                <div class="card-body">
+                    <h1 class="mb-4"><i class="bi bi-calendar-check me-3 text-primary"></i>學習計劃生成助手</h1>
+                    <p class="lead mb-4">基於您選擇的統計學主題，AI將為您建立個性化的學習計劃，包含每週學習目標、資源推薦與評估方法。</p>
+                    
+                    <form id="study-plan-form">
+                        <div class="mb-4">
+                            <label for="topics-container" class="form-label">選擇學習主題</label>
+                            <div id="topics-container" class="mb-2">
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" name="topics[]" placeholder="輸入主題，如「假設檢定」" required>
+                                    <button type="button" class="btn btn-outline-secondary remove-topic" disabled>
+                                        <i class="bi bi-dash-circle"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="add-topic">
+                                <i class="bi bi-plus-circle me-2"></i>新增主題
+                            </button>
+                            <div class="form-text">選擇1-5個您想要學習的統計學主題，計劃將根據這些主題量身定制。</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="duration" class="form-label">計劃時長</label>
+                            <select class="form-select" id="duration" name="duration">
+                                <option value="2">2週 (短期密集學習)</option>
+                                <option value="4" selected>4週 (標準學習周期)</option>
+                                <option value="8">8週 (長期深入學習)</option>
+                                <option value="12">12週 (學期規劃)</option>
+                            </select>
+                            <div class="form-text">選擇適合您的學習時間範圍，時間越長，學習節奏越從容。</div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary btn-lg px-4">
+                                <i class="bi bi-calendar-plus me-2"></i>生成學習計劃
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div id="loading" style="display: none;" class="text-center my-5">
+                <div class="spinner-border text-primary pulse-animation" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">載入中...</span>
+                </div>
+                <p class="lead mt-3">正在生成學習計劃，請稍等...</p>
+                <p class="text-muted">我們正在為您設計個性化的學習路徑</p>
+            </div>
+            
+            <div class="card shadow-sm border-0" id="result-card" style="display: none;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 id="plan-title" class="mb-0">學習計劃</h2>
+                        <div>
+                            <span id="duration-badge" class="badge bg-primary">4週計劃</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="d-flex gap-2 flex-wrap" id="topic-tags">
+                            <!-- 主題標籤將在這裡動態生成 -->
+                        </div>
+                    </div>
+                    
+                    <div id="plan-content" class="markdown-content">
+                        <!-- 計劃內容將在這裡顯示 -->
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                        <div>
+                            <button class="btn btn-outline-primary" id="new-plan">
+                                <i class="bi bi-arrow-left me-2"></i>新計劃
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline-secondary me-2" id="copy-result">
+                                <i class="bi bi-clipboard me-2"></i>複製計劃
+                            </button>
+                            <button class="btn btn-primary" id="save-result">
+                                <i class="bi bi-download me-2"></i>下載計劃
+                            </button>
+                        </div>
+                </div>
+                </div>
+            </div>
+            
+            <div class="alert alert-danger" id="error-message" style="display: none;">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <span id="error-text">發生錯誤，請稍後再試。</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('study-plan-form');
+    const resultCard = document.getElementById('result-card');
+    const loading = document.getElementById('loading');
+    const errorMessage = document.getElementById('error-message');
+    const planTitle = document.getElementById('plan-title');
+    const planContent = document.getElementById('plan-content');
+    const durationBadge = document.getElementById('duration-badge');
+    const topicTags = document.getElementById('topic-tags');
+    const copyButton = document.getElementById('copy-result');
+    const newPlanButton = document.getElementById('new-plan');
+    const saveButton = document.getElementById('save-result');
+    const addTopicButton = document.getElementById('add-topic');
+    
+    // 初始化主題表單
+    initTopicFields();
+    
+    // 添加主題按鈕
+    addTopicButton.addEventListener('click', function() {
+    const topicsContainer = document.getElementById('topics-container');
+        const topicCount = topicsContainer.querySelectorAll('.input-group').length;
+        
+        if (topicCount >= 5) {
+            showError('最多只能添加5個主題');
+            return;
+        }
+        
+        const newTopicGroup = document.createElement('div');
+        newTopicGroup.className = 'input-group mb-2';
+        newTopicGroup.innerHTML = `
+            <input type="text" class="form-control" name="topics[]" placeholder="輸入主題，如「相關分析」" required>
+            <button type="button" class="btn btn-outline-secondary remove-topic">
+                <i class="bi bi-dash-circle"></i>
+            </button>
+                `;
+        
+        topicsContainer.appendChild(newTopicGroup);
+        updateRemoveButtons();
+    });
+    
+    // 委託事件處理 - 移除主題按鈕
+    document.getElementById('topics-container').addEventListener('click', function(e) {
+        if (e.target.closest('.remove-topic')) {
+            e.target.closest('.input-group').remove();
+            updateRemoveButtons();
+        }
+    });
+    
+    // 綁定表單提交事件
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // 獲取所有主題
+        const topicInputs = form.querySelectorAll('input[name="topics[]"]');
+        const topics = Array.from(topicInputs).map(input => input.value.trim()).filter(Boolean);
+        
+        if (topics.length === 0) {
+            showError('請至少輸入一個學習主題');
+            return;
+        }
+        
+        // 隱藏結果和錯誤，顯示加載
+        resultCard.style.display = 'none';
+        errorMessage.style.display = 'none';
+        loading.style.display = 'block';
+        
+        // 準備發送數據
+        const duration = document.getElementById('duration').value;
+        
+        // 發送AJAX請求
+        fetch('/ai/study_plan', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                topics: topics,
+                duration_weeks: parseInt(duration)
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('網絡請求失敗');
+            }
+            return response.json();
+        })
+        .then(data => {
+            loading.style.display = 'none';
+            
+            if (data.error) {
+                showError(data.error);
+                return;
+            }
+            
+            // 顯示結果
+            resultCard.style.display = 'block';
+            
+            // 設置標題和持續時間標籤
+            planTitle.innerText = `${topics.join('、')} 學習計劃`;
+            durationBadge.innerText = `${duration}週計劃`;
+            
+            // 生成主題標籤
+            generateTopicTags(topics);
+            
+            // 格式化並顯示學習計劃
+            const formattedPlan = formatStudyPlan(data.plan, parseInt(duration));
+            planContent.innerHTML = formattedPlan;
+            
+            // 滾動到結果區域
+            resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        })
+        .catch(error => {
+            loading.style.display = 'none';
+            console.error('Error:', error);
+            showError('發生錯誤: ' + error.message);
+        });
+    });
+    
+    // 複製功能
+    copyButton.addEventListener('click', function() {
+        const text = planContent.innerText;
+        navigator.clipboard.writeText(text)
+            .then(() => {
+                copyButton.innerHTML = '<i class="bi bi-check-lg me-2"></i>已複製';
+                copyButton.classList.add('btn-success');
+                copyButton.classList.remove('btn-outline-secondary');
+                
+                setTimeout(() => {
+                    copyButton.innerHTML = '<i class="bi bi-clipboard me-2"></i>複製計劃';
+                    copyButton.classList.remove('btn-success');
+                    copyButton.classList.add('btn-outline-secondary');
+                }, 2000);
+            })
+            .catch(err => {
+                showError('複製失敗: ' + err);
+        });
+    });
+    
+    // 新計劃按鈕
+    newPlanButton.addEventListener('click', function() {
+        resultCard.style.display = 'none';
+        form.reset();
+        initTopicFields();
+        document.querySelector('input[name="topics[]"]').focus();
+    });
+    
+    // 儲存功能 (模擬)
+    saveButton.addEventListener('click', function() {
+        saveButton.innerHTML = '<i class="bi bi-check-lg me-2"></i>已下載';
+        saveButton.classList.add('btn-success');
+        saveButton.classList.remove('btn-primary');
+        
+        setTimeout(() => {
+            saveButton.innerHTML = '<i class="bi bi-download me-2"></i>下載計劃';
+            saveButton.classList.remove('btn-success');
+            saveButton.classList.add('btn-primary');
+        }, 2000);
+    });
+    
+    // 輔助函數：初始化主題欄位
+    function initTopicFields() {
+        const topicsContainer = document.getElementById('topics-container');
+        topicsContainer.innerHTML = `
+            <div class="input-group mb-2">
+                <input type="text" class="form-control" name="topics[]" placeholder="輸入主題，如「假設檢定」" required>
+                <button type="button" class="btn btn-outline-secondary remove-topic" disabled>
+                    <i class="bi bi-dash-circle"></i>
+                </button>
+            </div>
+        `;
+    }
+    
+    // 輔助函數：更新移除按鈕的狀態
+    function updateRemoveButtons() {
+        const removeButtons = document.querySelectorAll('.remove-topic');
+        const topicCount = removeButtons.length;
+        
+        removeButtons.forEach(button => {
+            button.disabled = topicCount <= 1;
+        });
+    }
+    
+    // 輔助函數：生成主題標籤
+    function generateTopicTags(topics) {
+        topicTags.innerHTML = '';
+        
+        topics.forEach(topic => {
+            const tag = document.createElement('span');
+            tag.className = 'topic-tag';
+            tag.innerHTML = `<i class="bi bi-tag-fill me-1"></i>${topic}`;
+            topicTags.appendChild(tag);
+        });
+    }
+    
+    // 輔助函數：顯示錯誤訊息
+    function showError(message) {
+        errorMessage.style.display = 'block';
+        document.getElementById('error-text').textContent = message;
+        errorMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    
+    // 輔助函數：格式化學習計劃
+    function formatStudyPlan(text, durationWeeks) {
+        // 首先嘗試識別週次的格式
+        const cleanedText = text.replace(/\\n/g, '\n');
+        
+        // 檢測是否包含週次標記
+        if (cleanedText.match(/第[一二三四五六七八九十]週|第\d+週|週次\s*[一二三四五六七八九十\d]/i)) {
+            // 拆分文本為每週部分
+            const weekPattern = /(?=第[一二三四五六七八九十]週|第\d+週|週次\s*[一二三四五六七八九十\d])/i;
+            const weekBlocks = cleanedText.split(weekPattern);
+            
+            let formattedHtml = '';
+            
+            // 對於每個週塊進行處理
+            weekBlocks.forEach((block, index) => {
+                if (!block.trim()) return; // 跳過空塊
+                
+                // 從塊中提取週次標題
+                const weekTitleMatch = block.match(/^(第[一二三四五六七八九十]週|第\d+週|週次\s*[一二三四五六七八九十\d])[：:]?/i);
+                
+                if (weekTitleMatch) {
+                    const weekTitle = weekTitleMatch[1];
+                    const weekContent = block.replace(weekTitleMatch[0], '').trim();
+                    
+                    // 分解週內容為不同部分（目標、資源、評估）
+                    let objectives = '', resources = '', assessment = '';
+                    
+                    const objectivesMatch = weekContent.match(/學習目標[：:]([\s\S]*?)(?=推薦資源|建議資源|評估方法|$)/i);
+                    if (objectivesMatch) objectives = objectivesMatch[1].trim();
+                    
+                    const resourcesMatch = weekContent.match(/(推薦資源|建議資源)[：:]([\s\S]*?)(?=評估方法|$)/i);
+                    if (resourcesMatch) resources = resourcesMatch[2].trim();
+                    
+                    const assessmentMatch = weekContent.match(/評估方法[：:]([\s\S]*?)$/i);
+                    if (assessmentMatch) assessment = assessmentMatch[1].trim();
+                    
+                    // 創建格式化的週卡片
+                    formattedHtml += `
+                        <div class="week-card">
+                            <div class="week-header">
+                                ${weekTitle}
+                            </div>
+                            <div class="week-content">
+                                ${objectives ? `
+                                <div class="plan-section">
+                                    <div class="plan-section-title">
+                                        <i class="bi bi-target"></i> 學習目標
+                                    </div>
+                                    <div>${formatMarkdown(objectives)}</div>
+                                </div>` : ''}
+                                
+                                ${resources ? `
+                                <div class="plan-section">
+                                    <div class="plan-section-title">
+                                        <i class="bi bi-journal-text"></i> 推薦資源
+                                    </div>
+                                    <div>${formatMarkdown(resources)}</div>
+                                </div>` : ''}
+                                
+                                ${assessment ? `
+                                <div class="plan-section">
+                                    <div class="plan-section-title">
+                                        <i class="bi bi-check-circle"></i> 評估方法
+                                    </div>
+                                    <div>${formatMarkdown(assessment)}</div>
+                                </div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // 如果無法識別週格式，直接顯示原始文本
+                    formattedHtml += `<div class="mb-4">${formatMarkdown(block)}</div>`;
+                }
+            });
+            
+            return formattedHtml;
+        } else {
+            // 如果沒有識別到週次格式，嘗試按照週數自動分割
+            const paragraphs = cleanedText.split(/\n\n+/);
+            
+            // 計算每週應有的段落數
+            const paragraphsPerWeek = Math.ceil(paragraphs.length / durationWeeks);
+            
+            let formattedHtml = '';
+            
+            // 為每週創建卡片
+            for (let week = 0; week < durationWeeks; week++) {
+                const startIdx = week * paragraphsPerWeek;
+                const endIdx = Math.min(startIdx + paragraphsPerWeek, paragraphs.length);
+                const weekContent = paragraphs.slice(startIdx, endIdx).join('\n\n');
+                
+                formattedHtml += `
+                    <div class="week-card">
+                        <div class="week-header">
+                            第${week + 1}週
+                        </div>
+                        <div class="week-content">
+                            ${formatMarkdown(weekContent)}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            return formattedHtml;
+        }
+    }
+    
+    // 輔助函數：格式化Markdown文本
+    function formatMarkdown(text) {
+        // 處理markdown樣式的文本
+        let formatted = text
+            // 處理標題
+            .replace(/^#+\s+(.*)$/gm, '<h4>$1</h4>')
+            // 處理粗體和斜體
+            .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+            // 處理列表
+            .replace(/^\d+\.\s+(.*)$/gm, '<li>$1</li>')
+            .replace(/^-\s+(.*)$/gm, '<li>$1</li>')
+            // 處理段落
+            .replace(/\n\n/g, '</p><p>')
+            // 處理換行
+            .replace(/\n/g, '<br>');
+        
+        // 包裝為段落
+        if (!formatted.startsWith('<h') && !formatted.startsWith('<p>')) {
+            formatted = '<p>' + formatted;
+        }
+        if (!formatted.endsWith('</p>')) {
+            formatted += '</p>';
+        }
+        
+        // 將連續的li元素包裝為ul
+        formatted = formatted.replace(/(<li>.*?<\/li>)+/g, function(match) {
+            return '<ul>' + match + '</ul>';
+        });
+        
+        return formatted;
+    }
+});
+</script>
+{% endblock %} 

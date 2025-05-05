@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>統計學講義</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        h2 {
+            color: #2c3e50;
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 30px;
+            border-left: 5px solid #3498db;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+            padding: 8px 0;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        .chapter-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .section-content {
+            margin-bottom: 20px;
+        }
+        .examples, .mnemonics, .exercises {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .examples {
+            background-color: #e8f4fc;
+            border-left: 5px solid #3498db;
+        }
+        .mnemonics {
+            background-color: #fcf3cf;
+            border-left: 5px solid #f1c40f;
+        }
+        .exercises {
+            background-color: #e8f8f5;
+            border-left: 5px solid #2ecc71;
+        }
+        .visualization-block {
+            background-color: #f0f4f8;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .visualization-block img {
+            max-width: 100%;
+            height: auto;
+            margin: 10px auto;
+        }
+        .visualization-placeholder {
+            background-color: #f0f4f8;
+            border: 1px dashed #d0d7de;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+            color: #7f8c8d;
+        }
+        .exercise {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #ccc;
+        }
+        .question {
+            font-weight: bold;
+        }
+        .answer {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+        .toc {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+        .toc h2 {
+            background: none;
+            border-left: none;
+            margin-top: 0;
+            padding-left: 0;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin-bottom: 5px;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #3498db;
+        }
+        .toc .section-link {
+            padding-left: 20px;
+            font-size: 0.9em;
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        .back-to-top:hover {
+            opacity: 1;
+            color: white;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .toc {
+                padding: 10px;
+            }
+        }
+        .formula {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Cambria Math', Georgia, serif;
+            overflow-x: auto;
+        }
+    </style>
+  <link rel="stylesheet" href="static/css/statistics.css">
+</head>
+<body>
+    <a href="#top" class="back-to-top" title="回到頂部">↑</a>
+    <div class="container" id="top">
+<h1>大學統計學</h1>
+<div class="toc">
+<h2>目錄</h2>
+<ul>
+<li><a href="#chapter-4">第4章: 機率論基礎</a>
+<ul>
+<li class="section-link"><a href="#section-4.1">4.1 機率的基本概念</a></li>
+<li class="section-link"><a href="#section-4.2">4.2 古典機率與相對頻率</a></li>
+<li class="section-link"><a href="#section-4.3">4.3 條件機率</a></li>
+<li class="section-link"><a href="#section-4.4">4.4 貝氏定理</a></li>
+<li class="section-link"><a href="#section-4.5">4.5 隨機變數與機率分配</a></li>
+<li class="section-link"><a href="#section-4.6">4.6 期望值與變異數</a></li>
+<li class="section-link"><a href="#section-4.7">4.7 共變異數與相關係數</a></li>
+</ul></li>
+</ul>
+</div>
+<h2 id="chapter-4" class="chapter-title">第4章: 機率論基礎</h2>
+<div class="chapter-overview mb-4">本章介紹機率論基礎的核心概念與應用，幫助學生掌握統計學的基礎知識並應用於實際問題分析。</div>
+<h3 id="section-4.1">4.1 機率的基本概念</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>機率是描述一個事件發生可能性的數學概念。在概率論中，我們將事件的機率表示為一個介於0到1之間的數字，其中0代表不可能發生，1代表肯定會發生。機率的基本概念包括樣本空間、事件和機率公理。</p><p>1. **樣本空間**是指可能發生的所有結果的集合。例如，擲一枚公正硬幣的樣本空間包括「正面」和「反面」這兩種可能結果。</p><p>2. **事件**是樣本空間的子集，代表我們感興趣的結果。以硬幣為例，事件可以是「出現正面」或「出現反面」。</p><p>3. **機率公理**是指機率必須滿足的三條規則：非負性（機率永遠大於等於0）、規範性（樣本空間的機率為1）和可加性（兩個互斥事件的聯合機率等於各自機率之和）。</p><p>通過樣本空間、事件和機率公理的定義，我們可以計算事件發生的機率，從而進行機率推斷和預測。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>**擲骰子**：假設一個六面骰子，樣本空間是{1, 2, 3, 4, 5, 6}，事件A表示出現偶數的機率，則P(A) = 1/2。</li>
+<li>**抽獎**：一個抽獎活動中，有10個獎品，樣本空間是{1, 2, ..., 10}，事件B表示中獎的機率，則P(B) = 1/10。</li>
+<li>**天氣預報**：根據氣象預報，明天下雨的機率為0.6，則明天不下雨的機率為0.4。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>**使用概率公理**：請牢記概率的三條基本公理，這可以幫助您確保計算機率時的準確性。</li>
+<li>**理解事件和樣本空間的關係**：深入理解事件是如何與樣本空間相關，有助於更好地理解機率的計算和應用。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 擲一枚公正硬幣，計算出現正面的機率。</div>
+<div class="answer">答案: 機率為1/2。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 從一個有10個球的籃子中隨機抽取一個球，計算抽到黑色球的機率。</div>
+<div class="answer">答案: 機率為1/10。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 擲一枚公正骰子，計算點數小於等於3的機率。</div>
+<div class="answer">答案: 機率為1/2。</div>
+</div>
+</div>
+<h3 id="section-4.2">4.2 古典機率與相對頻率</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>古典機率與相對頻率是機率論中重要的概念，用來描述事件發生的可能性。古典機率是基於事件的可能性的均等假設，即所有可能的結果是等可能的。相對頻率則是根據實際觀測到事件發生的次數來估計機率。</p><p>古典機率可以通過計算事件發生的有利結果數目除以所有可能結果數目來獲得。例如，投擲一枚公正的硬幣，出現正面的機率就是1/2，因為正反面是等可能出現的兩種可能性。古典機率適用於有限且等可能的情況，例如擲骰子、抽取撲克牌等。</p><p>相對頻率則是通過觀察事件發生的次數來估計其機率。當實驗次數足夠大時，相對頻率會趨近於古典機率。例如，擲一枚硬幣1000次，正面朝上的次數除以總次數就是正面出現的相對頻率。相對頻率能夠更好地反映實際情況，特別是在現實世界中無法確定每種結果是等可能時。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>投擲一枚公正的骰子，出現奇數的機率是古典機率的應用例子。</li>
+<li>抽取一張撲克牌，抽到紅心的機率可以用古典機率計算。</li>
+<li>觀察1000個人中男性的比例來估計男性在人口中的相對頻率。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>舉例示範：使用具體的例子來區分古典機率和相對頻率，可以更容易理解兩者的區別。</li>
+<li>重複練習：通過多次實際計算和觀察，加深對古典機率和相對頻率的理解和應用。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 投擲一枚公正的硬幣，出現正面的機率是多少？</div>
+<div class="answer">答案: 1/2</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 抽取一張撲克牌，抽到紅心的機率是多少？</div>
+<div class="answer">答案: 1/4</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 在1000個人中，男性的相對頻率是600個，女性的相對頻率是400個，試估算男性和女性在這人口中的機率。</div>
+<div class="answer">答案: 男性機率為0.6，女性機率為0.4。</div>
+</div>
+</div>
+<h3 id="section-4.3">4.3 條件機率</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>條件機率是指在已知某一事件發生的條件下，另一事件發生的機率。換句話說，條件機率反映了當我們已經知道一些額外信息時，對事件發生的機率進行修正。條件機率的計算通常使用條件機率公式：$P(A|B) = \frac{P(A \cap B)}{P(B)}$，其中$P(A|B)$表示在事件B發生的條件下，事件A發生的機率，$P(A \cap B)$表示事件A和事件B同時發生的機率，$P(B)$表示事件B發生的機率。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>在撲克牌遊戲中，假設從一副完整的撲克牌中抽取一張牌，問抽到一張紅心牌的機率是多少，如果已知抽到的牌是紅色的，問這張牌是紅心的機率是多少。</li>
+<li>在一所學校中，60%的學生是女生，40%是男生。如果知道一個學生是女生，問這個學生是高年級學生的機率是多少。</li>
+<li>在天氣預報中，如果知道明天是晴天，問下午會下雨的機率是多少。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記憶條件機率公式：$P(A|B) = \frac{P(A \cap B)}{P(B)}$</li>
+<li>確保理解"條件"的意義，即在某些條件下發生事件的機率。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個袋子中有3個紅球和2個藍球。從中隨機抽取一個球，已知抽到的球是紅色，問下一次再從袋子中隨機抽取一個球且也是紅色的機率是多少？</div>
+<div class="answer">答案: $\frac{2}{4} = \frac{1}{2}$</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個班級中有30個學生，其中20個學生參加了籃球隊，已知一個學生是籃球隊成員，問這個學生是男生的機率是多少？</div>
+<div class="answer">答案: $\frac{20}{30} = \frac{2}{3}$</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個骰子投擲一次，已知點數小於4，問這個點數是偶數的機率是多少？</div>
+<div class="answer">答案: $\frac{2}{3}$</div>
+</div>
+</div>
+<h3 id="section-4.4">4.4 貝氏定理</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>貝氏定理是統計學中一個重要的定理，用於計算在給定某些條件下的概率。貝氏定理的核心概念是通過已知的信息來更新對事件發生概率的估計。貝氏定理表示了在已知事件B發生的情況下，事件A發生的概率。具體而言，貝氏定理可以表示為：
+\[ P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)} \]
+其中，P(A|B)表示在B發生的情況下A發生的概率，P(B|A)表示在A發生的情況下B發生的概率，P(A)和P(B)分別表示事件A和事件B單獨發生的概率。</p><p>貝氏定理的應用範疇非常廣泛，包括醫學診斷、機器學習、自然語言處理等領域。通過貝氏定理，我們可以根據新的證據來調整對事件發生概率的看法，從而做出更準確的預測和決策。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>在醫學診斷中，醫生可以利用貝氏定理來計算在某些症狀出現的情況下，患某種疾病的概率。</li>
+<li>在垃圾郵件過濾中，系統可以使用貝氏定理來判斷一封郵件是否是垃圾郵件。</li>
+<li>在金融領域，貝氏定理可用於評估投資的風險和回報。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記住貝氏定理的公式，可以幫助你快速理解和應用該定理。</li>
+<li>理解貝氏定理的基本概念，即通過已知信息來更新對事件發生概率的估計，有助於更深入地理解該定理的應用。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個箱子中有兩袋糖果，一袋是紅色的，一袋是綠色的。每袋中有50%的紅糖果和50%的綠糖果。某人隨機選擇了一袋糖果，並且拿出了一個紅糖果，請問這個糖果是紅色的袋子中的概率是多少？</div>
+<div class="answer">答案: 2/3</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個網站中有60%的用戶使用Android設備，40%的用戶使用iOS設備。根據統計，使用Android設備的用戶中有30%訪問了某個特定頁面，而使用iOS設備的用戶中有50%訪問了該頁面。如果一個用戶訪問了該頁面，他使用Android設備的概率是多少？</div>
+<div class="answer">答案: 37.5%</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個罐子中有3個紅球和2個藍球。從罐子中隨機抽取一個球，如果抽到了一個紅球，則放回，再抽一次。如果第二次抽到了一個藍球，則這兩次抽球的概率是多少？</div>
+<div class="answer">答案: 0.3</div>
+</div>
+</div>
+<h3 id="section-4.5">4.5 隨機變數與機率分配</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在機率論中，隨機變數是一種將實驗結果對應到數值的函數，其值是隨機的且服從某種概率分布。隨機變數可以是離散的，也可以是連續的。離散隨機變數只取有限個或無限可數個值，而連續隨機變數則可以取任意實數值。機率分配描述了隨機變數每個可能取值的概率。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>骰子投擲是一個常見的隨機變數例子。隨機變數X表示投擲一個六面骰子後出現的數字，X的值可能為1、2、3、4、5或6，每個值的機率都是1/6。</li>
+<li>在一個電商網站上，隨機變數Y表示一位用戶在一次訪問中購買產品的次數，Y可能是0、1、2等非負整數，而每個值的機率則取決於用戶的行為模式和網站的設計。</li>
+<li>股票市場中，隨機變數Z可以表示某支股票在一段時間內的價格波動情況，Z的機率分配可以幫助投資者評估風險和預測未來價格走勢。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>將隨機變數想像成一個神秘的盒子，裡面裝著各種可能的結果，每個結果的機率就像是該結果在盒子中出現的頻率。</li>
+<li>熟悉常見的機率分配，如均勻分配、二項分配、常態分配等，能夠幫助理解不同隨機變數的特性及應用。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個公平的六面骰子投擲一次，定義隨機變數X表示出現的點數，請寫出X的機率分配。</div>
+<div class="answer">答案: X的機率分配為P(X=1)=1/6, P(X=2)=1/6, P(X=3)=1/6, P(X=4)=1/6, P(X=5)=1/6, P(X=6)=1/6。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個硬幣連續投擲，定義隨機變數Y表示首次正面出現的次數，請寫出Y的機率分配。</div>
+<div class="answer">答案: Y的機率分配為P(Y=1)=1/2, P(Y=2)=1/4, P(Y=3)=1/8, ...。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個電商網站上，統計了100次訪問中購買產品的次數，定義隨機變數Z表示購買次數，該隨機變數的機率分配是什麼？</div>
+<div class="answer">答案: 這取決於實際統計數據，可以通過計算每個購買次數出現的頻率來得到Z的機率分配。</div>
+</div>
+</div>
+<h3 id="section-4.6">4.6 期望值與變異數</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>期望值和變異數是統計學中非常重要的概念，用來描述隨機變量的中心位置和散佈程度。期望值代表隨機變量的平均值，反映了一組數據的集中趨勢；而變異數則衡量了隨機變量數據點與期望值之間的離散程度，數值越大表示數據點的分散程度越大。</p><p>對於離散型隨機變量，期望值的計算方式是每個可能取值乘以其發生的概率後相加；而變異數的計算則是每個可能取值與期望值的差的平方乘以其發生的概率後相加。對於連續型隨機變量，計算方式則變成對所有可能取值的積分來代替求和。</p><p>期望值和變異數在統計分析中有廣泛的應用，例如在風險評估、投資組合管理、品質控制等領域。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>例如，假設一家公司每年的獲利隨機變動，我們可以通過計算其獲利的期望值和變異數來瞭解公司的經濟狀況穩定程度。</li>
+<li>另一個例子是在醫學研究中，科學家可以利用變異數來評估新藥物的療效穩定性，從而做出更為準確的臨床評估。</li>
+<li>在天氣預測中，氣象學家可以通過計算某個地區降雨量的期望值和變異數，來評估該地區的氣候特性。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>期望值的計算可以理解為「預期平均值」，即預期發生的事件平均可能值。</li>
+<li>變異數可以想像成數據點離期望值的距離的平方的平均值，反映了數據的分散程度。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個骰子的期望值是多少？</div>
+<div class="answer">答案: 骰子的期望值是3.5。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個隨機變量的所有可能取值為1、2、3，對應的概率分別為0.3、0.4、0.3，計算其期望值和變異數。</div>
+<div class="answer">答案: 期望值為2，變異數為0.4。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 若一個連續型隨機變量的概率密度函數為$f(x)=2x$，$x\in[0,1]$，計算其期望值和變異數。</div>
+<div class="answer">答案: 期望值為$2/3$，變異數為$1/18$。</div>
+</div>
+</div>
+<h3 id="section-4.7">4.7 共變異數與相關係數</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>共變異數和相關係數是統計學中用來衡量兩個變數之間關係的重要指標。共變異數衡量的是兩個變數的變動方向是否一致，而相關係數則在共變異數的基礎上進一步標準化，使其範圍在-1到1之間，便於比較不同變數間的關係強度。</p><p>共變異數（Covariance）是指兩個隨機變量之間的變動趨勢是否一致。若兩個變數的變動方向一致，共變異數為正值；若變動方向相反，共變異數為負值；若變動方向無規律，共變異數接近0。共變異數可用以下公式表示：
+\[ \text{Cov}(X, Y) = \frac{1}{n} \sum_{i=1}^{n} (x_i - \bar{x})(y_i - \bar{y}) \]
+其中，\(X\)和\(Y\)分別代表兩個變數，\(\bar{x}\)和\(\bar{y}\)分別代表兩個變數的平均值，\(n\)代表樣本量。</p><p>相關係數（Correlation Coefficient）是共變異數的標準化形式，可以消除變數單位對評價關係強度的影響。相關係數的範圍在-1到1之間，表示變數間的線性關係強度。相關係數的計算公式如下：
+\[ \rho_{X,Y} = \frac{\text{Cov}(X,Y)}{\sigma_X \sigma_Y} \]
+其中，\(\sigma_X\)和\(\sigma_Y\)分別代表兩個變數的標準差。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一個研究人員想了解每週運動時間和身體質量指數（BMI）之間的關係。透過計算兩者的共變異數和相關係數，可以了解運動時間和BMI是否呈現明顯的關聯性。</li>
+<li>一家公司想分析廣告投資與銷售額之間的關係。通過計算廣告投資與銷售額的共變異數和相關係數，可以判斷廣告投資對銷售額的影響程度。</li>
+<li>在金融領域中，分析不同股票之間的關聯性是常見的需求。透過計算不同股票收益率的共變異數和相關係數，可以幫助投資者分散風險，提高投資效益。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>共變異數：想像兩個變數之間的變動方向，如果一致則共變異數為正值，如果相反則為負值，如果無規律則接近0。</li>
+<li>相關係數：將共變異數標準化為相關係數，範圍在-1到1之間，便於比較不同變數間的關係強度。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一組數據的X變數平均值為15，Y變數平均值為20，X和Y之間的共變異數為30，X的標準差為5，Y的標準差為8，計算X和Y之間的相關係數。</div>
+<div class="answer">答案: \[ \rho_{X,Y} = \frac{30}{5 \times 8} = 0.75 \]</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 若兩個變數之間的相關係數為-0.9，代表什麼意義？</div>
+<div class="answer">答案: 相關係數為-0.9代表兩個變數之間存在較強的負相關，即當一個變數增加時，另一個變數減少。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 若兩個變數之間的相關係數為0.2，該如何解釋？</div>
+<div class="answer">答案: 相關係數為0.2代表兩個變數之間存在較弱的正相關，即兩個變數之間的關係不夠密切。</div>
+</div>
+</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            }
+        };
+        
+        // 添加平滑滾動
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // 添加回到頂部按鈕顯示/隱藏功能
+        window.addEventListener('scroll', function() {
+            var backToTop = document.querySelector('.back-to-top');
+            if (window.pageYOffset > 300) {
+                backToTop.style.display = 'block';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        });
+    </script>
+  <script src="static/js/statistics.js"></script>
+</body>
+</html>

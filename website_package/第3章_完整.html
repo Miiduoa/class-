@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>統計學講義</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        h2 {
+            color: #2c3e50;
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 30px;
+            border-left: 5px solid #3498db;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+            padding: 8px 0;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        .chapter-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .section-content {
+            margin-bottom: 20px;
+        }
+        .examples, .mnemonics, .exercises {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .examples {
+            background-color: #e8f4fc;
+            border-left: 5px solid #3498db;
+        }
+        .mnemonics {
+            background-color: #fcf3cf;
+            border-left: 5px solid #f1c40f;
+        }
+        .exercises {
+            background-color: #e8f8f5;
+            border-left: 5px solid #2ecc71;
+        }
+        .visualization-block {
+            background-color: #f0f4f8;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .visualization-block img {
+            max-width: 100%;
+            height: auto;
+            margin: 10px auto;
+        }
+        .visualization-placeholder {
+            background-color: #f0f4f8;
+            border: 1px dashed #d0d7de;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+            color: #7f8c8d;
+        }
+        .exercise {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #ccc;
+        }
+        .question {
+            font-weight: bold;
+        }
+        .answer {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+        .toc {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+        .toc h2 {
+            background: none;
+            border-left: none;
+            margin-top: 0;
+            padding-left: 0;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin-bottom: 5px;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #3498db;
+        }
+        .toc .section-link {
+            padding-left: 20px;
+            font-size: 0.9em;
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        .back-to-top:hover {
+            opacity: 1;
+            color: white;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .toc {
+                padding: 10px;
+            }
+        }
+        .formula {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Cambria Math', Georgia, serif;
+            overflow-x: auto;
+        }
+    </style>
+  <link rel="stylesheet" href="static/css/statistics.css">
+</head>
+<body>
+    <a href="#top" class="back-to-top" title="回到頂部">↑</a>
+    <div class="container" id="top">
+<h1>大學統計學</h1>
+<div class="toc">
+<h2>目錄</h2>
+<ul>
+<li><a href="#chapter-3">第3章: 集中趨勢與離散程度的測量</a>
+<ul>
+<li class="section-link"><a href="#section-3.1">3.1 算術平均數</a></li>
+<li class="section-link"><a href="#section-3.2">3.2 中位數與分位數</a></li>
+<li class="section-link"><a href="#section-3.3">3.3 眾數</a></li>
+<li class="section-link"><a href="#section-3.4">3.4 全距與四分位距</a></li>
+<li class="section-link"><a href="#section-3.5">3.5 變異數與標準差</a></li>
+<li class="section-link"><a href="#section-3.6">3.6 變異係數</a></li>
+<li class="section-link"><a href="#section-3.7">3.7 偏態與峰度</a></li>
+</ul></li>
+</ul>
+</div>
+<h2 id="chapter-3" class="chapter-title">第3章: 集中趨勢與離散程度的測量</h2>
+<div class="chapter-overview mb-4">本章介紹集中趨勢與離散程度的測量的核心概念與應用，幫助學生掌握統計學的基礎知識並應用於實際問題分析。</div>
+<h3 id="section-3.1">3.1 算術平均數</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>算術平均數是一組數據的總和除以數據的個數所得到的值。它是集中趨勢的一種度量，用來描述一組數據的中心位置。算術平均數的計算方法是將所有數據相加後再除以數據的個數。例如，對於數據集 {2, 4, 6, 8, 10}，算術平均數為 (2+4+6+8+10)/5 = 6。</p><p>算術平均數常用來代表一組數據的整體水平，但在面對極端值或異常值時可能會受到影響，因此在分析數據時需要謹慎使用。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一家公司想知道員工的平均年齡，可以將所有員工的年齡加總後除以總員工數，得到平均年齡。</li>
+<li>一個班級的學生想知道期中考試的平均分數，可以將所有學生的分數加總後除以班級人數，得到平均分數。</li>
+<li>一個城市想知道每年的平均氣溫，可以將每天的氣溫加總後除以一年的天數，得到平均氣溫。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記憶算術平均數的計算方法：加總所有數據後除以數據的個數。</li>
+<li>理解算術平均數的含義：它代表了一組數據的中心位置，是所有數據的平均值。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一組數據 {3, 5, 8, 12, 15} 的算術平均數是多少？</div>
+<div class="answer">答案: (3+5+8+12+15)/5 = 8.6</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個班級共有30位學生，期中考試的平均分數為75分，請問所有學生的總分是多少？</div>
+<div class="answer">答案: 30 * 75 = 2250</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個小組的平均年齡是25歲，如果新增了一位30歲的成員，請問新的平均年齡是多少？</div>
+<div class="answer">答案: (25 * n + 30) / (n + 1) = 新的平均年齡</div>
+</div>
+</div>
+<h3 id="section-3.2">3.2 中位數與分位數</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>中位數與分位數是用來描述資料集中趨勢的統計量。中位數是一組資料中的中間值，將資料分為兩等份，前一半資料小於或等於中位數，後一半資料大於或等於中位數。若資料個數為奇數，中位數為排序後的中間值；若資料個數為偶數，中位數為排序後中間兩個值的平均值。分位數則是將資料集分成幾等份，例如四分位數將資料分為四等份，並找出各個分位數所對應的值。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>在一份調查中，受訪者的收入資料如下：$25,000、$30,000、$35,000、$40,000、$45,000。中位數為$35,000，代表收入中間值的水平。</li>
+<li>一間公司的員工年齡資料如下：25歲、28歲、30歲、32歲、35歲、40歲。找出第三分位數，即年齡在30歲以下的員工所對應的值。</li>
+<li>一個班級的學生在一次數學測驗中得分如下：60分、65分、70分、75分、80分、85分、90分。求出四分位數，即將學生分為四等份的得分值。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>**中位數的記憶技巧：** 中位數就是資料的中間值，想像將資料排成一列，中位數就是位於中間的那個值。</li>
+<li>**分位數的記憶技巧：** 分位數可以幫助我們理解資料的分佈情況，想像將資料分成幾等份，每個分位數代表一等份。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一組資料為5, 8, 12, 15, 20, 25，求其中位數。</div>
+<div class="answer">答案: 中位數為12。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一份調查中，10位受訪者的身高資料如下：160cm、165cm、170cm、175cm、180cm、185cm、190cm、195cm、200cm、205cm，求第二分位數。</div>
+<div class="answer">答案: 第二分位數為175cm。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個班級的學生在一次英文測驗中得分如下：70分、75分、80分、85分、90分、95分，求四分位數。</div>
+<div class="answer">答案: 四分位數為85分。</div>
+</div>
+</div>
+<h3 id="section-3.3">3.3 眾數</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>眾數是統計學中用來描述一組數據中出現次數最多的數值。眾數可以是單一數值、多個數值，甚至可能不存在眾數。眾數的計算相對簡單，只需找出數據集中出現次數最多的數值即可。眾數通常應用在描述資料集的中心趨勢，特別是在分類資料時更為常見。然而，眾數未必能提供完整的資料分佈資訊，因此在分析資料時仍需要結合其他統計量一同考慮。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>在一份調查中，受訪者被問及他們每周運動的次數。結果顯示，受訪者中有30%的人每周運動2次，25%的人每周運動3次，20%的人每周運動4次，10%的人每周運動1次，5%的人每周運動5次。在這個例子中，眾數為每周運動2次，因為這是出現次數最多的次數。</li>
+<li>一個班級的學生成績如下：85、90、70、75、80、90、95。在這個成績數據中，眾數是90，因為90這個分數出現了兩次，而其他分數只出現了一次。</li>
+<li>在一個電商網站的商品銷售數據中，不同商品的每月銷售量分別為100、150、200、300、100、150。在這個例子中，眾數是100和150，因為這兩個銷售量都出現了兩次。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>將眾數想像成是「眾人之數」，即出現次數最多的數值就像是眾人中的主要代表。</li>
+<li>記住眾數是眾數，而不是平均數或中位數，它代表的是最常見的數值。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一份調查顯示一個班級學生的身高分佈為：160cm、165cm、165cm、170cm、175cm、175cm、180cm。求這個班級學生的眾數是多少？</div>
+<div class="answer">答案: 眾數為165cm和175cm。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個餐廳一周七天的每日客流量分別為100、120、120、150、130、100、110。求這個餐廳一周中的眾數是多少？</div>
+<div class="answer">答案: 眾數為120。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個班級的學生參加了一次小測驗，各自得分為80、85、90、90、85、95。求這個班級學生成績的眾數是多少？</div>
+<div class="answer">答案: 眾數為85和90。</div>
+</div>
+</div>
+<h3 id="section-3.4">3.4 全距與四分位距</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>全距和四分位距是統計學中用來衡量資料集中趨勢和離散程度的重要概念。全距是指資料集中最大值和最小值之間的距離，用來表示資料的範圍大小；而四分位距則是將資料集分成四等份，每一等份包含了大約四分之一的資料，四分位距是第三四分位數和第一四分位數的差異，代表了中間50%資料的範圍大小。透過全距和四分位距的計算，我們可以更清楚地了解資料的分佈特性，幫助我們做出更準確的統計分析和決策。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>如果一個班級的學生成績資料為{60, 70, 80, 90, 100}，則全距為100-60=40，四分位距為(80-70)=10。通過全距我們知道學生成績的範圍為40分，而四分位距告訴我們中間50%的學生成績集中在10分的範圍內。</li>
+<li>在一項市場調查中，受訪者的年齡資料為{25, 30, 35, 40, 45, 50, 55}，則全距為55-25=30，四分位距為(40-30)=10。透過四分位距我們可以看出受訪者年齡的中間50%集中在10歲的範圍內。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記憶全距：全距就是資料的「全」部分的範圍，即最大值和最小值之間的距離。</li>
+<li>記憶四分位距：四分位距分成四等份，每份約四分之一，所以四分位距就是中間50%資料的範圍。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一組資料的最大值為80，最小值為20，該資料的全距是多少？</div>
+<div class="answer">答案: 全距=80-20=60。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個班級學生的數學成績為{60, 70, 80, 85, 90, 95}，該班學生的四分位距是多少？</div>
+<div class="answer">答案: 四分位距=85-70=15。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個電商網站的訪客數據為{100, 200, 300, 400, 500}，該網站的全距是多少？</div>
+<div class="answer">答案: 全距=500-100=400。</div>
+</div>
+</div>
+<h3 id="section-3.5">3.5 變異數與標準差</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在統計學中，變異數和標準差是用來衡量數據集中趨勢的重要指標。變異數是各個數據點與平均數之間差異的平方和的平均值，它表明了數據集中數值的分散程度。標準差則是變異數的平方根，通常用來度量數據的離散程度。當數據的變異數或標準差較大時，表示數據點較為分散；反之，當變異數或標準差較小時，表示數據點較為集中。</p><p>計算變異數的步驟包括：首先計算每個數據點與平均數的差異，然後將這些差異平方後相加，最後除以數據的個數即可得到變異數。標準差則是將變異數的平方根取出。這兩個統計指標在描述數據的分布和波動性時非常有用。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>假設一家公司想了解員工每月薪水的波動情況，可以計算所有員工的薪水數據的變異數和標準差，以評估薪水分配的一致性。</li>
+<li>在健康領域，研究人員可以計算一組受試者的體重變異數和標準差，來了解體重的分散情況。</li>
+<li>金融投資領域中，投資者可以通過計算不同投資組合的收益率的變異數和標準差，來評估風險水平。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>記憶變異數計算步驟：差異平方、相加、取平均。</li>
+<li>記憶標準差：標準差是變異數的平方根。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一組數據為 {4, 7, 9, 12, 15}，請計算其變異數和標準差。</div>
+<div class="answer">答案: 變異數為 17.5，標準差為 4.18。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一份問卷調查得到的評分為 {3, 5, 7, 9, 11}，請計算其變異數和標準差。</div>
+<div class="answer">答案: 變異數為 8，標準差為 2.83。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個實驗的測量結果為 {20, 22, 25, 28, 30}，請計算其變異數和標準差。</div>
+<div class="answer">答案: 變異數為 15，標準差為 3.87。</div>
+</div>
+</div>
+<h3 id="section-3.6">3.6 變異係數</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>變異係數是一種測量數據離散程度的統計量，通過將標準差標準化為均值的比例來表示。它的計算公式為：變異係數 = (標準差 / 平均值) × 100%。變異係數的值不受測量單位的影響，使得不同變數之間的離散程度可以進行比較。一般來說，如果變異係數越小，表示數據較為集中；如果變異係數越大，表示數據較為分散。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>假設有兩個班級，每個班級的數學成績分佈如下：班級A的平均成績為80分，標準差為5分；班級B的平均成績為85分，標準差為10分。通過計算變異係數，可以比較兩個班級的成績分佈，從而得出哪個班級的成績更為集中。</li>
+<li>一家公司的兩個部門的銷售額分佈如下：部門X的平均銷售額為10萬元，標準差為2萬元；部門Y的平均銷售額為15萬元，標準差為5萬元。通過計算變異係數，可以比較兩個部門的銷售額波動程度，從而了解哪個部門的業績穩定性更高。</li>
+<li>在一個地區的降雨量數據中，計算各個月份的降雨量變異係數，可以幫助農民選擇最適合種植作物的月份，因為較小的變異係數表示降雨量較為穩定。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>變異係數的計算公式中包含了標準差和平均值，可以通過“標準差/平均值”這個比例的百分比來理解變異係數的概念。</li>
+<li>記住變異係數可以用來比較不同數據集的離散程度，並且不受測量單位影響，這是其與標準差不同的重要特點。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 一個班級的數學考試成績平均值為75分，標準差為10分。請計算該班級的成績變異係數。</div>
+<div class="answer">答案: 變異係數 = (10 / 75) × 100% = 13.33%</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個地區的氣溫在一周內變化，平均氣溫為20攝氏度，標準差為3攝氏度。請計算該地區氣溫的變異係數。</div>
+<div class="answer">答案: 變異係數 = (3 / 20) × 100% = 15%</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 一個公司A的銷售額平均值為50萬元，標準差為5萬元；公司B的銷售額平均值為60萬元，標準差為10萬元。請比較公司A和公司B的銷售額變異係數。</div>
+<div class="answer">答案: 公司A的變異係數 = (5 / 50) × 100% = 10%；公司B的變異係數 = (10 / 60) × 100% = 16.67%。公司A的銷售額更為穩定。</div>
+</div>
+</div>
+<h3 id="section-3.7">3.7 偏態與峰度</h3>
+<div class="visualization-section">
+
+        <div class="visualization-placeholder">
+            <p class="text-center text-muted">暫無此小節的視覺化輔助</p>
+        </div>
+        
+</div>
+<div class="section-content">
+<p>在統計學中，偏態度量了數據分佈的對稱性，即數據是偏向左邊還是右邊的程度；而峰度則是用來衡量數據分佈的尖峰程度。偏態和峰度是描述數據分佈形狀的重要統計量，能夠幫助我們更好地理解數據的特徵。</p><p>偏態分為三種情況：正偏態、負偏態和對稱。當數據向右偏斜時，被稱為正偏態；當數據向左偏斜時，稱為負偏態；如果數據呈對稱分佈，則偏態為零。偏態的計算可以通過樣本平均數、標準差和偏度公式來完成。</p><p>峰度用於描述數據分佈的尖峰程度，分為正常峰度、厚尾峰度、瘦尾峰度。正常峰度表示數據分佈相對於正態分佈的尖峰程度；厚尾峰度表示比正態分佈更尖的尖峰；瘦尾峰度表示比正態分佈更平坦的尖峰。計算峰度可以使用樣本平均數、標準差和峰度公式。</p>
+</div>
+<div class="examples">
+<h4>實際應用例子</h4>
+<ul>
+<li>一個投資組合的收益率數據呈現正偏態，這意味著大多數收益率在平均值以上，可能代表投資組合的風險性較高。</li>
+<li>一個考試成績的分佈呈現負偏態，這意味著大多數學生的成績偏低，可能需要進一步分析原因。</li>
+<li>一個商品價格的分佈呈現厚尾峰度，這可能代表市場上存在著極端的價格波動，需要注意風險管理。</li>
+</ul>
+</div>
+<div class="mnemonics">
+<h4>記憶技巧</h4>
+<ul>
+<li>偏態的記憶技巧：正偏態向右，負偏態向左，對稱偏態平均。</li>
+<li>峰度的記憶技巧：正常峰度、厚尾峰度、瘦尾峰度對應不同的尖峰程度。</li>
+</ul>
+</div>
+<div class="exercises">
+<h4>練習題</h4>
+<div class="exercise">
+<div class="question">問題1: 若一組數據的偏態為0.5，代表什麼意義？</div>
+<div class="answer">答案: 偏態為0.5表示數據分佈向右偏斜，且程度較輕微。</div>
+</div>
+<div class="exercise">
+<div class="question">問題2: 一個數據集的峰度為3，該數據分佈可能是屬於哪種峰度情況？</div>
+<div class="answer">答案: 峰度為3表示數據分佈是厚尾峰度的情況。</div>
+</div>
+<div class="exercise">
+<div class="question">問題3: 如果一個數據集的偏態為-0.7，這意味著什麼？</div>
+<div class="answer">答案: 偏態為-0.7表示數據分佈向左偏斜，程度較輕微。</div>
+</div>
+</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            }
+        };
+        
+        // 添加平滑滾動
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // 添加回到頂部按鈕顯示/隱藏功能
+        window.addEventListener('scroll', function() {
+            var backToTop = document.querySelector('.back-to-top');
+            if (window.pageYOffset > 300) {
+                backToTop.style.display = 'block';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        });
+    </script>
+  <script src="static/js/statistics.js"></script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ section.sectionTitle }} - 第{{ chapter.chapter }}章 - 統計學習平台{% endblock %}
+
+{% block hero %}
+<div class="hero" style="padding: var(--space-lg) 0;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-2">
+                        <li class="breadcrumb-item"><a href="{{ url_for('home') }}" class="text-white opacity-75">首頁</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('chapter', chapter_number=chapter.chapter) }}" class="text-white opacity-75">第{{ chapter.chapter }}章</a></li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">{{ section.sectionNumber }} {{ section.sectionTitle }}</li>
+                    </ol>
+                </nav>
+                <h1 class="mb-3">{{ section.sectionNumber }} {{ section.sectionTitle }}</h1>
+                <p class="lead mb-0">{{ section.sectionDescription if section.sectionDescription else '本小節將探討' + section.sectionTitle + '的關鍵概念與應用。' }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- 側邊導航 -->
+    <div class="col-lg-3 mb-4">
+        <div class="card sticky-top" style="top: 90px;">
+            <div class="card-body p-0">
+                <div class="p-3 border-bottom">
+                    <h5 class="mb-0">第{{ chapter.chapter }}章：{{ chapter.title }}</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for sec in chapter.sections %}
+                    <a href="{{ url_for('section', chapter_number=chapter.chapter, section_number=sec.sectionNumber) }}" 
+                       class="list-group-item list-group-item-action border-0 d-flex {% if sec.sectionNumber == section.sectionNumber %}active bg-primary text-white{% endif %}">
+                        <span class="me-2">{{ sec.sectionNumber }}</span>
+                        <span>{{ sec.sectionTitle }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+                <div class="p-3 border-top">
+                    <div class="d-flex justify-content-between">
+                        {% if prev_section %}
+                        <a href="{{ url_for('section', chapter_number=chapter.chapter, section_number=prev_section) }}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-arrow-left"></i> 上一節
+                        </a>
+                        {% else %}
+                        <a href="{{ url_for('chapter', chapter_number=chapter.chapter) }}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-journal-text"></i> 章節首頁
+                        </a>
+                        {% endif %}
+                        
+                        {% if next_section %}
+                        <a href="{{ url_for('section', chapter_number=chapter.chapter, section_number=next_section) }}" class="btn btn-sm btn-outline-primary">
+                            下一節 <i class="bi bi-arrow-right"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 主要內容 -->
+    <div class="col-lg-9">
+        <!-- 學習目標 -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h4 class="mb-3"><i class="bi bi-flag text-primary me-2"></i>學習目標</h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        <ul class="mb-0">
+                            {% for objective in learning_objectives %}
+                            <li class="mb-2">{{ objective }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 課程內容 -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="section-title">課程內容</h2>
+                
+                <div class="section-content mb-5">
+                    {% if section_content %}
+                    <div class="markdown-content">
+                        {{ section_content|safe }}
+                    </div>
+                    {% else %}
+                    <p>本節內容正在準備中，敬請期待...</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- 視覺化圖表 -->
+        {% if visualization %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="mb-4"><i class="bi bi-graph-up text-primary me-2"></i>視覺化圖表</h3>
+                {{ visualization|safe }}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- 範例 -->
+        {% if examples %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="mb-4"><i class="bi bi-journal-richtext text-primary me-2"></i>範例</h3>
+                {% for example in examples %}
+                <div class="example-box mb-4">
+                    <h5 class="mb-3">範例 {{ loop.index }}</h5>
+                    {{ example|safe }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- 練習題 -->
+        {% if exercises %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="mb-4"><i class="bi bi-pencil-square text-primary me-2"></i>練習題</h3>
+                {% for exercise in exercises %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="mb-3">問題 {{ loop.index }}</h5>
+                        {{ exercise|safe }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- 概念摘要 -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="mb-4"><i class="bi bi-bookmark-star text-primary me-2"></i>概念摘要</h3>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="definition-box">
+                            <h5 class="mb-3">關鍵概念</h5>
+                            <ul>
+                                <li class="mb-2"><span class="fw-bold">{{ section.sectionTitle }}</span>：指統計學中的重要概念，用於...</li>
+                                <li class="mb-2"><span class="fw-bold">應用場景</span>：在數據分析、研究設計及實驗分析中廣泛應用。</li>
+                                <li class="mb-2"><span class="fw-bold">重要性</span>：幫助理解數據分佈特性，為進一步分析提供基礎。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- AI 助手 -->
+        <div class="card mb-4 ai-assistant-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-3" style="width: 40px; height: 40px;">
+                        <i class="bi bi-robot text-white"></i>
+                    </div>
+                    <h5 class="mb-0">AI 學習助手</h5>
+                </div>
+                <p>對「{{ section.sectionTitle }}」有疑問嗎？AI 學習助手可以幫您解答！</p>
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('ai.explain_concept') }}?topic={{ section.sectionTitle }}" class="btn btn-primary">
+                        <i class="bi bi-lightbulb me-2"></i>解釋概念
+                    </a>
+                    <a href="{{ url_for('ai.generate_practice') }}?topic={{ section.sectionTitle }}" class="btn btn-outline-primary">
+                        <i class="bi bi-pencil-square me-2"></i>生成練習題
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 下一步 -->
+        <div class="card mt-5">
+            <div class="card-body text-center py-4">
+                <h4 class="mb-3">完成本節學習了嗎？</h4>
+                <div class="mb-4">
+                    <div class="progress-indicator mx-auto" style="max-width: 300px;">
+                        <div class="progress-bar" style="width: 100%;"></div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center gap-3">
+                    {% if next_section %}
+                    <a href="{{ url_for('section', chapter_number=chapter.chapter, section_number=next_section) }}" class="btn btn-primary">
+                        繼續下一節 <i class="bi bi-arrow-right"></i>
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('chapter', chapter_number=chapter.chapter) }}" class="btn btn-primary">
+                        返回章節首頁 <i class="bi bi-journal-text"></i>
+                    </a>
+                    {% endif %}
+                    <a href="#" class="btn btn-outline-primary">
+                        <i class="bi bi-check-circle"></i> 標記為已完成
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
