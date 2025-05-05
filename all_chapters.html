@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}統計學全部16章節內容 - 統計學習平台{% endblock %}
+
+{% block hero %}
+<div class="hero" style="padding: var(--space-xl) 0;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-3">
+                        <li class="breadcrumb-item"><a href="{{ url_for('home') }}" class="text-white opacity-75">首頁</a></li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">全部章節</li>
+                    </ol>
+                </nav>
+                <h1 class="mb-3">統計學課程 - 全部16章節</h1>
+                <p class="lead mb-4">本頁面顯示統計學課程的全部16章節內容，包含每一章節的所有小節。</p>
+                <div class="d-flex gap-2 mt-4">
+                    <a href="{{ url_for('home') }}" class="btn btn-outline-light">
+                        <i class="bi bi-house"></i> 返回首頁
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- 章節目錄 -->
+    <div class="card mb-5">
+        <div class="card-header bg-primary text-white">
+            <h2 class="h4 mb-0">章節目錄</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% for chapter in chapters %}
+                <div class="col-md-6 col-lg-3 mb-3">
+                    <a href="#chapter-{{ chapter.chapterNumber }}" class="text-decoration-none">
+                        <div class="d-flex align-items-center p-2 rounded hover-bg-light">
+                            <span class="badge bg-primary me-2">{{ chapter.chapterNumber }}</span>
+                            <span>{{ chapter.chapterTitle }}</span>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- 各章節內容 -->
+    {% for chapter in chapters %}
+    <div class="card mb-5" id="chapter-{{ chapter.chapterNumber }}">
+        <div class="card-header bg-primary text-white">
+            <h2 class="h4 mb-0">第{{ chapter.chapterNumber }}章：{{ chapter.chapterTitle }}</h2>
+        </div>
+        <div class="card-body">
+            {% if chapter.overview %}
+            <div class="mb-4">
+                <h3 class="h5 mb-3">章節概述</h3>
+                <p>{{ chapter.overview }}</p>
+            </div>
+            {% endif %}
+
+            <h3 class="h5 mb-3">章節小節</h3>
+            <div class="list-group mb-4">
+                {% for section in chapter.sections %}
+                <div class="list-group-item">
+                    <h4 class="h6 mb-2">{{ section.sectionNumber }} {{ section.sectionTitle }}</h4>
+                    {% if section.content %}
+                    <p class="mb-2">{{ section.content[:200] }}{% if section.content|length > 200 %}...{% endif %}</p>
+                    {% endif %}
+                    
+                    {% if section.examples %}
+                    <div class="mb-2">
+                        <span class="badge bg-success">{{ section.examples|length }} 個案例</span>
+                    </div>
+                    {% endif %}
+                    
+                    {% if section.exercises %}
+                    <div class="mb-0">
+                        <span class="badge bg-info">{{ section.exercises|length }} 個練習</span>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="{{ url_for('chapter', chapter_number=chapter.chapterNumber) }}" class="btn btn-primary">
+                    查看詳細內容
+                </a>
+                <a href="#" class="btn btn-link text-secondary">
+                    <i class="bi bi-arrow-up"></i> 返回頂部
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %} 

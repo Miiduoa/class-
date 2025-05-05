@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+
+{% block title %}第{{ chapter.chapter }}章：{{ chapter.title }} - 統計學習平台{% endblock %}
+
+{% block hero %}
+<div class="hero" style="padding: var(--space-xl) 0;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-3">
+                        <li class="breadcrumb-item"><a href="{{ url_for('home') }}" class="text-white opacity-75">首頁</a></li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">第{{ chapter.chapter }}章</li>
+                    </ol>
+                </nav>
+                <h1 class="mb-3">第{{ chapter.chapter }}章：{{ chapter.title }}</h1>
+                {% if chapter.overview %}
+                <p class="lead mb-4">{{ chapter.overview }}</p>
+                {% endif %}
+                <div class="d-flex gap-2 mt-4">
+                    {% if prev_chapter %}
+                    <a href="{{ url_for('chapter', chapter_number=prev_chapter) }}" class="btn btn-outline-light">
+                        <i class="bi bi-arrow-left"></i> 上一章
+                    </a>
+                    {% endif %}
+                    {% if next_chapter %}
+                    <a href="{{ url_for('chapter', chapter_number=next_chapter) }}" class="btn btn-outline-light">
+                        下一章 <i class="bi bi-arrow-right"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-3 mb-4">
+        <!-- 側邊欄導航 -->
+        <div class="card sticky-top" style="top: 90px;">
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    {% for section in chapter.sections %}
+                    <a href="{{ url_for('section', chapter_number=chapter.chapter, section_number=section.sectionNumber) }}" 
+                       class="list-group-item list-group-item-action border-0 d-flex align-items-center py-3">
+                        <span class="me-3 fw-bold text-primary">{{ section.sectionNumber }}</span>
+                        <span>{{ section.sectionTitle }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-9">
+        <!-- 章節概述 -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title mb-4">章節概述</h2>
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white me-3" style="width: 40px; height: 40px;">
+                                <i class="bi bi-book"></i>
+                            </div>
+                            <h5 class="mb-0">學習目標</h5>
+                        </div>
+                        <ul class="ps-4 mb-4">
+                            {% for i in range(3) %}
+                            <li class="mb-2">了解{{ chapter.title }}的核心概念</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white me-3" style="width: 40px; height: 40px;">
+                                <i class="bi bi-clock"></i>
+                            </div>
+                            <h5 class="mb-0">預計學習時間</h5>
+                        </div>
+                        <p>本章總計約 {{ chapter.sections|length * 30 }} 分鐘</p>
+                        <div class="progress-indicator mt-2 mb-3">
+                            <div class="progress-bar" style="width: 0%;"></div>
+                        </div>
+                        <p class="small text-muted">每個小節約 30 分鐘</p>
+                    </div>
+                </div>
+
+                <h5 class="mb-3">概要</h5>
+                {% if chapter.overview %}
+                <p>{{ chapter.overview }}</p>
+                {% else %}
+                <p>本章將帶您了解{{ chapter.title }}的關鍵概念與應用方法。我們將探討其定義、特性以及在統計分析中的重要性。通過本章的學習，您將能夠掌握相關的基本知識，並應用於實際問題分析中。</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- 章節小節列表 -->
+        <h3 class="section-title mb-4">章節內容</h3>
+        <div class="row g-4">
+            {% for section in chapter.sections %}
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="mb-3">{{ section.sectionNumber }} {{ section.sectionTitle }}</h5>
+                        <p class="text-muted">{{ section.sectionDescription if section.sectionDescription else '本小節將介紹' + section.sectionTitle + '的基本概念與應用...' }}</p>
+                    </div>
+                    <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center">
+                        <span class="badge bg-light text-dark">
+                            <i class="bi bi-clock me-1"></i> 30 分鐘
+                        </span>
+                        <a href="{{ url_for('section', chapter_number=chapter.chapter, section_number=section.sectionNumber) }}" class="btn btn-sm btn-primary">
+                            前往學習
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- 相關資源與練習 -->
+        <div class="card mt-5">
+            <div class="card-body">
+                <h3 class="mb-4">相關資源</h3>
+                <div class="row">
+                    <div class="col-md-6 mb-4 mb-md-0">
+                        <h5 class="mb-3">
+                            <i class="bi bi-journal-text text-primary me-2"></i>
+                            延伸閱讀
+                        </h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <a href="{{ url_for('show_lecture', lecture_file='第' + chapter.chapter|string + '章_完整.html') }}" class="text-decoration-none d-flex align-items-center">
+                                    <i class="bi bi-file-earmark-text me-2"></i>
+                                    <span>本章完整講義</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="{{ url_for('complete_chapter', chapter_number=chapter.chapter) }}" class="text-decoration-none d-flex align-items-center">
+                                    <i class="bi bi-journal-code me-2"></i>
+                                    <span>JSON完整資料</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#" class="text-decoration-none d-flex align-items-center">
+                                    <i class="bi bi-file-earmark-pdf me-2"></i>
+                                    <span>案例研究資料</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h5 class="mb-3">
+                            <i class="bi bi-lightning-charge text-primary me-2"></i>
+                            練習與測驗
+                        </h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <a href="#" class="text-decoration-none d-flex align-items-center">
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    <span>章節練習題</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#" class="text-decoration-none d-flex align-items-center">
+                                    <i class="bi bi-award me-2"></i>
+                                    <span>章節測驗</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- AI 助手 -->
+        <div class="card mt-4 ai-assistant-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-3" style="width: 40px; height: 40px;">
+                        <i class="bi bi-robot text-white"></i>
+                    </div>
+                    <h5 class="mb-0">AI 學習助手</h5>
+                </div>
+                <p>有關於「{{ chapter.title }}」的問題嗎？AI 學習助手可以幫您解答！</p>
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('ai.explain_concept') }}?topic={{ chapter.title }}" class="btn btn-primary">
+                        <i class="bi bi-lightbulb me-2"></i>解釋概念
+                    </a>
+                    <a href="{{ url_for('ai.generate_practice') }}?topic={{ chapter.title }}" class="btn btn-outline-primary">
+                        <i class="bi bi-pencil-square me-2"></i>生成練習題
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

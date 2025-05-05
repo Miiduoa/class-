@@ -1,0 +1,187 @@
+{
+  "courseTitle": "大學統計學",
+  "version": "1.0",
+  "chapters": [
+    {
+      "chapterNumber": "1",
+      "chapterTitle": "統計學簡介與基本概念",
+      "overview": "本章介紹統計學簡介與基本概念的核心概念與應用。",
+      "sections": [
+        {
+          "sectionNumber": "1.1",
+          "sectionTitle": "統計學的定義與範疇",
+          "content": "統計學的定義與範疇的內容將在此介紹。",
+          "examples": [
+            "統計學的定義與範疇的應用例子"
+          ],
+          "visuals": [
+            {
+              "path": "/static/images/ch1/1_1.png",
+              "description": "統計學的定義與範疇的圖解"
+            }
+          ],
+          "mnemonics": [
+            "統計學的定義與範疇的記憶技巧"
+          ],
+          "exercises": [
+            {
+              "type": "short_answer",
+              "question": "請解釋統計學的定義與範疇的核心概念。",
+              "answer": "答案包含對統計學的定義與範疇的詳細解釋。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "1.2",
+          "sectionTitle": "母體與樣本",
+          "content": "母體與樣本的內容將在此介紹。",
+          "examples": [
+            "母體與樣本的應用例子"
+          ],
+          "visuals": [
+            {
+              "path": "/static/images/ch1/1_2.png",
+              "description": "母體與樣本的圖解"
+            }
+          ],
+          "mnemonics": [
+            "母體與樣本的記憶技巧"
+          ],
+          "exercises": [
+            {
+              "type": "short_answer",
+              "question": "請解釋母體與樣本的核心概念。",
+              "answer": "答案包含對母體與樣本的詳細解釋。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "1.3",
+          "sectionTitle": "資料類型與測量尺度",
+          "content": "資料類型與測量尺度的內容將在此介紹。",
+          "examples": [
+            "資料類型與測量尺度的應用例子"
+          ],
+          "visuals": [
+            {
+              "path": "/static/images/ch1/1_3.png",
+              "description": "資料類型與測量尺度的圖解"
+            }
+          ],
+          "mnemonics": [
+            "資料類型與測量尺度的記憶技巧"
+          ],
+          "exercises": [
+            {
+              "type": "short_answer",
+              "question": "請解釋資料類型與測量尺度的核心概念。",
+              "answer": "答案包含對資料類型與測量尺度的詳細解釋。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "1.4",
+          "sectionTitle": "描述統計與推論統計",
+          "content": "描述統計與推論統計的內容將在此介紹。",
+          "examples": [
+            "描述統計與推論統計的應用例子"
+          ],
+          "visuals": [
+            {
+              "path": "/static/images/ch1/1_4.png",
+              "description": "描述統計與推論統計的圖解"
+            }
+          ],
+          "mnemonics": [
+            "描述統計與推論統計的記憶技巧"
+          ],
+          "exercises": [
+            {
+              "type": "short_answer",
+              "question": "請解釋描述統計與推論統計的核心概念。",
+              "answer": "答案包含對描述統計與推論統計的詳細解釋。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "1.5",
+          "sectionTitle": "統計研究設計流程",
+          "content": "統計研究設計流程的內容將在此介紹。",
+          "examples": [
+            "統計研究設計流程的應用例子"
+          ],
+          "visuals": [
+            {
+              "path": "/static/images/ch1/1_5.png",
+              "description": "統計研究設計流程的圖解"
+            }
+          ],
+          "mnemonics": [
+            "統計研究設計流程的記憶技巧"
+          ],
+          "exercises": [
+            {
+              "type": "short_answer",
+              "question": "請解釋統計研究設計流程的核心概念。",
+              "answer": "答案包含對統計研究設計流程的詳細解釋。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "1.6",
+          "sectionTitle": "資料收集方法",
+          "content": "資料收集方法的內容將在此介紹。",
+          "examples": [
+            "資料收集方法的應用例子"
+          ],
+          "visuals": [
+            {
+              "path": "/static/images/ch1/1_6.png",
+              "description": "資料收集方法的圖解"
+            }
+          ],
+          "mnemonics": [
+            "資料收集方法的記憶技巧"
+          ],
+          "exercises": [
+            {
+              "type": "short_answer",
+              "question": "請解釋資料收集方法的核心概念。",
+              "answer": "答案包含對資料收集方法的詳細解釋。"
+            }
+          ]
+        },
+        {
+          "sectionNumber": "1.7",
+          "sectionTitle": "統計學的歷史發展與應用",
+          "content": "統計學的歷史發展與應用的內容將在此介紹。",
+          "examples": [
+            "統計學的歷史發展與應用的應用例子"
+          ],
+          "visuals": [
+            {
+              "path": "/static/images/ch1/1_7.png",
+              "description": "統計學的歷史發展與應用的圖解"
+            }
+          ],
+          "mnemonics": [
+            "統計學的歷史發展與應用的記憶技巧"
+          ],
+          "exercises": [
+            {
+              "type": "short_answer",
+              "question": "請解釋統計學的歷史發展與應用的核心概念。",
+              "answer": "答案包含對統計學的歷史發展與應用的詳細解釋。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "error": "Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    },
+    {
+      "error": "Error code: 402 - {'error': {'message': 'Insufficient Balance', 'type': 'unknown_error', 'param': None, 'code': 'invalid_request_error'}}"
+    }
+  ]
+}

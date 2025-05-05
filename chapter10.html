@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+
+{% block title %}第10章 - 單一母體的參數檢定{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <h1 class="mb-4">第10章：單一母體的參數檢定</h1>
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">章節概述</h5>
+                    <p class="card-text">{{ overview }}</p>
+                </div>
+            </div>
+
+            <!-- 10.1 假設檢定的基本概念 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3>10.1 假設檢定的基本概念</h3>
+                </div>
+                <div class="card-body">
+                    {% if sections.section_10_1 %}
+                        <div class="content mb-4">
+                            {{ sections.section_10_1.content | safe }}
+                        </div>
+
+                        {% if sections.section_10_1.visuals %}
+                            <div class="visuals mb-4">
+                                <h4>視覺輔助</h4>
+                                <div class="row">
+                                    {% for visual in sections.section_10_1.visuals %}
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card">
+                                                <img src="{{ visual.path }}" alt="{{ visual.description }}" class="card-img-top">
+                                                <div class="card-body">
+                                                    <p class="card-text">{{ visual.description }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if sections.section_10_1.examples %}
+                            <div class="examples mb-4">
+                                <h4>例題</h4>
+                                {% for example in sections.section_10_1.examples %}
+                                    <div class="example p-3 mb-3 border rounded">
+                                        {{ example | safe }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {% if sections.section_10_1.mnemonics %}
+                            <div class="mnemonics mb-4">
+                                <h4>記憶技巧</h4>
+                                <ul class="list-group">
+                                    {% for mnemonic in sections.section_10_1.mnemonics %}
+                                        <li class="list-group-item">{{ mnemonic }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                        {% if sections.section_10_1.exercises %}
+                            <div class="exercises mb-4">
+                                <h4>練習題</h4>
+                                {% for exercise in sections.section_10_1.exercises %}
+                                    <div class="exercise p-3 mb-3 border rounded">
+                                        <p><strong>{{ loop.index }}. {{ exercise.question }}</strong></p>
+                                        
+                                        {% if exercise.type == "multiple_choice" %}
+                                            <div class="options">
+                                                {% for option in exercise.options %}
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="exercise_{{ loop.parent.loop.index }}" id="option_{{ loop.parent.loop.index }}_{{ loop.index }}">
+                                                        <label class="form-check-label" for="option_{{ loop.parent.loop.index }}_{{ loop.index }}">
+                                                            {{ option }}
+                                                        </label>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary mt-2 show-answer" data-answer="{{ exercise.answer }}">查看答案</button>
+                                            <div class="answer mt-2 d-none"></div>
+                                        {% elif exercise.type == "short_answer" or exercise.type == "calculation" %}
+                                            <div class="form-group">
+                                                <textarea class="form-control" rows="3" placeholder="輸入您的答案"></textarea>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary mt-2 show-answer" data-answer="{{ exercise.answer }}">查看答案</button>
+                                            <div class="answer mt-2 d-none"></div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- 10.2 母體平均數的t檢定 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3>10.2 母體平均數的t檢定</h3>
+                </div>
+                <div class="card-body">
+                    {% if sections.section_10_2 %}
+                        <div class="content mb-4">
+                            {{ sections.section_10_2.content | safe }}
+                        </div>
+
+                        {% if sections.section_10_2.visuals %}
+                            <div class="visuals mb-4">
+                                <h4>視覺輔助</h4>
+                                <div class="row">
+                                    {% for visual in sections.section_10_2.visuals %}
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card">
+                                                <img src="{{ visual.path }}" alt="{{ visual.description }}" class="card-img-top">
+                                                <div class="card-body">
+                                                    <p class="card-text">{{ visual.description }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if sections.section_10_2.examples %}
+                            <div class="examples mb-4">
+                                <h4>例題</h4>
+                                {% for example in sections.section_10_2.examples %}
+                                    <div class="example p-3 mb-3 border rounded">
+                                        {{ example | safe }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {% if sections.section_10_2.mnemonics %}
+                            <div class="mnemonics mb-4">
+                                <h4>記憶技巧</h4>
+                                <ul class="list-group">
+                                    {% for mnemonic in sections.section_10_2.mnemonics %}
+                                        <li class="list-group-item">{{ mnemonic }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                        {% if sections.section_10_2.exercises %}
+                            <div class="exercises mb-4">
+                                <h4>練習題</h4>
+                                {% for exercise in sections.section_10_2.exercises %}
+                                    <div class="exercise p-3 mb-3 border rounded">
+                                        <p><strong>{{ loop.index }}. {{ exercise.question }}</strong></p>
+                                        
+                                        {% if exercise.type == "multiple_choice" %}
+                                            <div class="options">
+                                                {% for option in exercise.options %}
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="exercise_{{ loop.parent.loop.index }}" id="option_{{ loop.parent.loop.index }}_{{ loop.index }}">
+                                                        <label class="form-check-label" for="option_{{ loop.parent.loop.index }}_{{ loop.index }}">
+                                                            {{ option }}
+                                                        </label>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary mt-2 show-answer" data-answer="{{ exercise.answer }}">查看答案</button>
+                                            <div class="answer mt-2 d-none"></div>
+                                        {% elif exercise.type == "short_answer" or exercise.type == "calculation" %}
+                                            <div class="form-group">
+                                                <textarea class="form-control" rows="3" placeholder="輸入您的答案"></textarea>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary mt-2 show-answer" data-answer="{{ exercise.answer }}">查看答案</button>
+                                            <div class="answer mt-2 d-none"></div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- 10.3 母體比例的檢定 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3>10.3 母體比例的檢定</h3>
+                </div>
+                <div class="card-body">
+                    {% if sections.section_10_3 %}
+                        <div class="content mb-4">
+                            {{ sections.section_10_3.content | safe }}
+                        </div>
+
+                        {% if sections.section_10_3.visuals %}
+                            <div class="visuals mb-4">
+                                <h4>視覺輔助</h4>
+                                <div class="row">
+                                    {% for visual in sections.section_10_3.visuals %}
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card">
+                                                <img src="{{ visual.path }}" alt="{{ visual.description }}" class="card-img-top">
+                                                <div class="card-body">
+                                                    <p class="card-text">{{ visual.description }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if sections.section_10_3.examples %}
+                            <div class="examples mb-4">
+                                <h4>例題</h4>
+                                {% for example in sections.section_10_3.examples %}
+                                    <div class="example p-3 mb-3 border rounded">
+                                        {{ example | safe }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {% if sections.section_10_3.mnemonics %}
+                            <div class="mnemonics mb-4">
+                                <h4>記憶技巧</h4>
+                                <ul class="list-group">
+                                    {% for mnemonic in sections.section_10_3.mnemonics %}
+                                        <li class="list-group-item">{{ mnemonic }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                        {% if sections.section_10_3.exercises %}
+                            <div class="exercises mb-4">
+                                <h4>練習題</h4>
+                                {% for exercise in sections.section_10_3.exercises %}
+                                    <div class="exercise p-3 mb-3 border rounded">
+                                        <p><strong>{{ loop.index }}. {{ exercise.question }}</strong></p>
+                                        
+                                        {% if exercise.type == "multiple_choice" %}
+                                            <div class="options">
+                                                {% for option in exercise.options %}
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="exercise_{{ loop.parent.loop.index }}" id="option_{{ loop.parent.loop.index }}_{{ loop.index }}">
+                                                        <label class="form-check-label" for="option_{{ loop.parent.loop.index }}_{{ loop.index }}">
+                                                            {{ option }}
+                                                        </label>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary mt-2 show-answer" data-answer="{{ exercise.answer }}">查看答案</button>
+                                            <div class="answer mt-2 d-none"></div>
+                                        {% elif exercise.type == "short_answer" or exercise.type == "calculation" %}
+                                            <div class="form-group">
+                                                <textarea class="form-control" rows="3" placeholder="輸入您的答案"></textarea>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary mt-2 show-answer" data-answer="{{ exercise.answer }}">查看答案</button>
+                                            <div class="answer mt-2 d-none"></div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- 10.4 母體變異數的檢定 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3>10.4 母體變異數的檢定</h3>
+                </div>
+                <div class="card-body">
+                    {% if sections.section_10_4 %}
+                        <div class="content mb-4">
+                            {{ sections.section_10_4.content | safe }}
+                        </div>
+
+                        {% if sections.section_10_4.visuals %}
+                            <div class="visuals mb-4">
+                                <h4>視覺輔助</h4>
+                                <div class="row">
+                                    {% for visual in sections.section_10_4.visuals %}
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card">
+                                                <img src="{{ visual.path }}" alt="{{ visual.description }}" class="card-img-top">
+                                                <div class="card-body">
+                                                    <p class="card-text">{{ visual.description }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if sections.section_10_4.examples %}
+                            <div class="examples mb-4">
+                                <h4>例題</h4>
+                                {% for example in sections.section_10_4.examples %}
+                                    <div class="example p-3 mb-3 border rounded">
+                                        {{ example | safe }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {% if sections.section_10_4.mnemonics %}
+                            <div class="mnemonics mb-4">
+                                <h4>記憶技巧</h4>
+                                <ul class="list-group">
+                                    {% for mnemonic in sections.section_10_4.mnemonics %}
+                                        <li class="list-group-item">{{ mnemonic }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                        {% if sections.section_10_4.exercises %}
+                            <div class="exercises mb-4">
+                                <h4>練習題</h4>
+                                {% for exercise in sections.section_10_4.exercises %}
+                                    <div class="exercise p-3 mb-3 border rounded">
+                                        <p><strong>{{ loop.index }}. {{ exercise.question }}</strong></p>
+                                        
+                                        {% if exercise.type == "multiple_choice" %}
+                                            <div class="options">
+                                                {% for option in exercise.options %}
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="exercise_{{ loop.parent.loop.index }}" id="option_{{ loop.parent.loop.index }}_{{ loop.index }}">
+                                                        <label class="form-check-label" for="option_{{ loop.parent.loop.index }}_{{ loop.index }}">
+                                                            {{ option }}
+                                                        </label>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary mt-2 show-answer" data-answer="{{ exercise.answer }}">查看答案</button>
+                                            <div class="answer mt-2 d-none"></div>
+                                        {% elif exercise.type == "short_answer" or exercise.type == "calculation" %}
+                                            <div class="form-group">
+                                                <textarea class="form-control" rows="3" placeholder="輸入您的答案"></textarea>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary mt-2 show-answer" data-answer="{{ exercise.answer }}">查看答案</button>
+                                            <div class="answer mt-2 d-none"></div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="text-center mb-5">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-secondary me-2">返回首頁</a>
+                <a href="#" class="btn btn-outline-primary">下一章</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const showAnswerButtons = document.querySelectorAll('.show-answer');
+        
+        showAnswerButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const answerDiv = this.nextElementSibling;
+                answerDiv.innerHTML = `<div class="alert alert-success">${this.dataset.answer}</div>`;
+                answerDiv.classList.toggle('d-none');
+            });
+        });
+    });
+</script>
+{% endblock %} 

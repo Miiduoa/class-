@@ -1,0 +1,500 @@
+{% extends "base.html" %}
+
+{% block title %}AI 學習計劃生成 - 統計學習平台{% endblock %}
+
+{% block hero %}
+<div class="hero" style="padding: var(--space-lg) 0;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-2">
+                        <li class="breadcrumb-item"><a href="{{ url_for('home') }}" class="text-white opacity-75">首頁</a></li>
+                        <li class="breadcrumb-item"><a href="#" class="text-white opacity-75">AI 助手</a></li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">學習計劃</li>
+                    </ol>
+                </nav>
+                <h1 class="mb-3">AI 個人化學習計劃</h1>
+                <p class="lead mb-0">根據您的目標和時間安排，量身定制專屬於您的統計學習計劃。</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card ai-assistant-card mb-4">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-3" style="width: 48px; height: 48px;">
+                        <i class="bi bi-calendar2-check text-white fs-4"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0">創建學習計劃</h3>
+                        <p class="text-muted mb-0">自定義目標、難度與時間安排</p>
+                    </div>
+                </div>
+                
+                <form id="study-plan-form">
+                    <div class="mb-4">
+                        <label for="goal" class="form-label">學習目標</label>
+                        <input type="text" class="form-control form-control-lg" id="goal" name="goal" 
+                               placeholder="例如：掌握基礎統計分析方法、準備統計學考試..." required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="current_level" class="form-label">目前知識水平</label>
+                        <select class="form-select" id="current_level" name="current_level">
+                            <option value="beginner">初學者 (無統計基礎)</option>
+                            <option value="intermediate" selected>中級 (已了解基本概念)</option>
+                            <option value="advanced">進階 (已掌握多數統計方法)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="topics" class="form-label">感興趣的主題 (可多選)</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="topic_descriptive" name="topics[]" value="descriptive" checked>
+                                    <label class="form-check-label" for="topic_descriptive">
+                                        敘述統計
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="topic_probability" name="topics[]" value="probability" checked>
+                                    <label class="form-check-label" for="topic_probability">
+                                        機率與分布
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="topic_hypothesis" name="topics[]" value="hypothesis">
+                                    <label class="form-check-label" for="topic_hypothesis">
+                                        假設檢定
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="topic_regression" name="topics[]" value="regression">
+                                    <label class="form-check-label" for="topic_regression">
+                                        迴歸分析
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="topic_anova" name="topics[]" value="anova">
+                                    <label class="form-check-label" for="topic_anova">
+                                        變異數分析
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="topic_multivariate" name="topics[]" value="multivariate">
+                                    <label class="form-check-label" for="topic_multivariate">
+                                        多變量分析
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="duration" class="form-label">計劃時長</label>
+                            <select class="form-select" id="duration" name="duration">
+                                <option value="1">1 週</option>
+                                <option value="4" selected>1 個月</option>
+                                <option value="12">3 個月</option>
+                                <option value="24">6 個月</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="weekly_hours" class="form-label">每週可投入時間</label>
+                            <select class="form-select" id="weekly_hours" name="weekly_hours">
+                                <option value="3">3 小時以下</option>
+                                <option value="5" selected>5-7 小時</option>
+                                <option value="10">10-15 小時</option>
+                                <option value="20">20 小時以上</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" id="include_resources" name="include_resources" checked>
+                        <label class="form-check-label" for="include_resources">
+                            包含推薦學習資源和工具
+                        </label>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-gear-fill me-2"></i>生成學習計劃
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div id="loading" style="display: none;" class="text-center my-5">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">載入中...</span>
+            </div>
+            <p class="lead mt-3">正在生成您的個人化學習計劃，請稍等...</p>
+        </div>
+        
+        <div id="result-card" class="card mb-4" style="display: none;">
+            <div class="card-header bg-primary text-white py-3">
+                <h4 id="plan-title" class="mb-0"></h4>
+            </div>
+            <div class="card-body p-4">
+                <div id="plan-content"></div>
+                
+                <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                    <button class="btn btn-outline-primary" id="new-plan">
+                        <i class="bi bi-arrow-left me-2"></i>重新創建
+                    </button>
+                    <div>
+                        <button class="btn btn-outline-secondary me-2" id="copy-result">
+                            <i class="bi bi-clipboard me-2"></i>複製
+                        </button>
+                        <button class="btn btn-primary" id="download-pdf">
+                            <i class="bi bi-file-earmark-pdf me-2"></i>下載 PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="alert alert-danger" id="error-message" style="display: none;">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span id="error-text">發生錯誤，請稍後再試。</span>
+        </div>
+        
+        <!-- 學習計劃模板 -->
+        <div class="card mt-5">
+            <div class="card-body">
+                <h4 class="mb-4">學習計劃模板</h4>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-3" style="width: 40px; height: 40px;">
+                                        <i class="bi bi-mortarboard text-white"></i>
+                                    </div>
+                                    <h5 class="mb-0">統計學入門</h5>
+                                </div>
+                                <p class="small text-muted mb-3">適合：無統計基礎的初學者</p>
+                                <p class="small mb-3">從統計基礎概念開始，學習敘述統計方法和機率基礎知識</p>
+                                <button class="btn btn-sm btn-primary w-100" onclick="loadTemplate('beginner')">
+                                    使用此模板
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-3" style="width: 40px; height: 40px;">
+                                        <i class="bi bi-graph-up text-white"></i>
+                                    </div>
+                                    <h5 class="mb-0">數據分析進階</h5>
+                                </div>
+                                <p class="small text-muted mb-3">適合：了解基礎統計方法的學習者</p>
+                                <p class="small mb-3">深入學習假設檢定、迴歸分析和統計模型應用</p>
+                                <button class="btn btn-sm btn-primary w-100" onclick="loadTemplate('intermediate')">
+                                    使用此模板
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-3" style="width: 40px; height: 40px;">
+                                        <i class="bi bi-lightning text-white"></i>
+                                    </div>
+                                    <h5 class="mb-0">考試準備</h5>
+                                </div>
+                                <p class="small text-muted mb-3">適合：準備統計學考試的學習者</p>
+                                <p class="small mb-3">針對統計學考試，系統性復習核心概念和練習題</p>
+                                <button class="btn btn-sm btn-primary w-100" onclick="loadTemplate('exam')">
+                                    使用此模板
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('study-plan-form');
+    const resultCard = document.getElementById('result-card');
+    const loading = document.getElementById('loading');
+    const errorMessage = document.getElementById('error-message');
+    const planTitle = document.getElementById('plan-title');
+    const planContent = document.getElementById('plan-content');
+    const copyButton = document.getElementById('copy-result');
+    const newPlanButton = document.getElementById('new-plan');
+    const downloadButton = document.getElementById('download-pdf');
+    
+    // 綁定表單提交事件
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // 獲取表單數據
+        const goal = document.getElementById('goal').value.trim();
+        
+        if (!goal) {
+            showError('請輸入學習目標');
+            return;
+        }
+        
+        // 檢查是否選擇了至少一個主題
+        const topicCheckboxes = document.querySelectorAll('input[name="topics[]"]:checked');
+        if (topicCheckboxes.length === 0) {
+            showError('請至少選擇一個感興趣的主題');
+            return;
+        }
+        
+        // 隱藏結果和錯誤，顯示加載
+        resultCard.style.display = 'none';
+        errorMessage.style.display = 'none';
+        loading.style.display = 'block';
+        
+        // 準備要提交的數據
+        const formData = new FormData(form);
+        
+        // 發送AJAX請求
+        fetch('/ai/study-plan', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('網絡請求失敗');
+            }
+            return response.json();
+        })
+        .then(data => {
+            loading.style.display = 'none';
+            
+            if (data.error) {
+                showError(data.error);
+                return;
+            }
+            
+            // 顯示結果
+            resultCard.style.display = 'block';
+            
+            // 設置計劃標題
+            planTitle.innerText = `${goal} - 學習計劃`;
+            
+            // 格式化並顯示內容
+            const formattedPlan = formatStudyPlan(data.plan);
+            planContent.innerHTML = formattedPlan;
+            
+            // 滾動到結果區域
+            resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        })
+        .catch(error => {
+            loading.style.display = 'none';
+            console.error('Error:', error);
+            showError('請求失敗，請稍後再試');
+        });
+    });
+    
+    // 顯示錯誤訊息
+    function showError(message) {
+        errorMessage.style.display = 'block';
+        document.getElementById('error-text').innerText = message;
+    }
+    
+    // 格式化學習計劃內容
+    function formatStudyPlan(plan) {
+        if (!plan) {
+            return '<div class="alert alert-info">無法生成學習計劃，請嘗試調整您的需求。</div>';
+        }
+        
+        let html = '';
+        
+        // 格式化計劃概述
+        if (plan.overview) {
+            html += `
+            <div class="mb-4">
+                <h5 class="border-bottom pb-2 mb-3">計劃概述</h5>
+                <p>${plan.overview.replace(/\n/g, '<br>')}</p>
+            </div>`;
+        }
+        
+        // 格式化週計劃
+        if (plan.weeks && Array.isArray(plan.weeks)) {
+            html += '<h5 class="border-bottom pb-2 mb-3">週計劃安排</h5>';
+            
+            html += '<div class="accordion" id="weekAccordion">';
+            
+            plan.weeks.forEach((week, index) => {
+                const weekTitle = week.title || `第 ${index + 1} 週`;
+                const weekId = `week-${index}`;
+                
+                html += `
+                <div class="accordion-item border mb-3 rounded shadow-sm">
+                    <h2 class="accordion-header" id="heading-${weekId}">
+                        <button class="accordion-button ${index > 0 ? 'collapsed' : ''}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${weekId}" aria-expanded="${index === 0 ? 'true' : 'false'}" aria-controls="collapse-${weekId}">
+                            <strong>${weekTitle}</strong>
+                            ${week.focus ? `<span class="badge bg-primary ms-2">${week.focus}</span>` : ''}
+                        </button>
+                    </h2>
+                    <div id="collapse-${weekId}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" aria-labelledby="heading-${weekId}" data-bs-parent="#weekAccordion">
+                        <div class="accordion-body">
+                            ${week.description ? `<p>${week.description.replace(/\n/g, '<br>')}</p>` : ''}
+                            
+                            ${formatWeekContent(week)}
+                        </div>
+                    </div>
+                </div>`;
+            });
+            
+            html += '</div>';
+        }
+        
+        // 推薦資源
+        if (plan.resources && Array.isArray(plan.resources) && plan.resources.length > 0) {
+            html += `
+            <div class="mt-4">
+                <h5 class="border-bottom pb-2 mb-3">推薦學習資源</h5>
+                <div class="row">`;
+                
+            plan.resources.forEach(resource => {
+                html += `
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100 border-0 bg-light">
+                        <div class="card-body p-3">
+                            <h6 class="card-title">${resource.title}</h6>
+                            <p class="card-text small mb-0">${resource.description || ''}</p>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            
+            html += `
+                </div>
+            </div>`;
+        }
+        
+        return html;
+    }
+    
+    // 格式化週内容
+    function formatWeekContent(week) {
+        let html = '';
+        
+        if (week.topics && Array.isArray(week.topics) && week.topics.length > 0) {
+            html += '<h6 class="mt-3 mb-2">學習主題</h6>';
+            html += '<ul class="mb-3">';
+            week.topics.forEach(topic => {
+                html += `<li>${topic}</li>`;
+            });
+            html += '</ul>';
+        }
+        
+        if (week.activities && Array.isArray(week.activities) && week.activities.length > 0) {
+            html += '<h6 class="mt-3 mb-2">建議活動</h6>';
+            html += '<ul class="mb-0">';
+            week.activities.forEach(activity => {
+                html += `<li>${activity}</li>`;
+            });
+            html += '</ul>';
+        }
+        
+        return html;
+    }
+    
+    // 新計劃按鈕
+    newPlanButton.addEventListener('click', function() {
+        resultCard.style.display = 'none';
+        document.getElementById('goal').focus();
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    });
+    
+    // 複製內容按鈕
+    copyButton.addEventListener('click', function() {
+        const title = planTitle.innerText;
+        const content = planContent.innerText;
+        
+        navigator.clipboard.writeText(`${title}\n\n${content}`).then(
+            function() {
+                const originalText = copyButton.innerHTML;
+                copyButton.innerHTML = '<i class="bi bi-check me-2"></i>已複製';
+                setTimeout(() => {
+                    copyButton.innerHTML = originalText;
+                }, 2000);
+            }
+        );
+    });
+    
+    // 下載PDF按鈕
+    downloadButton.addEventListener('click', function() {
+        alert('PDF下載功能將在未來版本中推出');
+    });
+});
+
+// 加載預設模板
+function loadTemplate(templateType) {
+    const form = document.getElementById('study-plan-form');
+    const goalInput = document.getElementById('goal');
+    const currentLevelSelect = document.getElementById('current_level');
+    
+    // 重置所有複選框
+    document.querySelectorAll('input[name="topics[]"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    
+    // 根據模板類型設置表單
+    switch(templateType) {
+        case 'beginner':
+            goalInput.value = '掌握統計學基本概念和方法';
+            currentLevelSelect.value = 'beginner';
+            document.getElementById('topic_descriptive').checked = true;
+            document.getElementById('topic_probability').checked = true;
+            document.getElementById('duration').value = '4';
+            document.getElementById('weekly_hours').value = '5';
+            break;
+            
+        case 'intermediate':
+            goalInput.value = '提升數據分析和統計建模能力';
+            currentLevelSelect.value = 'intermediate';
+            document.getElementById('topic_hypothesis').checked = true;
+            document.getElementById('topic_regression').checked = true;
+            document.getElementById('topic_anova').checked = true;
+            document.getElementById('duration').value = '12';
+            document.getElementById('weekly_hours').value = '10';
+            break;
+            
+        case 'exam':
+            goalInput.value = '為統計學考試做全面準備';
+            currentLevelSelect.value = 'intermediate';
+            document.getElementById('topic_descriptive').checked = true;
+            document.getElementById('topic_probability').checked = true;
+            document.getElementById('topic_hypothesis').checked = true;
+            document.getElementById('topic_regression').checked = true;
+            document.getElementById('duration').value = '12';
+            document.getElementById('weekly_hours').value = '10';
+            break;
+    }
+    
+    // 滾動到表單頂部
+    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    goalInput.focus();
+}
+</script>
+{% endblock %}

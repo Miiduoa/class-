@@ -1,0 +1,331 @@
+{% extends 'base.html' %}
+
+{% block title %}統計學習平台 - 系統化學習統計學{% endblock %}
+
+{% block hero %}
+<div class="hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="mb-4">探索統計學的全新視角</h1>
+                <p class="lead mb-4">我們的學習平台提供系統化的統計學教材，從基礎理論到實際應用，幫助你掌握數據分析的關鍵技能。</p>
+                <div class="d-flex gap-3">
+                    <a href="#courses" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-book"></i> 瀏覽課程
+                    </a>
+                    <a href="{{ url_for('chapter', chapter_number=1) }}" class="btn btn-light btn-lg">
+                        <i class="bi bi-play-fill"></i> 立即開始
+                    </a>
+                    <a href="{{ url_for('show_lecture', lecture_file='統計學完整講義.html') }}" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-journal-bookmark"></i> 完整講義
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <img src="{{ url_for('static', filename='img/hero-illustration.svg') }}" alt="統計學習平台插圖" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="py-5" id="courses">
+    <div class="container">
+        {% if course_data and course_data.chapters and course_data.chapters|length > 0 %}
+        <div class="alert alert-success mb-4">
+            <i class="bi bi-check-circle-fill me-2"></i> 成功載入 {{ course_data.chapters|length }} 章統計學課程內容！
+        </div>
+        {% else %}
+        <div class="alert alert-warning mb-4">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> 未能載入課程內容，請檢查JSON檔案格式和路徑。
+        </div>
+        {% endif %}
+        
+        <h2 class="section-title">探索課程</h2>
+        <div class="row g-4">
+            <!-- 統計學課程 - 已上線 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="course-card course-statistics">
+                    <div class="course-card-header">
+                        <i class="bi bi-graph-up me-2"></i>統計學
+                    </div>
+                    <div class="course-card-body">
+                        <p>從統計基礎概念到高級分析技巧，掌握資料解讀與決策所需的統計學知識。</p>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>課程進度</span>
+                                <span class="fw-bold">100%</span>
+                            </div>
+                            <div class="progress-indicator">
+                                <div class="progress-bar" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 mt-3">
+                            <span class="badge bg-success">已上線</span>
+                            <span class="badge bg-secondary">16 章節</span>
+                            <span class="badge bg-light text-dark">基礎到進階</span>
+                        </div>
+                    </div>
+                    <div class="course-card-footer">
+                        <a href="{{ url_for('chapter', chapter_number=1) }}" class="btn btn-primary">
+                            <i class="bi bi-box-arrow-in-right"></i> 進入課程
+                        </a>
+                        <a href="{{ url_for('show_lecture', lecture_file='統計學完整講義.html') }}" class="btn btn-outline-primary ms-2">
+                            <i class="bi bi-journal-bookmark"></i> 完整講義
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 數學課程 - 即將推出 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="course-card course-math">
+                    <div class="course-card-header">
+                        <i class="bi bi-calculator me-2"></i>數學
+                    </div>
+                    <div class="course-card-body">
+                        <p>從基礎代數到微積分，建立堅實的數學基礎，為科學與工程學科做好準備。</p>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>課程進度</span>
+                                <span class="fw-bold">建置中</span>
+                            </div>
+                            <div class="progress-indicator">
+                                <div class="progress-bar" style="width: 30%"></div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 mt-3">
+                            <span class="badge bg-warning text-dark">即將推出</span>
+                            <span class="badge bg-secondary">12 章節</span>
+                            <span class="badge bg-light text-dark">入門到高階</span>
+                        </div>
+                    </div>
+                    <div class="course-card-footer">
+                        <button class="btn btn-secondary" disabled>
+                            <i class="bi bi-hourglass-split"></i> 即將推出
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 科學課程 - 即將推出 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="course-card course-science">
+                    <div class="course-card-header">
+                        <i class="bi bi-globe me-2"></i>科學
+                    </div>
+                    <div class="course-card-body">
+                        <p>探索物理、化學與生物學的基本原理，了解自然世界的運作方式與科學思維。</p>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>課程進度</span>
+                                <span class="fw-bold">規劃中</span>
+                            </div>
+                            <div class="progress-indicator">
+                                <div class="progress-bar" style="width: 10%"></div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 mt-3">
+                            <span class="badge bg-info text-dark">規劃中</span>
+                            <span class="badge bg-secondary">計劃 15 章節</span>
+                            <span class="badge bg-light text-dark">通識課程</span>
+                        </div>
+                    </div>
+                    <div class="course-card-footer">
+                        <button class="btn btn-secondary" disabled>
+                            <i class="bi bi-hourglass-split"></i> 規劃中
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h2 class="section-title">學習平台特色</h2>
+                <div class="feature-item d-flex mb-4">
+                    <div class="feature-icon me-3">
+                        <div class="d-flex justify-content-center align-items-center rounded-circle bg-primary text-white" style="width: 56px; height: 56px;">
+                            <i class="bi bi-book fs-4"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>全面課程內容</h4>
+                        <p>每個章節都包含完整的講義、練習題和互動式資源，確保學習過程既全面又深入。</p>
+                    </div>
+                </div>
+                <div class="feature-item d-flex mb-4">
+                    <div class="feature-icon me-3">
+                        <div class="d-flex justify-content-center align-items-center rounded-circle bg-primary text-white" style="width: 56px; height: 56px;">
+                            <i class="bi bi-robot fs-4"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>AI輔助學習</h4>
+                        <p>先進的AI助手能夠解答問題、提供個性化學習建議，並生成額外的練習內容。</p>
+                    </div>
+                </div>
+                <div class="feature-item d-flex">
+                    <div class="feature-icon me-3">
+                        <div class="d-flex justify-content-center align-items-center rounded-circle bg-primary text-white" style="width: 56px; height: 56px;">
+                            <i class="bi bi-graph-up fs-4"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>視覺化學習</h4>
+                        <p>豐富的圖表、互動式圖形和視覺化內容，幫助您更直觀地理解複雜的統計概念。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card border-0 shadow">
+                    <div class="card-body p-4">
+                        <h3 class="mb-4">學習統計學</h3>
+                        <p class="mb-4">統計學是數據時代的關鍵技能，幫助您理解並分析各種數據背後的意義。</p>
+                        
+                        <div class="mb-4">
+                            <h5 class="fw-bold mb-3">熱門章節：</h5>
+                            <ul class="list-group list-group-flush">
+                                {% for chapter in course_data.chapters[:3] %}
+                                <li class="list-group-item px-0">
+                                    <a href="{{ url_for('chapter', chapter_number=chapter.chapterNumber) }}" class="text-decoration-none d-flex justify-content-between align-items-center">
+                                        <span>
+                                            <i class="bi bi-journal-text me-2 text-primary"></i>
+                                            第{{ chapter.chapterNumber }}章：{{ chapter.chapterTitle }}
+                                        </span>
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        
+                        <a href="{{ url_for('chapter', chapter_number=1) }}" class="btn btn-primary w-100">開始學習統計學</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">為什麼選擇我們的學習平台？</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="d-flex justify-content-center mb-4">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-3 d-flex" style="width: 80px; height: 80px;">
+                                <i class="bi bi-lightning-charge fs-1 text-primary m-auto"></i>
+                            </div>
+                        </div>
+                        <h4>高效學習</h4>
+                        <p>我們的課程設計基於認知科學原理，幫助您以最高效率掌握統計學知識。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="d-flex justify-content-center mb-4">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-3 d-flex" style="width: 80px; height: 80px;">
+                                <i class="bi bi-person-check fs-1 text-primary m-auto"></i>
+                            </div>
+                        </div>
+                        <h4>專業內容</h4>
+                        <p>所有課程內容由專業教育工作者精心策劃，確保質量與準確性。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="d-flex justify-content-center mb-4">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-3 d-flex" style="width: 80px; height: 80px;">
+                                <i class="bi bi-laptop fs-1 text-primary m-auto"></i>
+                            </div>
+                        </div>
+                        <h4>隨時學習</h4>
+                        <p>線上平台支援各種裝置，讓您隨時隨地都能繼續學習進度。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="mb-4">開始您的統計學習之旅</h2>
+                <p class="lead mb-5">無論您是尋求提升專業能力，還是出於個人興趣探索數據分析，我們的統計學課程都能滿足您的需求。</p>
+                <a href="{{ url_for('chapter', chapter_number=1) }}" class="btn btn-light btn-lg px-5">
+                    <i class="bi bi-play-fill me-2"></i>立即開始學習
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 order-lg-2 mb-4 mb-lg-0">
+                <h2 class="section-title">AI 輔助學習</h2>
+                <p class="lead">我們整合了先進的 AI 技術，提供個性化的學習體驗。</p>
+                <ul class="list-unstyled">
+                    <li class="mb-3 d-flex">
+                        <i class="bi bi-check-circle-fill text-primary me-2 fs-5"></i>
+                        <span>透過 AI 解釋複雜的統計概念</span>
+                    </li>
+                    <li class="mb-3 d-flex">
+                        <i class="bi bi-check-circle-fill text-primary me-2 fs-5"></i>
+                        <span>生成符合您程度的練習題</span>
+                    </li>
+                    <li class="mb-3 d-flex">
+                        <i class="bi bi-check-circle-fill text-primary me-2 fs-5"></i>
+                        <span>建立個人化學習計劃</span>
+                    </li>
+                    <li class="d-flex">
+                        <i class="bi bi-check-circle-fill text-primary me-2 fs-5"></i>
+                        <span>提供即時答疑與學習指導</span>
+                    </li>
+                </ul>
+                <div class="mt-4">
+                    <a href="{{ url_for('ai.explain_concept') }}" class="btn btn-primary">
+                        <i class="bi bi-robot me-2"></i>體驗 AI 學習助手
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 order-lg-1">
+                <div class="card ai-assistant-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-3" style="width: 40px; height: 40px;">
+                                <i class="bi bi-robot text-white"></i>
+                            </div>
+                            <h5 class="mb-0">AI 學習助手</h5>
+                        </div>
+                        <div class="chat-message ai-message">
+                            您好！我是您的 AI 統計學習助手。有什麼統計學概念需要我解釋嗎？
+                        </div>
+                        <div class="chat-message user-message">
+                            請解釋一下什麼是中央極限定理？
+                        </div>
+                        <div class="chat-message ai-message">
+                            中央極限定理是統計學中的重要理論，它指出當樣本數量足夠大時，無論母體是什麼分配，樣本平均值的分配會近似正態分配。這讓我們能進行基於正態分配的各種統計推論。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %} 

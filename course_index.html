@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}統計學課程{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/course.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="course-header text-center">
+    <div class="container">
+        <h1 class="course-title">統計學課程</h1>
+        <p class="course-description">探索統計學的基本概念、數據分析方法和推論統計等核心內容，建立紮實的統計學基礎，培養數據分析能力。</p>
+    </div>
+</div>
+
+<div class="course-container">
+    <div class="row">
+        {% for chapter in course_data %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card chapter-card">
+                <div class="chapter-header">
+                    <h5>第{{ chapter.chapter }}章：{{ chapter.title }}</h5>
+                </div>
+                <div class="chapter-content">
+                    <ul class="section-list">
+                        {% for section in chapter.sections %}
+                        <li>
+                            <a href="{{ url_for('course_section', chapter_num=chapter.chapter, section_index=loop.index0) }}" class="section-link">
+                                {{ section.title }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="chapter-actions">
+                        <a href="{{ url_for('course_chapter', chapter_num=chapter.chapter) }}" class="btn btn-primary">查看章節</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

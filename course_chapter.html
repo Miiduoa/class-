@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}第{{ chapter.chapter }}章：{{ chapter.title }}{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/course.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="course-container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('course_index') }}">課程首頁</a></li>
+            <li class="breadcrumb-item active">第{{ chapter.chapter }}章：{{ chapter.title }}</li>
+        </ol>
+    </nav>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">第{{ chapter.chapter }}章：{{ chapter.title }}</h2>
+        </div>
+        <div class="card-body">
+            <div class="mb-4">
+                <h3>章節概述</h3>
+                <p>{{ chapter.description if chapter.description else '本章將介紹'+chapter.title+'的相關概念、理論和應用方法，幫助您建立'+chapter.title+'的基礎知識。' }}</p>
+            </div>
+
+            {% if chapter_content %}
+            <div class="lecture-content mb-4">
+                {{ chapter_content|safe }}
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                <p>本章還沒有完整的講義內容。請查看下方的小節列表學習具體內容。</p>
+            </div>
+            {% endif %}
+
+            <h3>小節列表</h3>
+            <div class="list-group mb-4">
+                {% for section in chapter.sections %}
+                <a href="{{ url_for('course_section', chapter_num=chapter.chapter, section_index=loop.index0) }}" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ section.title }}</h5>
+                    </div>
+                    <p class="mb-1">{{ section.description if section.description else '學習'+section.title+'的核心概念和應用方法。' }}</p>
+                </a>
+                {% endfor %}
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h3 class="mb-0">學習資源</h3>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <a href="{{ url_for('show_lecture', lecture_file='第'+chapter.chapter|string+'章_完整.html') }}" class="btn btn-outline-primary" target="_blank">
+                                <i class="fas fa-book"></i> 查看完整講義
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-buttons">
+        {% if prev_chapter %}
+        <a href="{{ url_for('course_chapter', chapter_num=prev_chapter) }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> 上一章
+        </a>
+        {% else %}
+        <div></div>
+        {% endif %}
+
+        {% if next_chapter %}
+        <a href="{{ url_for('course_chapter', chapter_num=next_chapter) }}" class="btn btn-outline-primary">
+            下一章 <i class="fas fa-arrow-right"></i>
+        </a>
+        {% else %}
+        <div></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 
