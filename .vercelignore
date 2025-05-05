@@ -4,3 +4,4 @@ lecture_data/*
    *.zip
    *.pyc
    *.pyo
+   .git/

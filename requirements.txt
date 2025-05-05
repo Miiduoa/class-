@@ -12,4 +12,5 @@ Pillow==10.1.0
 matplotlib==3.8.0
 numpy==1.26.0
 pandas==2.1.1
-openai==1.1.1 
+openai==1.1.1
+gunicorn==21.2.0 

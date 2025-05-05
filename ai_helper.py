@@ -1,10 +1,19 @@
 import os
 import openai
-from flask import current_app
+from flask import current_app as app
+import datetime
+import json
 
 # OpenAI API設置
 OPENAI_API_KEY = "sk-uYf5DnpjM2xaHE1p261310C081E94d5a8aF0D61cE3F6Bf68"  # 用戶提供的API密鑰
 OPENAI_API_BASE = "https://free.v36.cm/v1"  # 確保添加v1路徑
+
+# API狀態變量
+API_STATUS = {
+    "connected": False,
+    "message": "尚未連接到API",
+    "last_test_time": None
+}
 
 # 測試模式設置
 TEST_MODE = False  # 嘗試使用API，只有在連接失敗時才使用測試模式
@@ -14,21 +23,78 @@ print("統計學助手初始化中... 正在嘗試連接API服務")
 
 # 初始化OpenAI客戶端
 client = None
-try:
-    from openai import OpenAI
-    client = OpenAI(api_key=OPENAI_API_KEY, base_url=OPENAI_API_BASE)
-    # 測試連接
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": "測試"}],
-        max_tokens=5
-    )
-    print(f"API連接成功! 響應: {response}")
-    TEST_MODE = False  # 確認連接成功，使用API模式
-except Exception as e:
-    print(f"API客戶端初始化或連接測試失敗: {str(e)}")
-    TEST_MODE = True  # 初始化失敗，切換到測試模式
-    print("切換至測試模式 - 使用本地模擬回答")
+
+def test_api_connection(api_key=None, api_base=None):
+    """測試API連接並更新連接狀態"""
+    global client, TEST_MODE, API_STATUS
+    
+    # 如果提供了新的API密鑰和基礎URL，則更新全局變量
+    if api_key:
+        global OPENAI_API_KEY
+        OPENAI_API_KEY = api_key
+    
+    if api_base:
+        global OPENAI_API_BASE
+        # 確保API基礎URL以/v1結尾
+        if not api_base.endswith('/v1'):
+            api_base = api_base + '/v1' if not api_base.endswith('/') else api_base + 'v1'
+        OPENAI_API_BASE = api_base
+    
+    print(f"嘗試連接API，使用URL: {OPENAI_API_BASE} 和 API密鑰: {OPENAI_API_KEY[:5]}...")
+    
+    try:
+        from openai import OpenAI
+        # 創建新的客戶端實例
+        client = OpenAI(api_key=OPENAI_API_KEY, base_url=OPENAI_API_BASE)
+        
+        # 測試連接
+        try:
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[{"role": "user", "content": "測試"}],
+                max_tokens=5
+            )
+            
+            # 更新API狀態
+            API_STATUS = {
+                "connected": True,
+                "message": f"API連接成功! 響應: {response}",
+                "last_test_time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            }
+            
+            print(f"API連接成功! 響應: {response}")
+            TEST_MODE = False  # 確認連接成功，使用API模式
+            return True, f"API連接成功! 可以正常使用聊天功能。"
+        except Exception as api_call_e:
+            error_msg = f"API客戶端已初始化，但API調用失敗: {str(api_call_e)}"
+            print(error_msg)
+            
+            # 更新API狀態
+            API_STATUS = {
+                "connected": False,
+                "message": error_msg,
+                "last_test_time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            }
+            
+            TEST_MODE = True  # API調用失敗，切換到測試模式
+            return False, error_msg
+    
+    except Exception as init_e:
+        # 更新API狀態
+        error_msg = f"API客戶端初始化失敗: {str(init_e)}"
+        API_STATUS = {
+            "connected": False,
+            "message": error_msg,
+            "last_test_time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+        
+        print(error_msg)
+        TEST_MODE = True  # 初始化失敗，切換到測試模式
+        print("切換至測試模式 - 使用本地模擬回答")
+        return False, error_msg
+
+# 嘗試初始連接
+test_api_connection()
 
 def generate_explanation(topic, difficulty="intermediate"):
     """
@@ -60,11 +126,11 @@ def generate_explanation(topic, difficulty="intermediate"):
         if hasattr(response, 'choices') and len(response.choices) > 0 and hasattr(response.choices[0], 'message'):
             return response.choices[0].message.content
         else:
-            current_app.logger.error(f"API返回無效響應結構: {response}")
+            app.logger.error(f"API返回無效響應結構: {response}")
             return get_mock_explanation(topic, difficulty)
             
     except Exception as e:
-        current_app.logger.error(f"ChatGPT API調用失敗: {str(e)}")
+        app.logger.error(f"ChatGPT API調用失敗: {str(e)}")
         # 出現錯誤時返回模擬數據，而不是錯誤信息
         return get_mock_explanation(topic, difficulty)
 
@@ -80,69 +146,230 @@ def generate_practice_questions(topic, number=3, difficulty="intermediate"):
     返回:
         str: 包含問題和答案的文本
     """
+    print(f"[generate_practice_questions] 開始生成練習題： 主題={topic}, 數量={number}, 難度={difficulty}")
+    
     if TEST_MODE or client is None:
         # 測試模式或客戶端初始化失敗：提供模擬數據而不調用API
+        print(f"[generate_practice_questions] 在測試模式下生成練習題")
         return get_mock_practice_questions(topic, number, difficulty)
     
     try:
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo", 
-            messages=[
-                {"role": "system", "content": f"你是一位專業的統計學教師，專長於創建教育性的練習題。請創建{number}道{difficulty}難度的練習題。"},
-                {"role": "user", "content": f'請為"{topic}"這個統計學主題創建{number}道練習題，每道題都應包含問題和詳細解答。'}
-            ],
-            temperature=0.8,
-            max_tokens=1500
-        )
+        print(f"[generate_practice_questions] 嘗試通過API生成練習題")
         
-        # 驗證響應結構
-        if hasattr(response, 'choices') and len(response.choices) > 0 and hasattr(response.choices[0], 'message'):
-            return response.choices[0].message.content
-        else:
-            current_app.logger.error(f"API返回無效響應結構: {response}")
+        # 確保參數類型正確
+        try:
+            number = int(number)
+        except (ValueError, TypeError):
+            print(f"[generate_practice_questions] 數量參數無效，使用默認值: 3")
+            number = 3
+            
+        # 驗證難度級別
+        valid_difficulties = ["beginner", "intermediate", "advanced"]
+        if difficulty not in valid_difficulties:
+            print(f"[generate_practice_questions] 難度參數無效: {difficulty}，使用默認值: intermediate")
+            difficulty = "intermediate"
+        
+        # 根據難度級別調整提示詞
+        difficulty_prompt = {
+            "beginner": "基礎難度，適合初學者，使用簡單計算和基本概念",
+            "intermediate": "中等難度，需要綜合應用多個概念，適合具有一定基礎的學習者",
+            "advanced": "高級難度，需要深入理解和複雜計算，適合進階學習者"
+        }.get(difficulty, "中等難度，需要綜合應用多個概念")
+        
+        system_prompt = f"""你是一位專業的統計學教師，專長於創建教育性的練習題。
+請創建{number}道關於"{topic}"的{difficulty_prompt}的練習題。
+
+每道題目必須包含：
+1. 清晰的問題描述
+2. 詳細的解答過程
+3. 如果適用，包含必要的公式和計算步驟
+
+請確保答案詳盡且教育性強，幫助學生真正理解概念。使用繁體中文回答。"""
+        
+        print(f"[generate_practice_questions] 發送API請求 - 系統提示: {system_prompt[:100]}...")
+        
+        try:
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo", 
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": f'請為"{topic}"這個統計學主題創建{number}道練習題，每道題都應包含問題和詳細解答。提供具有教育價值的題目，展示這個概念的實際應用。'}
+                ],
+                temperature=0.7,
+                max_tokens=2500  # 增加token上限以獲得更詳細的回答
+            )
+            
+            # 打印API響應詳情 (注意不要打印敏感信息)
+            response_details = f"模型: {response.model}, 選項數: {len(response.choices)}"
+            print(f"[generate_practice_questions] API響應詳情: {response_details}")
+            
+            # 檢查響應結構
+            if not hasattr(response, 'choices') or len(response.choices) == 0:
+                print(f"[generate_practice_questions] API返回的響應缺少選項")
+                return get_mock_practice_questions(topic, number, difficulty)
+                
+            if not hasattr(response.choices[0], 'message'):
+                print(f"[generate_practice_questions] API返回的選項缺少消息內容")
+                return get_mock_practice_questions(topic, number, difficulty)
+                
+            result = response.choices[0].message.content
+            if not result or len(result.strip()) == 0:
+                print(f"[generate_practice_questions] API返回的消息內容為空")
+                return get_mock_practice_questions(topic, number, difficulty)
+                
+            print(f"[generate_practice_questions] 成功獲取API響應，內容長度: {len(result)}")
+            print(f"[generate_practice_questions] 內容預覽: {result[:100]}...")
+            return result
+            
+        except Exception as api_e:
+            error_msg = f"[generate_practice_questions] API調用出錯: {str(api_e)}"
+            app.logger.error(error_msg)
+            print(error_msg)
             return get_mock_practice_questions(topic, number, difficulty)
             
     except Exception as e:
-        current_app.logger.error(f"ChatGPT API調用失敗: {str(e)}")
-        # 出現錯誤時返回模擬數據，而不是錯誤信息
+        error_msg = f"[generate_practice_questions] 生成練習題過程中出錯: {str(e)}"
+        app.logger.error(error_msg)
+        print(error_msg)
+        # 確保在出錯時總是返回有用的內容，而不是拋出異常
         return get_mock_practice_questions(topic, number, difficulty)
 
-def generate_study_plan(topics, duration_weeks=4):
+def generate_study_plan(topics, duration_weeks=4, goal=None, current_level=None, weekly_hours=None, include_resources=True):
     """
     生成統計學學習計劃
     
     參數:
         topics (list): 要學習的主題列表
         duration_weeks (int): 學習計劃的持續時間（以週為單位）
+        goal (str): 學習目標
+        current_level (str): 目前知識水平
+        weekly_hours (int): 每週可投入學習時間
+        include_resources (bool): 是否包含推薦資源
     
     返回:
-        str: 生成的學習計劃
+        dict: 生成的學習計劃，結構化JSON格式
     """
+    print(f"開始生成學習計劃: 主題={topics}, 週數={duration_weeks}, 目標={goal}, 級別={current_level}, 每週時間={weekly_hours}")
+    
     if TEST_MODE or client is None:
         # 測試模式或客戶端初始化失敗：提供模擬數據而不調用API
+        print("在測試模式下生成學習計劃")
         return get_mock_study_plan(topics, duration_weeks)
     
-    topics_str = ", ".join(topics)
+    # 轉換主題列表為字符串，如果是列表的話
+    if isinstance(topics, list):
+        topics_str = ", ".join(topics)
+    else:
+        topics_str = topics
+
+    # 確保duration_weeks是整數
+    try:
+        duration_weeks = int(duration_weeks)
+    except (ValueError, TypeError):
+        duration_weeks = 4
+        print(f"持續時間轉換為整數失敗，使用默認值: {duration_weeks}")
+        
+    # 構建用戶提示
+    user_prompt = f'請為以下統計學主題設計一個{duration_weeks}週的學習計劃：{topics_str}。'
+    
+    # 添加附加信息
+    if goal:
+        user_prompt += f' 學習目標是：{goal}。'
+    
+    if current_level:
+        level_descriptions = {
+            'beginner': '初學者，無統計基礎',
+            'intermediate': '中級，已了解基本概念',
+            'advanced': '進階，已掌握多數統計方法'
+        }
+        level_desc = level_descriptions.get(current_level, current_level)
+        user_prompt += f' 學習者目前的知識水平是：{level_desc}。'
+    
+    if weekly_hours:
+        user_prompt += f' 每週可投入約{weekly_hours}小時學習。'
+    
+    if include_resources:
+        user_prompt += ' 請包含推薦的學習資源和參考資料。'
+    
+    user_prompt += ' 計劃應包含每週的學習目標、具體學習內容和自我評估方法。'
+    
+    # 系統提示，要求輸出JSON格式
+    system_prompt = """你是一位專業的統計學教育顧問，專長於設計個性化學習計劃。
+
+請根據用戶提供的信息，設計結構化、實用的統計學學習計劃，並以JSON格式返回。格式如下：
+
+{
+  "overview": "學習計劃概述...",
+  "weeks": [
+    {
+      "title": "第1週：基礎概念",
+      "focus": "主要重點",
+      "description": "本週描述...",
+      "topics": ["主題1", "主題2", "主題3"],
+      "activities": ["活動1", "活動2", "活動3"]
+    }
+  ],
+  "resources": [
+    {
+      "title": "資源名稱",
+      "description": "資源描述..."
+    }
+  ]
+}
+
+確保計劃的進度合理，難度逐步提升，概念互相連貫。使用清晰的繁體中文回答。"""
+    
+    print(f"發送到API的學習計劃提示: {user_prompt[:100]}...")
+    
     try:
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "你是一位專業的統計學教育顧問，善於設計有效的學習計劃。"},
-                {"role": "user", "content": f'請為以下統計學主題設計一個{duration_weeks}週的學習計劃：{topics_str}。每週應包含學習目標、推薦資源和自我評估方法。'}
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
             ],
             temperature=0.7,
-            max_tokens=1500
+            max_tokens=2000,
+            response_format={"type": "json_object"}  # 要求JSON格式回應
         )
         
         # 驗證響應結構
         if hasattr(response, 'choices') and len(response.choices) > 0 and hasattr(response.choices[0], 'message'):
-            return response.choices[0].message.content
+            result = response.choices[0].message.content
+            print(f"成功生成學習計劃，內容長度: {len(result)}")
+            
+            # 嘗試將結果解析為JSON
+            try:
+                # 檢查是否包含```json 等標記，如果有就提取實際JSON內容
+                if "```json" in result:
+                    result = result.split("```json")[1].split("```")[0].strip()
+                    print(f"提取標記內的JSON：{result[:50]}...")
+                
+                # 清理可能存在的特殊格式標記
+                result = result.replace("```", "").strip()
+                
+                # 解析JSON
+                plan_data = json.loads(result)
+                print(f"成功解析JSON數據，包含鍵: {', '.join(plan_data.keys())}")
+                return plan_data
+            except json.JSONDecodeError as e:
+                print(f"API回傳的內容無法被解析為JSON: {e}")
+                print(f"問題內容: {result[:200]}")
+                # 返回文本內容作為overview
+                return {
+                    "overview": "學習計劃生成時出現格式問題，但我們仍然整理了以下內容：",
+                    "weeks": [{"title": f"第1-{duration_weeks}週", "description": result, "topics": [topics_str]}],
+                    "resources": []
+                }
         else:
-            current_app.logger.error(f"API返回無效響應結構: {response}")
+            app.logger.error(f"API返回無效響應結構: {response}")
+            print(f"API返回無效響應結構，使用模擬數據")
             return get_mock_study_plan(topics, duration_weeks)
             
     except Exception as e:
-        current_app.logger.error(f"ChatGPT API調用失敗: {str(e)}")
+        error_msg = f"生成學習計劃時發生錯誤: {str(e)}"
+        app.logger.error(error_msg)
+        print(error_msg)
         # 出現錯誤時返回模擬數據，而不是錯誤信息
         return get_mock_study_plan(topics, duration_weeks)
 
@@ -214,13 +441,13 @@ def generate_chat_response(message, history=None):
             print("成功從OpenAI API獲取回應")
             return response.choices[0].message.content
         else:
-            current_app.logger.error(f"API返回無效響應結構: {response}")
+            app.logger.error(f"API返回無效響應結構: {response}")
             print(f"API返回了無效的響應結構: {response}")
             # 返回模擬數據作為備用
             return get_smart_mock_response(message)
             
     except Exception as e:
-        current_app.logger.error(f"ChatGPT API調用失敗: {str(e)}")
+        app.logger.error(f"ChatGPT API調用失敗: {str(e)}")
         print(f"與OpenAI API通信時發生錯誤: {str(e)}")
         # 出現錯誤時返回模擬數據
         return get_smart_mock_response(message)
@@ -688,68 +915,67 @@ D. 選項D
 """
 
 def get_mock_study_plan(topics, duration_weeks):
-    """提供模擬的學習計劃"""
-    if len(topics) == 0:
-        topics = ["描述統計", "機率論", "抽樣與估計", "假設檢定"]
+    """提供模擬的學習計劃數據，作為API不可用時的備用方案"""
     
-    plan = f"""# 統計學{duration_weeks}週學習計劃
-
-## 學習主題：{", ".join(topics)}
-
-"""
-    
-    weekly_topics = []
-    # 根據週數分配主題
-    if len(topics) <= duration_weeks:
-        # 每個主題至少一週
-        for topic in topics:
-            weekly_topics.append([topic])
-        # 分配剩餘週數
-        for i in range(len(topics), duration_weeks):
-            weekly_topics.append(["複習與統整"])
+    # 轉換主題列表為字符串，如果是列表的話
+    if isinstance(topics, list):
+        topics_str = ", ".join(topics)
     else:
-        # 將多個主題安排在同一週
-        topics_per_week = max(1, len(topics) // duration_weeks)
-        for i in range(0, duration_weeks):
-            start_idx = i * topics_per_week
-            end_idx = min(start_idx + topics_per_week, len(topics))
-            if start_idx < len(topics):
-                weekly_topics.append(topics[start_idx:end_idx])
-            else:
-                weekly_topics.append(["複習與統整"])
+        topics_str = topics
     
-    # 生成每週計劃
-    for week_num, week_topics in enumerate(weekly_topics, 1):
-        plan += f"""
-## 第{week_num}週：{" & ".join(week_topics)}
-
-### 學習目標
-- 理解{" & ".join(week_topics)}的核心概念和應用場景
-- 掌握相關計算方法和公式
-- 能夠解決基本的應用問題
-
-### 推薦資源
-- 教科書：統計學導論（第12章：{" & ".join(week_topics)}）
-- 在線資源：可汗學院的{" & ".join(week_topics)}視頻課程
-- 練習題：課後習題12.1-12.5
-
-### 自我評估
-- 完成複習問題列表
-- 嘗試解決3個實際應用場景的問題
-- 進行概念圖繪製，確保理解概念間的關聯
-"""
+    # 標準化週數
+    try:
+        weeks = int(duration_weeks)
+    except (ValueError, TypeError):
+        weeks = 4
     
-    plan += """
-## 學習成功要點
-- 保持每日固定學習時間，建議每天至少1-2小時
-- 重視理論與實踐的結合，嘗試用實際數據進行操作
-- 積極參與討論，與同學交流可以加深理解
-- 定期回顧之前學過的內容，建立知識間的聯繫
-- 使用記憶卡片或筆記軟件記錄關鍵概念和公式
-
-祝學習順利！
-"""
-    return plan 
+    # 創建模擬學習計劃
+    mock_plan = {
+        "overview": f"這是一個為期{weeks}週的統計學學習計劃，專注於以下主題：{topics_str}。本計劃旨在提供系統化的學習路徑，幫助您建立扎實的統計學基礎，並逐步掌握相關概念和應用技能。",
+        "weeks": [],
+        "resources": [
+            {
+                "title": "統計學導論 (第7版)",
+                "description": "Richard D. De Veaux 等著，經典的統計學入門教材，涵蓋基礎概念和應用方法。"
+            },
+            {
+                "title": "可汗學院統計學課程",
+                "description": "免費在線視頻課程，提供直觀易懂的統計學概念講解。"
+            },
+            {
+                "title": "R統計軟體 / Python with Pandas",
+                "description": "推薦學習這些工具以進行實際數據分析和統計計算。"
+            }
+        ]
+    }
+    
+    # 生成每週的計劃
+    for week in range(1, weeks + 1):
+        # 為不同週創建不同的主題內容
+        if "描述統計" in topics_str or week <= weeks/3:
+            focus = "基礎概念與描述統計"
+            weekly_topics = ["資料類型與測量尺度", "集中趨勢測量", "離散程度測量"]
+            activities = ["閱讀教材第1-3章", "完成10個練習題", "使用Excel或R計算基本統計量"]
+        elif "機率" in topics_str or week <= 2*weeks/3:
+            focus = "機率與隨機變數"
+            weekly_topics = ["基本機率概念", "條件機率", "離散與連續隨機變量"]
+            activities = ["閱讀教材第4-6章", "完成機率習題集", "嘗試解決貝氏定理問題"]
+        else:
+            focus = "統計推論與假設檢定"
+            weekly_topics = ["抽樣分佈", "信賴區間估計", "假設檢定流程"]
+            activities = ["閱讀教材第7-9章", "完成t檢定實作", "分析真實數據集並撰寫報告"]
+        
+        week_plan = {
+            "title": f"第{week}週：統計學基礎 (第{week}部分)",
+            "focus": focus,
+            "description": f"本週將專注於{focus}的學習。通過課本閱讀與實踐練習，掌握核心概念並學會應用。",
+            "topics": weekly_topics,
+            "activities": activities
+        }
+        
+        mock_plan["weeks"].append(week_plan)
+    
+    return mock_plan
 
 def get_smart_mock_response(message):
     """
@@ -1215,3 +1441,84 @@ p值的正確解讀：
 4. 您對統計學中的哪個領域特別感興趣？（如「描述統計」或「推論統計」）
 
 提供更多細節後，我可以給您更準確的統計學知識解答。"""
+
+def get_api_status():
+    """獲取當前API連接狀態"""
+    return API_STATUS
+
+def update_api_config(api_key, api_base):
+    """更新API配置並測試連接"""
+    return test_api_connection(api_key, api_base)
+
+def chat_with_assistant(message, history=None):
+    """與AI助手聊天，使用聊天歷史記錄進行上下文處理"""
+    print(f"[chat_with_assistant] Received message: {message}")
+    
+    # 確保歷史記錄是一個列表
+    if history is None:
+        history = []
+    
+    try:
+        # 應用測試模式
+        if app.config.get('TESTING', False) or not is_client_initialized():
+            print("[chat_with_assistant] Running in test mode or client not initialized")
+            return {
+                "success": True,
+                "answer": "這是一個測試回答，實際聊天功能需要設定API金鑰。",
+                "full_response": None
+            }
+        
+        print(f"[chat_with_assistant] Processing message with history length: {len(history)}")
+        
+        # 構建消息列表
+        messages = [
+            {"role": "system", "content": "你是一個專業的統計學教師助手，專門協助學生解決統計學問題和提供相關學術指導。請提供準確、專業且容易理解的回答。"},
+        ]
+        
+        # 添加歷史記錄
+        for entry in history:
+            if 'role' in entry and 'content' in entry:
+                messages.append({"role": entry['role'], "content": entry['content']})
+            else:
+                print(f"[chat_with_assistant] Warning: Invalid history entry format: {entry}")
+        
+        # 添加當前消息
+        messages.append({"role": "user", "content": message})
+        
+        print(f"[chat_with_assistant] Sending {len(messages)} messages to API")
+        
+        # 調用API
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=messages,
+            temperature=0.7,
+        )
+        
+        if response and hasattr(response, 'choices') and len(response.choices) > 0:
+            answer = response.choices[0].message.content
+            print(f"[chat_with_assistant] Got response from API, length: {len(answer) if answer else 0}")
+            return {
+                "success": True,
+                "answer": answer,
+                "full_response": response
+            }
+        else:
+            print("[chat_with_assistant] Error: Empty or invalid API response")
+            return {
+                "success": False,
+                "error": "無法從AI助手獲取回覆",
+                "details": "API返回的響應無效或為空"
+            }
+    
+    except Exception as e:
+        print(f"[chat_with_assistant] Exception occurred: {str(e)}")
+        return {
+            "success": False,
+            "error": "處理聊天訊息時發生錯誤",
+            "details": str(e)
+        }
+
+def is_client_initialized():
+    """檢查API客戶端是否已初始化"""
+    global client
+    return client is not None

@@ -202,21 +202,30 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData(form);
         
         // 發送AJAX請求
-        fetch('/ai/explain', {
+        fetch('/ai/explain/process', {
             method: 'POST',
             body: formData
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('網絡請求失敗');
+                console.error('網絡請求失敗，狀態碼：', response.status);
+                throw new Error(`網絡請求失敗 (${response.status})`);
             }
             return response.json();
         })
         .then(data => {
             loading.style.display = 'none';
+            console.log('收到API響應:', data);
             
             if (data.error) {
                 showError(data.error);
+                return;
+            }
+            
+            // 檢查數據結構
+            if (!data.explanation && !data.success) {
+                showError('收到的數據結構不正確，請稍後再試。');
+                console.error('響應缺少必要字段:', data);
                 return;
             }
             
@@ -228,7 +237,8 @@ document.addEventListener('DOMContentLoaded', function() {
             explanationTitle.innerText = `${topicDisplay} (${difficultyText})`;
             
             // 格式化並顯示內容
-            const formattedText = formatExplanation(data.explanation);
+            const explanation = data.explanation || '無法生成解釋，請稍後再試。';
+            const formattedText = formatExplanation(explanation);
             explanationContent.innerHTML = formattedText;
             
             // 滾動到結果區域
@@ -236,8 +246,8 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             loading.style.display = 'none';
-            console.error('Error:', error);
-            showError('請求失敗，請稍後再試');
+            console.error('錯誤:', error);
+            showError('請求失敗，請稍後再試。錯誤詳情: ' + error.message);
         });
     });
     

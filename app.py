@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, abort, session, send_from_directory, Response
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import os
 import re
@@ -11,16 +11,44 @@ import matplotlib.pyplot as plt
 import numpy as np
 import io
 import base64
-from ai_views import ai_blueprint
+from ai_views import ai_bp
 from statistics_course_outline import STATISTICS_COURSE_OUTLINE
 
-app = Flask(__name__)
+# 確保在Vercel環境中可以找到正確的路徑
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+app = Flask(__name__, 
+            static_folder=os.path.join(BASE_DIR, 'static'),
+            template_folder=os.path.join(BASE_DIR, 'templates'))
 app.config['SECRET_KEY'] = 'your-secret-key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///learning.db'
+
+# 檢測是否在Vercel環境中
+IS_VERCEL = os.environ.get('VERCEL', False)
+
+if IS_VERCEL:
+    # 在Vercel環境中使用內存數據庫
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+    print("在Vercel環境中運行，使用內存數據庫")
+else:
+    # 本地環境使用文件數據庫
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///learning.db'
+    print("在本地環境中運行，使用文件數據庫")
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# 註冊AI功能藍圖
-app.register_blueprint(ai_blueprint)
+# 註冊藍圖
+app.register_blueprint(ai_bp, url_prefix='/ai')
+
+# 獲取文件路徑的輔助函數
+def get_lecture_path(lecture_file):
+    """獲取講義文件的完整路徑"""
+    return os.path.join(BASE_DIR, '講義', lecture_file)
+
+def get_web_lecture_path(file_name=None):
+    """獲取網頁講義文件的完整路徑"""
+    if file_name:
+        return os.path.join(BASE_DIR, '網頁講義', file_name)
+    return os.path.join(BASE_DIR, '網頁講義')
 
 db = SQLAlchemy(app)
 
@@ -51,7 +79,7 @@ class Progress(db.Model):
 # 載入講義資料
 def load_course_data():
     course_data = {"chapters": []}
-    lecture_dir = os.path.join(os.path.dirname(__file__), '講義')
+    lecture_dir = os.path.join(BASE_DIR, '講義')
     
     print(f"正在從 {lecture_dir} 載入講義資料...")
     
@@ -166,7 +194,7 @@ def home():
     print("\n===== 載入首頁 =====")
     
     # 直接從統計學完整講義.json載入所有章節內容
-    complete_lecture_path = os.path.join(os.path.dirname(__file__), '講義/統計學完整講義.json')
+    complete_lecture_path = get_lecture_path('統計學完整講義.json')
     course_data = {"chapters": []}
     
     if os.path.exists(complete_lecture_path):
@@ -424,7 +452,7 @@ def chapter10():
     section_10_4 = None
     
     # 讀取概述
-    overview_path = os.path.join(os.path.dirname(__file__), '講義/第10章_概述.json')
+    overview_path = get_lecture_path('第10章_概述.json')
     if os.path.exists(overview_path):
         with open(overview_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -435,7 +463,7 @@ def chapter10():
                     section_10_1 = chapter['sections'][0]
     
     # 讀取 t 檢定內容
-    t_test_path = os.path.join(os.path.dirname(__file__), '講義/第10章_母體平均數t檢定.json')
+    t_test_path = get_lecture_path('第10章_母體平均數t檢定.json')
     if os.path.exists(t_test_path):
         with open(t_test_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -445,7 +473,7 @@ def chapter10():
                     section_10_2 = chapter['sections'][0]
     
     # 讀取比例檢定內容
-    proportion_test_path = os.path.join(os.path.dirname(__file__), '講義/第10章_母體比例檢定.json')
+    proportion_test_path = get_lecture_path('第10章_母體比例檢定.json')
     if os.path.exists(proportion_test_path):
         with open(proportion_test_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -455,7 +483,7 @@ def chapter10():
                     section_10_3 = chapter['sections'][0]
     
     # 讀取變異數檢定內容
-    variance_test_path = os.path.join(os.path.dirname(__file__), '講義/第10章_母體變異數檢定.json')
+    variance_test_path = get_lecture_path('第10章_母體變異數檢定.json')
     if os.path.exists(variance_test_path):
         with open(variance_test_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -473,64 +501,6 @@ def chapter10():
     }
     
     return render_template('chapter10.html', overview=chapter_overview, sections=sections)
-
-@app.route('/chapter10test')
-def chapter10test():
-    # 讀取第10章所有內容，與chapter10函數相同
-    chapter_overview = None
-    section_10_1 = None
-    section_10_2 = None
-    section_10_3 = None
-    section_10_4 = None
-    
-    # 讀取概述
-    overview_path = os.path.join(os.path.dirname(__file__), '講義/第10章_概述.json')
-    if os.path.exists(overview_path):
-        with open(overview_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            if 'chapters' in data and len(data['chapters']) > 0:
-                chapter = data['chapters'][0]
-                chapter_overview = chapter.get('overview', '')
-                if 'sections' in chapter and len(chapter['sections']) > 0:
-                    section_10_1 = chapter['sections'][0]
-    
-    # 讀取其他小節內容
-    t_test_path = os.path.join(os.path.dirname(__file__), '講義/第10章_母體平均數t檢定.json')
-    if os.path.exists(t_test_path):
-        with open(t_test_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            if 'chapters' in data and len(data['chapters']) > 0:
-                chapter = data['chapters'][0]
-                if 'sections' in chapter and len(chapter['sections']) > 0:
-                    section_10_2 = chapter['sections'][0]
-    
-    proportion_test_path = os.path.join(os.path.dirname(__file__), '講義/第10章_母體比例檢定.json')
-    if os.path.exists(proportion_test_path):
-        with open(proportion_test_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            if 'chapters' in data and len(data['chapters']) > 0:
-                chapter = data['chapters'][0]
-                if 'sections' in chapter and len(chapter['sections']) > 0:
-                    section_10_3 = chapter['sections'][0]
-    
-    variance_test_path = os.path.join(os.path.dirname(__file__), '講義/第10章_母體變異數檢定.json')
-    if os.path.exists(variance_test_path):
-        with open(variance_test_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            if 'chapters' in data and len(data['chapters']) > 0:
-                chapter = data['chapters'][0]
-                if 'sections' in chapter and len(chapter['sections']) > 0:
-                    section_10_4 = chapter['sections'][0]
-    
-    # 整合內容
-    sections = {
-        'section_10_1': section_10_1,
-        'section_10_2': section_10_2,
-        'section_10_3': section_10_3,
-        'section_10_4': section_10_4
-    }
-    
-    return render_template('chapter10_test.html', overview=chapter_overview, sections=sections)
 
 def generate_plots(chapter_number, section_number):
     plots = {}
@@ -1026,7 +996,7 @@ def quiz(chapter_number, section_number):
 def show_lecture(lecture_file):
     # 讀取講義HTML文件
     try:
-        lecture_path = os.path.join(os.path.dirname(__file__), '網頁講義', lecture_file)
+        lecture_path = get_web_lecture_path(lecture_file)
         with open(lecture_path, 'r', encoding='utf-8') as f:
             lecture_content = f.read()
         
@@ -1043,7 +1013,7 @@ def show_lecture(lecture_file):
 @app.route('/lectures')
 def lectures_index():
     """顯示所有可用講義的目錄"""
-    lectures_dir = os.path.join(os.path.dirname(__file__), '網頁講義')
+    lectures_dir = get_web_lecture_path()
     
     if not os.path.exists(lectures_dir):
         flash("講義目錄不存在", "warning")
@@ -1083,7 +1053,7 @@ def lectures_index():
 def load_lecture_content(chapter_num):
     """從HTML講義中加載章節內容"""
     try:
-        lecture_file = f"網頁講義/第{chapter_num}章_完整.html"
+        lecture_file = get_web_lecture_path(f"第{chapter_num}章_完整.html")
         
         if not os.path.exists(lecture_file):
             return None
@@ -1112,7 +1082,7 @@ def load_lecture_content(chapter_num):
 def load_section_content(chapter_num, section_index):
     """從HTML講義中加載小節內容"""
     try:
-        lecture_file = f"網頁講義/第{chapter_num}章_完整.html"
+        lecture_file = get_web_lecture_path(f"第{chapter_num}章_完整.html")
         
         if not os.path.exists(lecture_file):
             return None
@@ -1421,7 +1391,7 @@ def course_section(chapter_num, section_index):
 @app.route('/complete_course')
 def complete_course():
     """直接從統計學完整講義.json載入所有章節內容"""
-    complete_lecture_path = os.path.join(os.path.dirname(__file__), '講義/統計學完整講義.json')
+    complete_lecture_path = get_lecture_path('統計學完整講義.json')
     
     if not os.path.exists(complete_lecture_path):
         flash('完整講義檔案不存在!')
@@ -1450,7 +1420,7 @@ def complete_course():
 @app.route('/complete_chapter/<int:chapter_number>')
 def complete_chapter(chapter_number):
     """直接從對應章節的完整JSON文件載入章節內容"""
-    chapter_file_path = os.path.join(os.path.dirname(__file__), f'講義/第{chapter_number}章_完整.json')
+    chapter_file_path = get_lecture_path(f'第{chapter_number}章_完整.json')
     
     if not os.path.exists(chapter_file_path):
         flash(f'第{chapter_number}章完整講義檔案不存在!')
@@ -1514,7 +1484,7 @@ def display_all_chapters():
         all_chapters = []
         
         # 加載統計學完整講義檔案
-        complete_lecture_path = os.path.join(os.path.dirname(__file__), '講義/統計學完整講義.json')
+        complete_lecture_path = get_lecture_path('統計學完整講義.json')
         if os.path.exists(complete_lecture_path):
             with open(complete_lecture_path, 'r', encoding='utf-8') as f:
                 complete_data = json.load(f)
@@ -1525,7 +1495,7 @@ def display_all_chapters():
         # 如果沒有從完整講義中加載，則嘗試逐一加載各章節
         if not all_chapters:
             for chapter_num in range(1, 17):  # 16個章節
-                chapter_path = os.path.join(os.path.dirname(__file__), f'講義/第{chapter_num}章_完整.json')
+                chapter_path = get_lecture_path(f'第{chapter_num}章_完整.json')
                 if os.path.exists(chapter_path):
                     with open(chapter_path, 'r', encoding='utf-8') as f:
                         chapter_data = json.load(f)
@@ -1560,7 +1530,7 @@ def statistics_content():
     chapters = sorted(chapters, key=lambda x: x['chapter'])
     
     # 獲取講義文件列表
-    lectures_dir = os.path.join(os.path.dirname(__file__), '網頁講義')
+    lectures_dir = get_web_lecture_path()
     lectures = []
     
     if os.path.exists(lectures_dir):
@@ -1574,6 +1544,35 @@ def statistics_content():
 # 初始化資料庫
 with app.app_context():
     db.create_all()
+    print("資料庫已初始化")
+    
+    # 在Vercel環境中檢查目錄和文件是否存在
+    if IS_VERCEL:
+        # 確保講義目錄存在
+        lecture_dir = os.path.join(BASE_DIR, '講義')
+        if not os.path.exists(lecture_dir):
+            os.makedirs(lecture_dir, exist_ok=True)
+            print(f"創建講義目錄: {lecture_dir}")
+            
+        # 確保網頁講義目錄存在
+        web_lecture_dir = os.path.join(BASE_DIR, '網頁講義')
+        if not os.path.exists(web_lecture_dir):
+            os.makedirs(web_lecture_dir, exist_ok=True)
+            print(f"創建網頁講義目錄: {web_lecture_dir}")
+            
+        # 檢查靜態目錄
+        static_dir = os.path.join(BASE_DIR, 'static')
+        if not os.path.exists(static_dir):
+            os.makedirs(static_dir, exist_ok=True)
+            print(f"創建靜態資源目錄: {static_dir}")
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5003) 
+    # 本地運行設置
+    import sys
+    if len(sys.argv) > 1:
+        port = int(sys.argv[1])
+    else:
+        port = 5003
+        
+    print(f"啟動應用程序，監聽在 http://localhost:{port}")
+    app.run(debug=True, port=port) 

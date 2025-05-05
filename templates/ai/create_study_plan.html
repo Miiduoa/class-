@@ -54,55 +54,29 @@
                     </div>
                     
                     <div class="mb-4">
-                        <label for="topics" class="form-label">感興趣的主題 (可多選)</label>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="topic_descriptive" name="topics[]" value="descriptive" checked>
-                                    <label class="form-check-label" for="topic_descriptive">
-                                        敘述統計
-                                    </label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="topic_probability" name="topics[]" value="probability" checked>
-                                    <label class="form-check-label" for="topic_probability">
-                                        機率與分布
-                                    </label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="topic_hypothesis" name="topics[]" value="hypothesis">
-                                    <label class="form-check-label" for="topic_hypothesis">
-                                        假設檢定
+                        <label class="form-label">感興趣的主題 (可多選)</label>
+                        <div class="row course-topics mb-2">
+                            {% for chapter_num, chapter_info in STATISTICS_COURSE_OUTLINE.items() %}
+                            <div class="col-md-6 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="topic_{{ chapter_num }}" name="topics[]" value="{{ chapter_num }}">
+                                    <label class="form-check-label" for="topic_{{ chapter_num }}">
+                                        {{ chapter_info.title }}
                                     </label>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="topic_regression" name="topics[]" value="regression">
-                                    <label class="form-check-label" for="topic_regression">
-                                        迴歸分析
-                                    </label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="topic_anova" name="topics[]" value="anova">
-                                    <label class="form-check-label" for="topic_anova">
-                                        變異數分析
-                                    </label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="topic_multivariate" name="topics[]" value="multivariate">
-                                    <label class="form-check-label" for="topic_multivariate">
-                                        多變量分析
-                                    </label>
-                                </div>
-                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="select-all-topics">全選</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary ms-2" id="deselect-all-topics">取消全選</button>
                         </div>
                     </div>
                     
                     <div class="row mb-4">
                         <div class="col-md-6">
-                            <label for="duration" class="form-label">計劃時長</label>
-                            <select class="form-select" id="duration" name="duration">
+                            <label for="duration_weeks" class="form-label">計劃時長</label>
+                            <select class="form-select" id="duration_weeks" name="duration_weeks">
                                 <option value="1">1 週</option>
                                 <option value="4" selected>1 個月</option>
                                 <option value="12">3 個月</option>
@@ -253,43 +227,70 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 獲取表單數據
         const goal = document.getElementById('goal').value.trim();
+        const currentLevel = document.getElementById('current_level').value;
+        const duration = document.getElementById('duration_weeks').value;
+        const weeklyHours = document.getElementById('weekly_hours').value;
+        const includeResources = document.getElementById('include_resources').checked;
+        
+        // 獲取選中的主題
+        const selectedTopics = [];
+        document.querySelectorAll('input[name="topics[]"]:checked').forEach(checkbox => {
+            selectedTopics.push(checkbox.value);
+        });
         
         if (!goal) {
             showError('請輸入學習目標');
             return;
         }
         
-        // 檢查是否選擇了至少一個主題
-        const topicCheckboxes = document.querySelectorAll('input[name="topics[]"]:checked');
-        if (topicCheckboxes.length === 0) {
-            showError('請至少選擇一個感興趣的主題');
+        if (selectedTopics.length === 0) {
+            showError('請至少選擇一個主題');
             return;
         }
         
-        // 隱藏結果和錯誤，顯示加載
+        // 顯示加載中，隱藏結果
         resultCard.style.display = 'none';
         errorMessage.style.display = 'none';
         loading.style.display = 'block';
         
-        // 準備要提交的數據
-        const formData = new FormData(form);
+        // 構建表單數據
+        const formData = new FormData();
+        formData.append('goal', goal);
+        formData.append('current_level', currentLevel);
+        formData.append('duration_weeks', duration);
+        formData.append('weekly_hours', weeklyHours);
+        formData.append('include_resources', includeResources ? 'true' : 'false');
+        
+        // 添加所有選中的主題
+        selectedTopics.forEach(topic => {
+            formData.append('topics', topic);
+        });
         
         // 發送AJAX請求
-        fetch('/ai/study-plan', {
+        fetch('/ai/study-plan/generate', {
             method: 'POST',
             body: formData
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('網絡請求失敗');
+                console.error('網絡請求失敗，狀態碼：', response.status);
+                throw new Error(`網絡請求失敗 (${response.status})`);
             }
             return response.json();
         })
         .then(data => {
             loading.style.display = 'none';
+            console.log('收到API響應:', data);
             
             if (data.error) {
                 showError(data.error);
+                return;
+            }
+            
+            // 檢查數據結構
+            if (!data.plan) {
+                showError('生成的學習計劃結構不正確，請稍後再試。');
+                console.error('響應缺少必要字段:', data);
                 return;
             }
             
@@ -308,8 +309,8 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             loading.style.display = 'none';
-            console.error('Error:', error);
-            showError('請求失敗，請稍後再試');
+            console.error('錯誤:', error);
+            showError('請求失敗，請稍後再試。錯誤詳情: ' + error.message);
         });
     });
     
@@ -329,10 +330,28 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 格式化計劃概述
         if (plan.overview) {
+            // 檢查overview是否包含JSON字符串
+            let overview = plan.overview;
+            if (typeof overview === 'string' && (overview.includes('{') || overview.includes('```'))) {
+                // 嘗試清理JSON格式
+                try {
+                    // 移除可能的markdown代碼塊標記
+                    overview = overview.replace(/```json/g, '').replace(/```/g, '').trim();
+                    
+                    // 嘗試解析JSON
+                    const jsonData = JSON.parse(overview);
+                    if (jsonData.overview) {
+                        overview = jsonData.overview;
+                    }
+                } catch (e) {
+                    console.error('解析概述中的JSON失敗:', e);
+                }
+            }
+            
             html += `
             <div class="mb-4">
                 <h5 class="border-bottom pb-2 mb-3">計劃概述</h5>
-                <p>${plan.overview.replace(/\n/g, '<br>')}</p>
+                <p>${overview.replace(/\n/g, '<br>')}</p>
             </div>`;
         }
         
@@ -419,6 +438,19 @@ document.addEventListener('DOMContentLoaded', function() {
         return html;
     }
     
+    // 添加全選/取消全選功能
+    document.getElementById('select-all-topics').addEventListener('click', function() {
+        document.querySelectorAll('input[name="topics[]"]').forEach(checkbox => {
+            checkbox.checked = true;
+        });
+    });
+    
+    document.getElementById('deselect-all-topics').addEventListener('click', function() {
+        document.querySelectorAll('input[name="topics[]"]').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+    });
+    
     // 新計劃按鈕
     newPlanButton.addEventListener('click', function() {
         resultCard.style.display = 'none';
@@ -464,30 +496,34 @@ function loadTemplate(templateType) {
         case 'beginner':
             goalInput.value = '掌握統計學基本概念和方法';
             currentLevelSelect.value = 'beginner';
-            document.getElementById('topic_descriptive').checked = true;
-            document.getElementById('topic_probability').checked = true;
-            document.getElementById('duration').value = '4';
+            // 選擇前4章作為初學者的主題
+            document.getElementById('topic_1').checked = true;
+            document.getElementById('topic_2').checked = true;
+            document.getElementById('topic_3').checked = true;
+            document.getElementById('topic_4').checked = true;
+            document.getElementById('duration_weeks').value = '4';
             document.getElementById('weekly_hours').value = '5';
             break;
             
         case 'intermediate':
             goalInput.value = '提升數據分析和統計建模能力';
             currentLevelSelect.value = 'intermediate';
-            document.getElementById('topic_hypothesis').checked = true;
-            document.getElementById('topic_regression').checked = true;
-            document.getElementById('topic_anova').checked = true;
-            document.getElementById('duration').value = '12';
+            // 選擇中級主題
+            document.getElementById('topic_9').checked = true;
+            document.getElementById('topic_10').checked = true;
+            document.getElementById('topic_11').checked = true;
+            document.getElementById('topic_12').checked = true;
+            document.getElementById('topic_13').checked = true;
+            document.getElementById('duration_weeks').value = '12';
             document.getElementById('weekly_hours').value = '10';
             break;
             
         case 'exam':
             goalInput.value = '為統計學考試做全面準備';
             currentLevelSelect.value = 'intermediate';
-            document.getElementById('topic_descriptive').checked = true;
-            document.getElementById('topic_probability').checked = true;
-            document.getElementById('topic_hypothesis').checked = true;
-            document.getElementById('topic_regression').checked = true;
-            document.getElementById('duration').value = '12';
+            // 選擇全部主題
+            document.getElementById('select-all-topics').click();
+            document.getElementById('duration_weeks').value = '12';
             document.getElementById('weekly_hours').value = '10';
             break;
     }

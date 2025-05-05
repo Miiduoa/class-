@@ -161,6 +161,21 @@
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // 後端仍然可以檢查API狀態，但不在界面上顯示
+    function checkApiStatus() {
+        fetch('/ai/api/status')
+            .then(response => response.json())
+            .then(data => {
+                console.log("API狀態:", data.status && data.status.connected ? "已連接" : "未連接");
+            })
+            .catch(error => {
+                console.error('獲取API狀態失敗:', error);
+            });
+    }
+    
+    // 初始檢查API狀態，但不在UI上顯示
+    checkApiStatus();
+    
     const chatForm = document.getElementById('chat-form');
     const userInput = document.getElementById('user-input');
     const chatMessages = document.getElementById('chat-messages');
@@ -221,10 +236,11 @@ document.addEventListener('DOMContentLoaded', function() {
         showTypingIndicator();
         
         // 發送請求到後端
-        fetch('/ai/chat', {
+        fetch('/ai/chat/send', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json'
             },
             body: JSON.stringify({
                 message: message,
@@ -233,22 +249,34 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('網絡請求失敗');
+                console.error('網絡請求失敗，狀態碼：', response.status);
+                throw new Error(`網絡請求失敗 (${response.status})`);
             }
             return response.json();
         })
         .then(data => {
             // 移除加載指示器
             removeTypingIndicator();
+            console.log('收到API響應:', data);
             
             // 檢查是否有錯誤回傳
             if (data.error) {
-                addErrorMessage(data.response || "發生錯誤，請稍後再試。");
+                addErrorMessage(data.error || "發生錯誤，請稍後再試。");
                 return;
             }
             
+            // 檢查數據結構
+            if (!data.answer && data.success) {
+                addErrorMessage("收到的回答格式不正確，請稍後再試。");
+                console.error('響應缺少必要字段:', data);
+                return;
+            }
+            
+            // 確保有回答
+            const answer = data.answer || "很抱歉，我無法生成回答。請稍後再試。";
+            
             // 添加助手回覆到聊天界面
-            addAssistantMessage(data.response);
+            addAssistantMessage(answer);
             
             // 更新聊天歷史
             chatHistory.push({
@@ -258,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             chatHistory.push({
                 role: 'assistant',
-                content: data.response
+                content: answer
             });
             
             // 保存聊天歷史到本地存儲
@@ -273,7 +301,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // 顯示錯誤訊息
             console.error('聊天請求錯誤:', error);
-            addErrorMessage("很抱歉，聊天請求發生錯誤。請檢查您的網路連接或稍後再試。");
+            addErrorMessage("很抱歉，聊天請求發生錯誤。請檢查您的網路連接或稍後再試。錯誤詳情: " + error.message);
             
             // 如果API不可用，可以考慮使用本地模擬回覆
             // addAssistantMessage(getLocalFallbackResponse(message));
@@ -403,7 +431,52 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 格式化消息文本
     function formatMessage(message) {
-        return message.replace(/\n/g, '<br>');
+        // 处理基本换行
+        let formatted = message.replace(/\n/g, '<br>');
+        
+        // 尝试识别和处理特殊格式的文本(如郭台铭相关新闻搜索结果)
+        if (formatted.includes('$~-~$') || formatted.includes('"title"') && formatted.includes('"link"')) {
+            try {
+                // 提取可能的JSON数据部分
+                const jsonMatch = formatted.match(/\$~-~\$(.*?)\}/s);
+                if (jsonMatch && jsonMatch[1]) {
+                    // 尝试清理和解析数据
+                    let jsonText = jsonMatch[1].replace(/\n/g, ' ').trim();
+                    
+                    // 创建搜索结果HTML
+                    let resultsHtml = '<div class="search-results mt-2 mb-2 p-2 border rounded bg-light">';
+                    resultsHtml += '<h6 class="mb-2">搜索结果:</h6>';
+                    
+                    // 尝试提取标题和URL部分
+                    const titleMatches = jsonText.match(/"title":"(.*?)"/g);
+                    const linkMatches = jsonText.match(/"link":"(.*?)"/g);
+                    
+                    if (titleMatches && linkMatches && titleMatches.length > 0) {
+                        for (let i = 0; i < Math.min(titleMatches.length, linkMatches.length); i++) {
+                            const title = titleMatches[i].match(/"title":"(.*?)"/)[1];
+                            const link = linkMatches[i].match(/"link":"(.*?)"/)[1];
+                            
+                            resultsHtml += `<div class="mb-2">
+                                <div><a href="${link}" target="_blank">${title}</a></div>
+                            </div>`;
+                        }
+                    }
+                    
+                    resultsHtml += '</div>';
+                    
+                    // 替换原始文本中的搜索结果部分
+                    formatted = formatted.replace(/\$~-~\$.*?\}/s, resultsHtml);
+                }
+            } catch (e) {
+                console.error('处理搜索结果格式错误:', e);
+                // 出错时仍保留原始文本
+            }
+        }
+        
+        // 处理URL链接 - 将纯文本URL转换为可点击的链接
+        formatted = formatted.replace(/(https?:\/\/[^\s"<>]+)/g, '<a href="$1" target="_blank" class="text-primary">$1</a>');
+        
+        return formatted;
     }
     
     // 將消息附加到聊天窗口

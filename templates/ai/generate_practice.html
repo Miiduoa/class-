@@ -188,6 +188,35 @@
 {% endblock %}
 
 {% block extra_js %}
+<!-- 添加MathJax支持 -->
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+<script>
+// 配置MathJax
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    tags: 'ams'
+  },
+  options: {
+    enableMenu: false,
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  startup: {
+    pageReady() {
+      return MathJax.startup.defaultPageReady().then(function () {
+        console.log('MathJax初始化完成');
+      });
+    }
+  }
+};
+</script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('practice-form');
@@ -220,43 +249,41 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData(form);
         
         // 發送AJAX請求
-        fetch('/ai/practice', {
+        fetch('/ai/practice/generate', {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('網絡請求失敗');
+                console.error('網絡請求失敗，狀態碼：', response.status);
+                throw new Error(`網絡請求失敗 (${response.status})`);
             }
             return response.json();
         })
         .then(data => {
-            loading.style.display = 'none';
-            
+            console.log('收到API響應:', data);
             if (data.error) {
                 showError(data.error);
                 return;
             }
             
-            // 顯示結果
-            resultCard.style.display = 'block';
+            // 檢查數據結構
+            if (!data.questions && data.success) {
+                showError('生成的練習題結構不正確，請稍後再試。');
+                console.error('響應缺少必要字段:', data);
+                return;
+            }
             
-            const topicDisplay = formData.get('topic');
-            const difficultyText = getDifficultyText(formData.get('difficulty'));
-            const numberText = formData.get('number') + ' 題';
-            practiceTitle.innerText = `${topicDisplay} (${difficultyText}) - ${numberText}`;
-            
-            // 格式化並顯示內容
-            const formattedQuestions = formatQuestions(data.questions);
-            practiceContent.innerHTML = formattedQuestions;
-            
-            // 滾動到結果區域
-            resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // 使用新的結果顯示函數
+            showResult(data);
         })
         .catch(error => {
             loading.style.display = 'none';
-            console.error('Error:', error);
-            showError('請求失敗，請稍後再試');
+            console.error('錯誤:', error);
+            showError('請求失敗，請稍後再試。錯誤詳情: ' + error.message);
         });
     });
     
@@ -279,48 +306,171 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // 顯示結果并渲染數學公式
+    const showResult = (data) => {
+        loading.style.display = 'none';
+        resultCard.style.display = 'block';
+        
+        const topicDisplay = document.getElementById('topic').value.trim();
+        const difficultyText = getDifficultyText(document.getElementById('difficulty').value);
+        const numberText = document.getElementById('number').value + ' 題';
+        practiceTitle.innerText = `${topicDisplay} (${difficultyText}) - ${numberText}`;
+        
+        // 確保有問題數據
+        const questions = data.questions || '無法生成練習題，請嘗試另一個主題。';
+        
+        // 格式化並顯示內容
+        const formattedQuestions = formatQuestions(questions);
+        practiceContent.innerHTML = formattedQuestions;
+        
+        // 在內容加載後渲染數學公式
+        setTimeout(function() {
+            try {
+                if (window.MathJax) {
+                    window.MathJax.typesetPromise([document.getElementById('practice-content')])
+                        .then(() => {
+                            console.log("MathJax渲染成功");
+                        })
+                        .catch((err) => {
+                            console.error("MathJax渲染錯誤:", err);
+                        });
+                } else {
+                    console.warn("MathJax未定義");
+                }
+            } catch (e) {
+                console.error("處理MathJax時出錯:", e);
+            }
+        }, 300);
+        
+        // 滾動到結果區域
+        resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    
     // 格式化練習題內容
     function formatQuestions(questions) {
         let html = '';
         
-        if (!Array.isArray(questions)) {
+        // 檢查是否為空或未定義
+        if (!questions) {
             html = `<div class="alert alert-info">無法生成練習題，請嘗試另一個主題。</div>`;
             return html;
         }
         
-        questions.forEach((question, index) => {
-            html += `
-            <div class="card mb-4 border-0 shadow-sm">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">問題 ${index + 1}</h5>
-                </div>
-                <div class="card-body">
-                    <p>${question.question.replace(/\n/g, '<br>')}</p>
-                    
-                    ${question.options ? formatOptions(question.options) : ''}
-                    
-                    <div class="mt-3 pt-3 border-top">
-                        <button class="btn btn-sm btn-outline-primary toggle-answer" data-bs-toggle="collapse" data-bs-target="#answer${index}">
-                            顯示答案
-                        </button>
-                        <div class="collapse mt-3" id="answer${index}">
-                            <div class="card bg-light">
-                                <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted">答案：</h6>
-                                    <p>${question.answer.replace(/\n/g, '<br>')}</p>
-                                    
-                                    ${question.explanation ? `
-                                        <h6 class="card-subtitle mb-2 text-muted">解釋：</h6>
-                                        <p>${question.explanation.replace(/\n/g, '<br>')}</p>
-                                    ` : ''}
+        // 如果是字符串，直接顯示格式化文本
+        if (typeof questions === 'string') {
+            // 標準化數學公式格式
+            let cleanedText = questions
+                // 將所有 $ 和 $$ 確保與文本之間有空格
+                .replace(/([^\s\\])\$/g, '$1 $')
+                .replace(/\$([^\s\\])/g, '$ $1')
+                .replace(/([^\s\\])\$\$/g, '$1 $$')
+                .replace(/\$\$([^\s\\])/g, '$$ $1')
+                // 將所有 \( 和 \) 格式轉換為 $ 格式
+                .replace(/\\\(/g, '$')
+                .replace(/\\\)/g, '$')
+                // 將所有 \[ 和 \] 格式轉換為 $$ 格式
+                .replace(/\\\[/g, '$$')
+                .replace(/\\\]/g, '$$');
+
+            // 將Markdown風格的文本轉換為HTML
+            let formattedText = cleanedText
+                .replace(/\n\n/g, '</p><p>') // 段落
+                .replace(/\n/g, '<br>') // 單行換行
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // 加粗文本
+                .replace(/\*(.*?)\*/g, '<em>$1</em>') // 斜體文本
+                .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>') // 代碼塊
+                .replace(/`(.*?)`/g, '<code>$1</code>'); // 內聯代碼
+                
+            // 處理表格（如果有的話）
+            formattedText = formattedText.replace(/\|(.*)\|\n\|([-:\|\s]*)\|\n((?:\|.*\|\n)+)/g, function(match, header, alignment, rows) {
+                // 表格處理邏輯
+                const headerCells = header.split('|').map(cell => cell.trim());
+                const alignmentRow = alignment.split('|').map(cell => cell.trim());
+                const tableRows = rows.trim().split('\n');
+                
+                let tableHtml = '<div class="table-responsive"><table class="table table-bordered table-striped">';
+                tableHtml += '<thead><tr>';
+                
+                // 添加表頭
+                headerCells.forEach((cell, i) => {
+                    if (cell) {
+                        let align = 'center';
+                        if (alignmentRow[i]) {
+                            if (alignmentRow[i].startsWith(':') && alignmentRow[i].endsWith(':')) align = 'center';
+                            else if (alignmentRow[i].endsWith(':')) align = 'right';
+                            else if (alignmentRow[i].startsWith(':')) align = 'left';
+                        }
+                        tableHtml += `<th style="text-align:${align}">${cell}</th>`;
+                    }
+                });
+                
+                tableHtml += '</tr></thead><tbody>';
+                
+                // 添加行數據
+                tableRows.forEach(row => {
+                    const cells = row.split('|').map(cell => cell.trim());
+                    tableHtml += '<tr>';
+                    cells.forEach((cell, i) => {
+                        if (cell || i > 0 && i < cells.length - 1) {
+                            let align = 'center';
+                            if (alignmentRow[i]) {
+                                if (alignmentRow[i].startsWith(':') && alignmentRow[i].endsWith(':')) align = 'center';
+                                else if (alignmentRow[i].endsWith(':')) align = 'right';
+                                else if (alignmentRow[i].startsWith(':')) align = 'left';
+                            }
+                            tableHtml += `<td style="text-align:${align}">${cell}</td>`;
+                        }
+                    });
+                    tableHtml += '</tr>';
+                });
+                
+                tableHtml += '</tbody></table></div>';
+                return tableHtml;
+            });
+            
+            html = `<div class="markdown-content"><p>${formattedText}</p></div>`;
+            return html;
+        }
+        
+        // 如果是數組，按照原來的方式處理（為了向後兼容）
+        if (Array.isArray(questions)) {
+            questions.forEach((question, index) => {
+                html += `
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">問題 ${index + 1}</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>${question.question.replace(/\n/g, '<br>')}</p>
+                        
+                        ${question.options ? formatOptions(question.options) : ''}
+                        
+                        <div class="mt-3 pt-3 border-top">
+                            <button class="btn btn-sm btn-outline-primary toggle-answer" data-bs-toggle="collapse" data-bs-target="#answer${index}">
+                                顯示答案
+                            </button>
+                            <div class="collapse mt-3" id="answer${index}">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6 class="card-subtitle mb-2 text-muted">答案：</h6>
+                                        <p>${question.answer.replace(/\n/g, '<br>')}</p>
+                                        
+                                        ${question.explanation ? `
+                                            <h6 class="card-subtitle mb-2 text-muted">解釋：</h6>
+                                            <p>${question.explanation.replace(/\n/g, '<br>')}</p>
+                                        ` : ''}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            `;
-        });
+                `;
+            });
+        } else {
+            // 如果既不是字符串也不是數組，顯示錯誤信息
+            html = `<div class="alert alert-info">無法解析練習題格式，請嘗試另一個主題。</div>`;
+        }
         
         return html;
     }
